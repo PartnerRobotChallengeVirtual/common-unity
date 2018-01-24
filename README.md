@@ -1,6 +1,6 @@
 # Common Unity Project
 
-This is a common Unity project for the competition.  
+This is a common Unity project for the Partner Robot Challenge (Virtual Space) competition in the World Robot Competition.
 Please make a common unitypackage, and import the unitypackage to Unity projects of each competition.
 
 ## Prerequisites

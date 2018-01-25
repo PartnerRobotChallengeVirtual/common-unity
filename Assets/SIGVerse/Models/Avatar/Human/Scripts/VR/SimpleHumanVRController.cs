@@ -58,7 +58,7 @@ namespace SIGVerse.Human.VR
 			float horizontal = CrossPlatformInputManager.GetAxis("Horizontal");
 			float vertical   = CrossPlatformInputManager.GetAxis("Vertical");
 
-			if(Mathf.Abs(horizontal) > 0.1 || Mathf.Abs(vertical) > 0.1)
+			if(Mathf.Abs(horizontal) > 0.01 || Mathf.Abs(vertical) > 0.01)
 			{
 				Vector3 destination = vertical * this.transform.forward + horizontal * this.transform.right;
 
@@ -86,8 +86,8 @@ namespace SIGVerse.Human.VR
 
 			move = Vector3.ProjectOnPlane(move, Vector3.up);
 
-			this.animator.SetFloat("Forward", move.z, 0.1f, Time.deltaTime);
-			this.animator.SetFloat("Turn",    move.x, 0.1f, Time.deltaTime);
+			this.animator.SetFloat("Forward", move.z, 0.01f, Time.deltaTime);
+			this.animator.SetFloat("Turn",    move.x, 0.01f, Time.deltaTime);
 
 			this.animator.speed = animSpeedMultiplier;
 		}

@@ -10,10 +10,10 @@ Please make a common unitypackage, and import the unitypackage to Unity projects
 
 ## How to Make a Common Unitypackage
 
-1. Open this project with Unity.
+1. Open the project file (common-unity\Assets\SIGVerse\SIGVerseStartup.unity) with Unity.
 2. Click [Assets]-[Export Package...].
 3. Click [Export...] button.
-4. Type a file name (e.g. wrs-virtual-common) and save the file.
+4. Type a file name (e.g. wrs-virtual-common) and save the unitypackage file.
 
 ## License
 

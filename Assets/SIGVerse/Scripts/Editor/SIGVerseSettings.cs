@@ -165,15 +165,15 @@ namespace SIGVerse.Common
 			GUILayout.Box("", GUILayout.Width(this.position.width), GUILayout.Height(2));
 
 
-			// Create Scripts
-			GUILayout.Label("Create Scripts", EditorStyles.boldLabel);
+			//// Create Scripts
+			//GUILayout.Label("Create Scripts", EditorStyles.boldLabel);
 
-			EditorGUI.indentLevel++;
+			//EditorGUI.indentLevel++;
 
-			if (GUILayout.Button ("Create '" +SIGVerseScriptCreator.ScriptName+ "'", GUILayout.Width(300)))
-			{
-				SIGVerseScriptCreator.CreateScript();
-			}
+			//if (GUILayout.Button ("Create '" +SIGVerseScriptCreator.ScriptName+ "'", GUILayout.Width(300)))
+			//{
+			//	SIGVerseScriptCreator.CreateScript();
+			//}
 		}
 
 		void UpdateScriptingDefineSymbolList(ref List<string> scriptingDefineSymbolList, bool isUsingDefine, string defineStr)

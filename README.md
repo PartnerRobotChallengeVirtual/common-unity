@@ -3,6 +3,8 @@
 This is a common Unity project for the Partner Robot Challenge (Virtual Space) competition in the World Robot Competition.
 Please make a common unitypackage, and import the unitypackage to Unity projects of each competition.
 
+See also [wiki page](https://github.com/PartnerRobotChallengeVirtual/common-unity/wiki).
+
 ## Prerequisites
 
 - OS: Windows 10

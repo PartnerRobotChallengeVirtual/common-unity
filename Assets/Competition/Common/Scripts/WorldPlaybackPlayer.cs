@@ -115,7 +115,7 @@ namespace SIGVerse.Competition
 		}
 
 
-		private void StartInitializing()
+		protected virtual void StartInitializing()
 		{
 			this.step = Step.Initializing;
 
@@ -145,7 +145,7 @@ namespace SIGVerse.Competition
 			}
 		}
 
-		private void ReadDataFromFile(object applicationDataPath)
+		protected virtual void ReadDataFromFile(object applicationDataPath)
 		{
 			try
 			{
@@ -249,7 +249,7 @@ namespace SIGVerse.Competition
 			}
 		}
 
-		private void StartPlaying()
+		protected virtual void StartPlaying()
 		{
 			SIGVerseLogger.Info("Start the world playback playing");
 
@@ -260,14 +260,14 @@ namespace SIGVerse.Competition
 		}
 
 
-		private void StopPlaying()
+		protected virtual void StopPlaying()
 		{
 			SIGVerseLogger.Info("Stop the world playback playing");
 
 			this.step = Step.Waiting;
 		}
 
-		private void UpdateTransforms()
+		protected virtual void UpdateTransforms()
 		{
 			if (this.playingTransformQue.Count == 0)
 			{

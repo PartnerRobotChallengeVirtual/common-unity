@@ -79,7 +79,7 @@ namespace SIGVerse.Competition
 			return false;
 		}
 
-		private void StartInitializing(int numberOfTrials)
+		protected virtual void StartInitializing(int numberOfTrials)
 		{
 			this.step = Step.Initializing;
 
@@ -112,7 +112,7 @@ namespace SIGVerse.Competition
 		}
 
 
-		private void StartRecording()
+		protected virtual void StartRecording()
 		{
 			SIGVerseLogger.Info("Start the world playback recording");
 
@@ -123,7 +123,7 @@ namespace SIGVerse.Competition
 			this.previousRecordedTime = 0.0f;
 		}
 
-		private void StopRecording()
+		protected virtual void StopRecording()
 		{
 			SIGVerseLogger.Info("Stop the world playback recording");
 
@@ -133,7 +133,7 @@ namespace SIGVerse.Competition
 			threadWriteData.Start();
 		}
 		
-		private void WriteDataToFile()
+		protected virtual void WriteDataToFile()
 		{
 			try
 			{
@@ -157,7 +157,7 @@ namespace SIGVerse.Competition
 			}
 		}
 
-		private void SaveTransforms()
+		protected virtual void SaveTransforms()
 		{
 			if (1000.0 * (this.elapsedTime - this.previousRecordedTime) < recordInterval) { return; }
 

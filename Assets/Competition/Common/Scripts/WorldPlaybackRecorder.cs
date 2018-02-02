@@ -42,7 +42,7 @@ namespace SIGVerse.Competition
 
 			if (this.step == Step.Recording)
 			{
-				this.SaveTransforms();
+				this.SaveData();
 			}
 		}
 
@@ -157,7 +157,7 @@ namespace SIGVerse.Competition
 			}
 		}
 
-		protected virtual void SaveTransforms()
+		protected virtual void SaveData()
 		{
 			if (1000.0 * (this.elapsedTime - this.previousRecordedTime) < recordInterval) { return; }
 

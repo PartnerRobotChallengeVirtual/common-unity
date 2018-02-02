@@ -77,7 +77,7 @@ namespace SIGVerse.Competition
 
 			if (this.step == Step.Playing)
 			{
-				this.UpdateTransforms();
+				this.UpdateData();
 			}
 		}
 
@@ -267,7 +267,7 @@ namespace SIGVerse.Competition
 			this.step = Step.Waiting;
 		}
 
-		protected virtual void UpdateTransforms()
+		protected virtual void UpdateData()
 		{
 			if (this.playingTransformQue.Count == 0)
 			{

@@ -7463,7 +7463,7 @@ GameObject:
   - component: {fileID: 384981582}
   - component: {fileID: 384981583}
   m_Layer: 0
-  m_Name: Prim.00000000*
+  m_Name: Prim.00000002*
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -8239,7 +8239,7 @@ GameObject:
   - component: {fileID: 435519997}
   - component: {fileID: 435519998}
   m_Layer: 0
-  m_Name: Prim.00000000
+  m_Name: Prim.00000001
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

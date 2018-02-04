@@ -13,7 +13,7 @@ namespace SIGVerse.Competition
 	[RequireComponent(typeof (WorldPlaybackCommon))]
 	public class WorldPlaybackPlayer : MonoBehaviour
 	{
-		private class UpdatingTransformData
+		protected class UpdatingTransformData
 		{
 			public Transform UpdatingTransform { get; set; }
 			public Vector3 Position { get; set; }
@@ -28,7 +28,7 @@ namespace SIGVerse.Competition
 			}
 		}
 
-		private class UpdatingTransformList
+		protected class UpdatingTransformList
 		{
 			public float ElapsedTime { get; set; }
 			private List<UpdatingTransformData> updatingTransformList;
@@ -61,17 +61,36 @@ namespace SIGVerse.Competition
 
 		protected Step step = Step.Waiting;
 
-		private float elapsedTime = 0.0f;
+		protected float elapsedTime = 0.0f;
+
+		protected string filePath;
 
 		protected List<Transform> targetTransforms;
 
 		protected Dictionary<string, Transform> targetObjectsPathMap  = new Dictionary<string, Transform>();
 
-		private Queue<UpdatingTransformList> playingTransformQue;
+		protected Queue<UpdatingTransformList> playingTransformQue;
+		protected List<Transform> transformOrder = new List<Transform>();
 
+
+		// Use this for initialization
+		protected virtual void Start()
+		{
+			WorldPlaybackCommon common = this.GetComponent<WorldPlaybackCommon>();
+
+			this.targetTransforms = common.GetTargetTransforms();
+
+			foreach (Transform targetTransform in this.targetTransforms)
+			{
+				this.targetObjectsPathMap.Add(WorldPlaybackCommon.GetLinkPath(targetTransform), targetTransform);
+			}
+
+			this.playingTransformQue = new Queue<UpdatingTransformList>();
+			this.transformOrder = new List<Transform>();
+		}
 
 		// Update is called once per frame
-		void Update()
+		protected virtual void Update()
 		{
 			this.elapsedTime += Time.deltaTime;
 
@@ -81,10 +100,12 @@ namespace SIGVerse.Competition
 			}
 		}
 
-		public bool Initialize()
+		public bool Initialize(string filePath)
 		{
 			if(this.step == Step.Waiting)
 			{
+				this.filePath = filePath;
+
 				this.StartInitializing();
 				return true;
 			}
@@ -119,11 +140,16 @@ namespace SIGVerse.Competition
 		{
 			this.step = Step.Initializing;
 
-			Thread threadWriteMotions = new Thread(new ParameterizedThreadStart(this.ReadDataFromFile));
-			threadWriteMotions.Start(Application.dataPath);
+			this.StartInitializingTransforms();
 
+			Thread threadWriteMotions = new Thread(new ParameterizedThreadStart(this.ReadDataFromFile));
+			threadWriteMotions.Start(this.filePath);
+		}
+
+		protected virtual void StartInitializingTransforms()
+		{
 			// Disable Rigidbodies and colliders
-			foreach (Transform targetTransform in targetTransforms)
+			foreach (Transform targetTransform in this.targetTransforms)
 			{
 				// Disable rigidbodies
 				Rigidbody[] rigidbodies = targetTransform.GetComponentsInChildren<Rigidbody>(true);
@@ -145,24 +171,19 @@ namespace SIGVerse.Competition
 			}
 		}
 
-		protected virtual void ReadDataFromFile(object applicationDataPath)
+		protected virtual void ReadDataFromFile(object args)
 		{
 			try
 			{
-				string filePath = String.Format((string)applicationDataPath + WorldPlaybackCommon.filePathFormat, 0);
+				string filePath = (string)args;
 
 				if (!File.Exists(filePath))
 				{
-					SIGVerseLogger.Info("Playback file NOT found. Path=" + filePath);
-					return;
+					throw new Exception("Playback file NOT found. Path=" + filePath);
 				}
 
 				// File open
 				StreamReader streamReader = new StreamReader(filePath);
-
-				this.playingTransformQue = new Queue<UpdatingTransformList>();
-
-				List<Transform> transformOrder = new List<Transform>();
 
 				while (streamReader.Peek() >= 0)
 				{
@@ -177,62 +198,7 @@ namespace SIGVerse.Competition
 
 					string[] headerArray = headerStr.Split(',');
 
-					// Motion data
-					if (headerArray[1] == WorldPlaybackCommon.DataType1Transform)
-					{
-						string[] dataArray = dataStr.Split('\t');
-
-						// Definition
-						if (headerArray[2] == WorldPlaybackCommon.DataType2TransformDef)
-						{
-							transformOrder.Clear();
-
-							SIGVerseLogger.Info("Playback player : transform data num=" + dataArray.Length);
-
-							foreach (string transformPath in dataArray)
-							{
-								if (!this.targetObjectsPathMap.ContainsKey(transformPath))
-								{
-									SIGVerseLogger.Error("Couldn't find the object that path is " + transformPath);
-								}
-
-								transformOrder.Add(this.targetObjectsPathMap[transformPath]);
-							}
-						}
-						// Value
-						else if (headerArray[2] == WorldPlaybackCommon.DataType2TransformVal)
-						{
-							if (transformOrder.Count == 0) { continue; }
-
-							UpdatingTransformList timeSeriesMotionsData = new UpdatingTransformList();
-
-							timeSeriesMotionsData.ElapsedTime = float.Parse(headerArray[0]);
-
-							for (int i = 0; i < dataArray.Length; i++)
-							{
-								string[] transformValues = dataArray[i].Split(',');
-
-								UpdatingTransformData transformPlayer = new UpdatingTransformData();
-								transformPlayer.UpdatingTransform = transformOrder[i];
-
-								transformPlayer.Position = new Vector3(float.Parse(transformValues[0]), float.Parse(transformValues[1]), float.Parse(transformValues[2]));
-								transformPlayer.Rotation = new Vector3(float.Parse(transformValues[3]), float.Parse(transformValues[4]), float.Parse(transformValues[5]));
-
-								if (transformValues.Length == 6)
-								{
-									transformPlayer.Scale = Vector3.one;
-								}
-								else if (transformValues.Length == 9)
-								{
-									transformPlayer.Scale = new Vector3(float.Parse(transformValues[6]), float.Parse(transformValues[7]), float.Parse(transformValues[8]));
-								}
-
-								timeSeriesMotionsData.AddUpdatingTransform(transformPlayer);
-							}
-							
-							this.playingTransformQue.Enqueue(timeSeriesMotionsData);
-						}
-					}
+					this.ReadLine(headerArray, dataStr);
 				}
 
 				streamReader.Close();
@@ -248,6 +214,76 @@ namespace SIGVerse.Competition
 				Application.Quit();
 			}
 		}
+
+		protected virtual void ReadLine(string[] headerArray, string dataStr)
+		{
+			this.ReadTransform(headerArray, dataStr);
+		}
+
+		protected virtual bool ReadTransform(string[] headerArray, string dataStr)
+		{
+			// Motion data
+			if (headerArray[1] == WorldPlaybackCommon.DataType1Transform)
+			{
+				string[] dataArray = dataStr.Split('\t');
+
+				// Definition
+				if (headerArray[2] == WorldPlaybackCommon.DataType2TransformDef)
+				{
+					this.transformOrder.Clear();
+
+					SIGVerseLogger.Info("Playback player : transform data num=" + dataArray.Length);
+
+					foreach (string transformPath in dataArray)
+					{
+						if (!this.targetObjectsPathMap.ContainsKey(transformPath))
+						{
+							SIGVerseLogger.Error("Couldn't find the object that path is " + transformPath);
+						}
+
+						this.transformOrder.Add(this.targetObjectsPathMap[transformPath]);
+					}
+				}
+				// Value
+				else if (headerArray[2] == WorldPlaybackCommon.DataType2TransformVal)
+				{
+					if (this.transformOrder.Count == 0) { return false; }
+
+					UpdatingTransformList timeSeriesMotionsData = new UpdatingTransformList();
+
+					timeSeriesMotionsData.ElapsedTime = float.Parse(headerArray[0]);
+
+					for (int i = 0; i < dataArray.Length; i++)
+					{
+						string[] transformValues = dataArray[i].Split(',');
+
+						UpdatingTransformData transformPlayer = new UpdatingTransformData();
+						transformPlayer.UpdatingTransform = this.transformOrder[i];
+
+						transformPlayer.Position = new Vector3(float.Parse(transformValues[0]), float.Parse(transformValues[1]), float.Parse(transformValues[2]));
+						transformPlayer.Rotation = new Vector3(float.Parse(transformValues[3]), float.Parse(transformValues[4]), float.Parse(transformValues[5]));
+
+						if (transformValues.Length == 6)
+						{
+							transformPlayer.Scale = Vector3.one;
+						}
+						else if (transformValues.Length == 9)
+						{
+							transformPlayer.Scale = new Vector3(float.Parse(transformValues[6]), float.Parse(transformValues[7]), float.Parse(transformValues[8]));
+						}
+
+						timeSeriesMotionsData.AddUpdatingTransform(transformPlayer);
+					}
+							
+					this.playingTransformQue.Enqueue(timeSeriesMotionsData);
+				}
+
+				return true;
+			}
+
+			return false;
+		}
+
 
 		protected virtual void StartPlaying()
 		{
@@ -275,6 +311,11 @@ namespace SIGVerse.Competition
 				return;
 			}
 
+			this.UpdateTransform();
+		}
+
+		protected virtual void UpdateTransform()
+		{
 			UpdatingTransformList updatingTransformList = null;
 
 			while (this.elapsedTime >= this.playingTransformQue.Peek().ElapsedTime)

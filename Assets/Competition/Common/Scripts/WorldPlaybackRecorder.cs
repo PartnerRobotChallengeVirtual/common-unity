@@ -14,7 +14,7 @@ namespace SIGVerse.Competition
 		public int recordInterval = 20;
 
 		//-----------------------------------------------------
-		private enum Step
+		protected enum Step
 		{
 			Waiting,
 			Initializing,
@@ -23,20 +23,28 @@ namespace SIGVerse.Competition
 			Writing,
 		}
 
-		private Step step = Step.Waiting;
+		protected Step step = Step.Waiting;
 
-		private float elapsedTime = 0.0f;
+		protected float elapsedTime = 0.0f;
 		private float previousRecordedTime = 0.0f;
 
-		private string filePath;
+		protected string filePath;
 
 		protected List<Transform> targetTransforms;
 
-		private List<string> dataLines;
+		protected List<string> dataLines;
 
+
+		// Use this for initialization
+		protected virtual void Start()
+		{
+			WorldPlaybackCommon common = this.GetComponent<WorldPlaybackCommon>();
+
+			this.targetTransforms = common.GetTargetTransforms();
+		}
 
 		// Update is called once per frame
-		void Update()
+		protected virtual void Update()
 		{
 			this.elapsedTime += Time.deltaTime;
 
@@ -46,11 +54,13 @@ namespace SIGVerse.Competition
 			}
 		}
 
-		public bool Initialize(int numberOfTrials)
+		public bool Initialize(string filePath)
 		{
 			if(this.step == Step.Waiting)
 			{
-				this.StartInitializing(numberOfTrials);
+				this.filePath = filePath;
+
+				this.StartInitializing();
 				return true;
 			}
 
@@ -79,29 +89,21 @@ namespace SIGVerse.Competition
 			return false;
 		}
 
-		protected virtual void StartInitializing(int numberOfTrials)
+		protected virtual void StartInitializing()
 		{
 			this.step = Step.Initializing;
-
-			this.filePath = String.Format(Application.dataPath + WorldPlaybackCommon.filePathFormat, numberOfTrials);
 
 			SIGVerseLogger.Info("Output Playback file Path=" + this.filePath);
 
 			// File open
 			StreamWriter streamWriter = new StreamWriter(this.filePath, false);
 
-			// Write header line and get transform instances
-			string definitionLine = string.Empty;
+			List<string> definitionLines = this.GetDefinitionLines();
 
-			definitionLine += "0.0," + WorldPlaybackCommon.DataType1Transform + "," + WorldPlaybackCommon.DataType2TransformDef; // Elapsed time is dummy.
-
-			foreach (Transform targetTransform in this.targetTransforms)
+			foreach(string definitionLine in definitionLines)
 			{
-				// Make a header line
-				definitionLine += "\t" + WorldPlaybackCommon.GetLinkPath(targetTransform);
+				streamWriter.WriteLine(definitionLine);
 			}
-
-			streamWriter.WriteLine(definitionLine);
 
 			streamWriter.Flush();
 			streamWriter.Close();
@@ -109,6 +111,23 @@ namespace SIGVerse.Competition
 			this.dataLines = new List<string>();
 
 			this.step = Step.Initialized;
+		}
+
+		protected virtual List<string> GetDefinitionLines()
+		{
+			List<string> definitionLines = new List<string>();
+
+			string definitionLine = "0.0," + WorldPlaybackCommon.DataType1Transform + "," + WorldPlaybackCommon.DataType2TransformDef; // Elapsed time is dummy.
+
+			foreach (Transform targetTransform in this.targetTransforms)
+			{
+				// Make a header line
+				definitionLine += "\t" + WorldPlaybackCommon.GetLinkPath(targetTransform);
+			}
+
+			definitionLines.Add(definitionLine);
+
+			return definitionLines;
 		}
 
 
@@ -161,6 +180,13 @@ namespace SIGVerse.Competition
 		{
 			if (1000.0 * (this.elapsedTime - this.previousRecordedTime) < recordInterval) { return; }
 
+			this.SaveTransform();
+
+			this.previousRecordedTime = this.elapsedTime;
+		}
+
+		protected virtual void SaveTransform()
+		{
 			string dataLine = string.Empty;
 
 			dataLine += Math.Round(this.elapsedTime, 4, MidpointRounding.AwayFromZero) + "," + WorldPlaybackCommon.DataType1Transform + "," + WorldPlaybackCommon.DataType2TransformVal;
@@ -180,8 +206,6 @@ namespace SIGVerse.Competition
 			}
 
 			this.dataLines.Add(dataLine);
-
-			this.previousRecordedTime = this.elapsedTime;
 		}
 
 

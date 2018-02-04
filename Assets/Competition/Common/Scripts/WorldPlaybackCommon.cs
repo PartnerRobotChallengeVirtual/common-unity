@@ -22,10 +22,7 @@ namespace SIGVerse.Competition
 		public const string DataType2TransformDef = "0";
 		public const string DataType2TransformVal = "1";
 
-
 		//---------------------------------------
-
-		public static string filePathFormat = "/../SIGVerseConfig/xxxxx/Playback{0:D2}.dat";
 
 		protected List<Transform> targetTransforms;
 
@@ -46,6 +43,41 @@ namespace SIGVerse.Competition
 			}
 
 			return path;
+		}
+
+		//---------------------------------------
+
+		public List<string> playbackTargetTags;
+		public List<string> playbackTargetFromChildrenTags;
+		
+		protected virtual void Awake()
+		{
+			this.targetTransforms = new List<Transform>();
+
+			foreach (string playbackTargetTag in playbackTargetTags)
+			{
+				GameObject[] playbackTargetObjects = GameObject.FindGameObjectsWithTag(playbackTargetTag);
+
+				foreach(GameObject playbackTargetObject in playbackTargetObjects)
+				{
+					this.targetTransforms.Add(playbackTargetObject.transform);
+				}
+			}
+
+			foreach (string playbackTargetTag in playbackTargetFromChildrenTags)
+			{
+				GameObject[] playbackTargetObjects = GameObject.FindGameObjectsWithTag(playbackTargetTag);
+
+				foreach(GameObject playbackTargetObject in playbackTargetObjects)
+				{
+					Transform[] playbackTargetTransforms = playbackTargetObject.GetComponentsInChildren<Transform>(true);
+
+					foreach(Transform playbackTargetTransform in playbackTargetTransforms)
+					{
+						this.targetTransforms.Add(playbackTargetTransform);
+					}
+				}
+			}
 		}
 	}
 }

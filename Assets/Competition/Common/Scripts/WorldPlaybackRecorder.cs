@@ -26,7 +26,7 @@ namespace SIGVerse.Competition
 		protected Step step = Step.Waiting;
 
 		protected float elapsedTime = 0.0f;
-		private float previousRecordedTime = 0.0f;
+		protected float previousRecordedTime = 0.0f;
 
 		protected string filePath;
 

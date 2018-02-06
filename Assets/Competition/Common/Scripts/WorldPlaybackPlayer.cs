@@ -198,7 +198,7 @@ namespace SIGVerse.Competition
 
 					string[] headerArray = headerStr.Split(',');
 
-					this.ReadLine(headerArray, dataStr);
+					this.ReadData(headerArray, dataStr);
 				}
 
 				streamReader.Close();
@@ -215,12 +215,12 @@ namespace SIGVerse.Competition
 			}
 		}
 
-		protected virtual void ReadLine(string[] headerArray, string dataStr)
+		protected virtual void ReadData(string[] headerArray, string dataStr)
 		{
-			this.ReadTransform(headerArray, dataStr);
+			this.ReadTransforms(headerArray, dataStr);
 		}
 
-		protected virtual bool ReadTransform(string[] headerArray, string dataStr)
+		protected virtual bool ReadTransforms(string[] headerArray, string dataStr)
 		{
 			// Motion data
 			if (headerArray[1] == WorldPlaybackCommon.DataType1Transform)
@@ -316,6 +316,8 @@ namespace SIGVerse.Competition
 
 		protected virtual void UpdateTransform()
 		{
+			if(this.playingTransformQue.Count == 0){ return; }
+
 			UpdatingTransformList updatingTransformList = null;
 
 			while (this.elapsedTime >= this.playingTransformQue.Peek().ElapsedTime)

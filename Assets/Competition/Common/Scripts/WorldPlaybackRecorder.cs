@@ -180,12 +180,12 @@ namespace SIGVerse.Competition
 		{
 			if (1000.0 * (this.elapsedTime - this.previousRecordedTime) < recordInterval) { return; }
 
-			this.SaveTransform();
+			this.SaveTransforms();
 
 			this.previousRecordedTime = this.elapsedTime;
 		}
 
-		protected virtual void SaveTransform()
+		protected virtual void SaveTransforms()
 		{
 			string dataLine = string.Empty;
 

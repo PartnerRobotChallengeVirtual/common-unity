@@ -1,112 +1,123 @@
 using UnityEngine;
-using UnityEngine.EventSystems;
 using System;
 using System.IO;
-using System.Text;
 using System.Threading;
-using System.Collections;
 using System.Collections.Generic;
 using SIGVerse.Common;
+using System.Linq;
 
 namespace SIGVerse.Competition
 {
 	[RequireComponent(typeof (WorldPlaybackCommon))]
 	public class WorldPlaybackPlayer : MonoBehaviour
 	{
-		protected class UpdatingTransformData
-		{
-			public Transform UpdatingTransform { get; set; }
-			public Vector3 Position { get; set; }
-			public Vector3 Rotation { get; set; }
-			public Vector3 Scale    { get; set; }
-
-			public void UpdateTransform()
-			{
-				this.UpdatingTransform.position    = this.Position;
-				this.UpdatingTransform.eulerAngles = this.Rotation;
-				this.UpdatingTransform.localScale  = this.Scale;
-			}
-		}
-
-		protected class UpdatingTransformList
-		{
-			public float ElapsedTime { get; set; }
-			private List<UpdatingTransformData> updatingTransformList;
-
-			public UpdatingTransformList()
-			{
-				this.updatingTransformList = new List<UpdatingTransformData>();
-			}
-
-			public void AddUpdatingTransform(UpdatingTransformData updatingTransformData)
-			{
-				this.updatingTransformList.Add(updatingTransformData);
-			}
-
-			public List<UpdatingTransformData> GetUpdatingTransformList()
-			{
-				return this.updatingTransformList;
-			}
-		}
-
-		//-----------------------------------------------------
-		protected enum Step
+		public enum Step
 		{
 			Waiting,
 			Initializing,
-			Initialized, 
 			Playing,
 		}
 
 
+		protected bool isPlay = true;
+
 		protected Step step = Step.Waiting;
+		protected bool isInitialized = false;
+
+		protected string errorMsg = string.Empty;
 
 		protected float elapsedTime = 0.0f;
+		protected float deltaTime   = 0.0f;
+
+		protected float startTime = 0.0f;
+		protected float endTime = 0.0f;
+
+		protected float playingSpeed = 1.0f;
+		protected bool  isRepeating = false;
+
+		protected PlaybackTransformEventController   transformController;   // Transform
+		protected PlaybackVideoPlayerEventController videoPlayerController; // Video Player
 
 		protected string filePath;
 
-		protected List<Transform> targetTransforms;
 
-		protected Dictionary<string, Transform> targetObjectsPathMap  = new Dictionary<string, Transform>();
-
-		protected Queue<UpdatingTransformList> playingTransformQue;
-		protected List<Transform> transformOrder = new List<Transform>();
-
+		protected virtual void Awake()
+		{
+			if(!this.isPlay)
+			{
+				this.enabled = false;
+			}
+		}
 
 		// Use this for initialization
 		protected virtual void Start()
 		{
 			WorldPlaybackCommon common = this.GetComponent<WorldPlaybackCommon>();
 
-			this.targetTransforms = common.GetTargetTransforms();
+			this.filePath = common.GetFilePath();
 
-			foreach (Transform targetTransform in this.targetTransforms)
-			{
-				this.targetObjectsPathMap.Add(WorldPlaybackCommon.GetLinkPath(targetTransform), targetTransform);
-			}
-
-			this.playingTransformQue = new Queue<UpdatingTransformList>();
-			this.transformOrder = new List<Transform>();
+			this.transformController   = new PlaybackTransformEventController  (common);  // Transform
+			this.videoPlayerController = new PlaybackVideoPlayerEventController(common);  // Video Player
 		}
 
 		// Update is called once per frame
 		protected virtual void Update()
 		{
-			this.elapsedTime += Time.deltaTime;
-
 			if (this.step == Step.Playing)
 			{
-				this.UpdateData();
+				this.Update(Time.deltaTime * this.playingSpeed);
+			}
+			else if (this.step == Step.Waiting && this.isInitialized)
+			{
+				this.Update(this.deltaTime);
+
+				this.deltaTime = 0.0f;
 			}
 		}
+
+
+		private void Update(float deltaTime)
+		{
+			this.deltaTime = deltaTime;
+
+			this.elapsedTime += this.deltaTime;
+
+			this.UpdateData();
+		}
+
 
 		public bool Initialize(string filePath)
 		{
 			if(this.step == Step.Waiting)
 			{
+				this.step = Step.Initializing;
+
 				this.filePath = filePath;
 
+				this.errorMsg = string.Empty;
+
 				this.StartInitializing();
+
+				Thread threadReadData = new Thread(new ThreadStart(this.ReadDataFromFile));
+				threadReadData.Start();
+
+				return true;
+			}
+
+			return false;
+		}
+
+		public bool Initialize()
+		{
+			return this.Initialize(this.filePath);
+		}
+
+
+		public bool Play(float startTime)
+		{
+			if (this.step == Step.Waiting && this.isInitialized)
+			{
+				this.StartPlaying(startTime);
 				return true;
 			}
 
@@ -115,14 +126,9 @@ namespace SIGVerse.Competition
 
 		public bool Play()
 		{
-			if (this.step == Step.Initialized)
-			{
-				this.StartPlaying();
-				return true;
-			}
-
-			return false;
+			return this.Play(0.0f);
 		}
+
 
 		public bool Stop()
 		{
@@ -138,58 +144,28 @@ namespace SIGVerse.Competition
 
 		protected virtual void StartInitializing()
 		{
-			this.step = Step.Initializing;
-
-			this.StartInitializingTransforms();
-
-			Thread threadWriteMotions = new Thread(new ParameterizedThreadStart(this.ReadDataFromFile));
-			threadWriteMotions.Start(this.filePath);
+			this.transformController  .StartInitializingEvents(); // Transform
+			this.videoPlayerController.StartInitializingEvents(); // Video Player
 		}
 
-		protected virtual void StartInitializingTransforms()
-		{
-			// Disable Rigidbodies and colliders
-			foreach (Transform targetTransform in this.targetTransforms)
-			{
-				// Disable rigidbodies
-				Rigidbody[] rigidbodies = targetTransform.GetComponentsInChildren<Rigidbody>(true);
 
-				foreach (Rigidbody rigidbody in rigidbodies)
-				{
-					rigidbody.isKinematic     = true;
-					rigidbody.velocity        = Vector3.zero;
-					rigidbody.angularVelocity = Vector3.zero;
-				}
-
-				// Disable colliders
-				Collider[] colliders = targetTransform.GetComponentsInChildren<Collider>(true);
-
-				foreach (Collider collider in colliders)
-				{
-					collider.enabled = false;
-				}
-			}
-		}
-
-		protected virtual void ReadDataFromFile(object args)
+		protected virtual void ReadDataFromFile()
 		{
 			try
 			{
-				string filePath = (string)args;
-
-				if (!File.Exists(filePath))
+				if (!File.Exists(this.filePath))
 				{
-					throw new Exception("Playback file NOT found. Path=" + filePath);
+					throw new Exception("Playback file NOT found. Path=" + this.filePath);
 				}
 
 				// File open
-				StreamReader streamReader = new StreamReader(filePath);
+				StreamReader streamReader = new StreamReader(this.filePath);
 
 				while (streamReader.Peek() >= 0)
 				{
 					string lineStr = streamReader.ReadLine();
 
-					string[] columnArray = lineStr.Split(new char[] { '\t' }, 2);
+					string[] columnArray = lineStr.Split(new char[]{'\t'}, 2);
 
 					if (columnArray.Length < 2) { continue; }
 
@@ -205,144 +181,112 @@ namespace SIGVerse.Competition
 
 				SIGVerseLogger.Info("Playback player : File reading finished.");
 
-				this.step = Step.Initialized;
+				this.endTime = this.GetTotalTime();
+
+				SIGVerseLogger.Info("Playback player : Total time=" + this.endTime);
+
+				this.isInitialized = true;
+
+				this.step = Step.Waiting;
 			}
 			catch (Exception ex)
 			{
 				SIGVerseLogger.Error(ex.Message);
 				SIGVerseLogger.Error(ex.StackTrace);
-				Application.Quit();
+
+				this.errorMsg = "Cannot read the file !";
+				this.step = Step.Waiting;
 			}
 		}
+
 
 		protected virtual void ReadData(string[] headerArray, string dataStr)
 		{
-			this.ReadTransforms(headerArray, dataStr);
-		}
-
-		protected virtual bool ReadTransforms(string[] headerArray, string dataStr)
-		{
-			// Motion data
-			if (headerArray[1] == WorldPlaybackCommon.DataType1Transform)
-			{
-				string[] dataArray = dataStr.Split('\t');
-
-				// Definition
-				if (headerArray[2] == WorldPlaybackCommon.DataType2TransformDef)
-				{
-					this.transformOrder.Clear();
-
-					SIGVerseLogger.Info("Playback player : transform data num=" + dataArray.Length);
-
-					foreach (string transformPath in dataArray)
-					{
-						if (!this.targetObjectsPathMap.ContainsKey(transformPath))
-						{
-							SIGVerseLogger.Error("Couldn't find the object that path is " + transformPath);
-						}
-
-						this.transformOrder.Add(this.targetObjectsPathMap[transformPath]);
-					}
-				}
-				// Value
-				else if (headerArray[2] == WorldPlaybackCommon.DataType2TransformVal)
-				{
-					if (this.transformOrder.Count == 0) { return false; }
-
-					UpdatingTransformList timeSeriesMotionsData = new UpdatingTransformList();
-
-					timeSeriesMotionsData.ElapsedTime = float.Parse(headerArray[0]);
-
-					for (int i = 0; i < dataArray.Length; i++)
-					{
-						string[] transformValues = dataArray[i].Split(',');
-
-						UpdatingTransformData transformPlayer = new UpdatingTransformData();
-						transformPlayer.UpdatingTransform = this.transformOrder[i];
-
-						transformPlayer.Position = new Vector3(float.Parse(transformValues[0]), float.Parse(transformValues[1]), float.Parse(transformValues[2]));
-						transformPlayer.Rotation = new Vector3(float.Parse(transformValues[3]), float.Parse(transformValues[4]), float.Parse(transformValues[5]));
-
-						if (transformValues.Length == 6)
-						{
-							transformPlayer.Scale = Vector3.one;
-						}
-						else if (transformValues.Length == 9)
-						{
-							transformPlayer.Scale = new Vector3(float.Parse(transformValues[6]), float.Parse(transformValues[7]), float.Parse(transformValues[8]));
-						}
-
-						timeSeriesMotionsData.AddUpdatingTransform(transformPlayer);
-					}
-							
-					this.playingTransformQue.Enqueue(timeSeriesMotionsData);
-				}
-
-				return true;
-			}
-
-			return false;
+			this.transformController  .ReadEvents(headerArray, dataStr); // Transform
+			this.videoPlayerController.ReadEvents(headerArray, dataStr); // Video Player
 		}
 
 
-		protected virtual void StartPlaying()
+		protected virtual void StartPlaying(float startTime)
 		{
-			SIGVerseLogger.Info("Start the world playback playing");
+			SIGVerseLogger.Info("( Start the world playback playing from "+startTime+"[s] )");
 
 			this.step = Step.Playing;
 
-			// Reset elapsed time
-			this.elapsedTime = 0.0f;
+			this.UpdateIndexAndElapsedTime(startTime);
+		}
+
+
+		protected virtual void UpdateIndexAndElapsedTime(float elapsedTime)
+		{
+			this.elapsedTime = elapsedTime;
+
+			this.deltaTime = 0.0f;
+
+			this.transformController  .UpdateIndex(elapsedTime); // Transform
+			this.videoPlayerController.UpdateIndex(elapsedTime); // Video Player
 		}
 
 
 		protected virtual void StopPlaying()
 		{
-			SIGVerseLogger.Info("Stop the world playback playing");
+			SIGVerseLogger.Info("( Stop the world playback playing )");
 
 			this.step = Step.Waiting;
 		}
 
+
 		protected virtual void UpdateData()
 		{
-			if (this.playingTransformQue.Count == 0)
+			if (this.elapsedTime > this.endTime)
 			{
-				this.Stop();
+				if(this.isRepeating)
+				{
+					// Wait 10 seconds until the next start
+					if(this.elapsedTime > this.endTime + 10.0f)
+					{
+						this.UpdateDataByLatest(this.startTime);
+					}
+				}
+				else
+				{
+					this.Stop();
+				}
 				return;
 			}
 
-			this.UpdateTransform();
+			this.transformController  .ExecutePassedLatestEvents(this.elapsedTime, this.deltaTime); // Transform
+			this.videoPlayerController.ExecutePassedLatestEvents(this.elapsedTime, this.deltaTime); // Video Player
 		}
 
-		protected virtual void UpdateTransform()
+
+		protected virtual void UpdateDataByLatest(float elapsedTime)
 		{
-			if(this.playingTransformQue.Count == 0){ return; }
+			this.UpdateIndexAndElapsedTime(elapsedTime);
 
-			UpdatingTransformList updatingTransformList = null;
-
-			while (this.elapsedTime >= this.playingTransformQue.Peek().ElapsedTime)
-			{
-				updatingTransformList = this.playingTransformQue.Dequeue();
-
-				if (this.playingTransformQue.Count == 0) { break; }
-			}
-
-			if (updatingTransformList == null) { return; }
-
-			foreach (UpdatingTransformData updatingTransformData in updatingTransformList.GetUpdatingTransformList())
-			{
-				updatingTransformData.UpdateTransform();
-			}
+			this.transformController  .ExecuteLatestEvents(); // Transforms
+			this.videoPlayerController.ExecuteLatestEvents(); // Video Players
 		}
 
-		public bool IsInitialized()
+		protected virtual float GetTotalTime()
 		{
-			return this.step == Step.Initialized;
+			return Mathf.Max(this.transformController.GetTotalTime(), this.videoPlayerController.GetTotalTime());
 		}
 
-		public bool IsFinished()
+		protected float GetMax(float x, float y)
 		{
-			return this.step == Step.Waiting;
+			return 1.0f;
+		}
+
+
+		public Step GetStep()
+		{
+			return this.step;
+		}
+
+		public float GetPlayingSpeed()
+		{
+			return this.playingSpeed;
 		}
 	}
 }

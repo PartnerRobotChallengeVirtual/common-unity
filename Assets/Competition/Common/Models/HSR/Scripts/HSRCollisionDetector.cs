@@ -9,7 +9,7 @@ namespace SIGVerse.ToyotaHSR
 {
 	public interface IHSRCollisionHandler : IEventSystemHandler
 	{
-		void OnHsrCollisionEnter();
+		void OnHsrCollisionEnter(Vector3 contactPoint);
 	}
 
 
@@ -83,7 +83,9 @@ namespace SIGVerse.ToyotaHSR
 			// Effect
 			GameObject effect = MonoBehaviour.Instantiate(this.collisionEffect);
 			
-			effect.transform.position = this.CalcContactPoint(collision);
+			Vector3 contactPoint = this.CalcContactPoint(collision);
+
+			effect.transform.position = contactPoint;
 			Destroy(effect, 1.0f);
 
 			// Send the collision notification
@@ -93,7 +95,7 @@ namespace SIGVerse.ToyotaHSR
 				(
 					target: destination,
 					eventData: null,
-					functor: (reciever, eventData) => reciever.OnHsrCollisionEnter()
+					functor: (reciever, eventData) => reciever.OnHsrCollisionEnter(contactPoint)
 				);
 			}
 

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Video;
 
 namespace SIGVerse.Competition
 {
@@ -10,7 +11,8 @@ namespace SIGVerse.Competition
 		public const int PlaybackTypePlay   = 2;
 
 		// Status
-		public const string DataType1Transform = "11";
+		public const string DataType1Transform   = "11";
+		public const string DataType1VideoPlayer = "12";
 
 		// Events
 		//public const string DataType1Event1 = "21";
@@ -22,15 +24,25 @@ namespace SIGVerse.Competition
 		public const string DataType2TransformDef = "0";
 		public const string DataType2TransformVal = "1";
 
+		public const string DataType2VideoPlayerDef = "0";
+		public const string DataType2VideoPlayerVal = "1";
+
 		//---------------------------------------
 
-		protected List<Transform> targetTransforms;
+		[HeaderAttribute("File Path")]
+		public string filePath;
 
-		public List<Transform> GetTargetTransforms()
-		{
-			return this.targetTransforms;
-		}
+		[HeaderAttribute("Playback Targets")]
+		public List<string> playbackTargetTags;
+		public List<string> playbackTargetFromChildrenTags;
+		
+		[HeaderAttribute("Video Player Settings")]
+		public bool replayVideoPlayers = false;
 
+		//---------------------------------------
+
+		protected List<Transform>   targetTransforms;
+		protected List<VideoPlayer> targetVideoPlayers;
 
 		public static string GetLinkPath(Transform transform)
 		{
@@ -45,13 +57,9 @@ namespace SIGVerse.Competition
 			return path;
 		}
 
-		//---------------------------------------
-
-		public List<string> playbackTargetTags;
-		public List<string> playbackTargetFromChildrenTags;
-		
 		protected virtual void Awake()
 		{
+			// Transform
 			this.targetTransforms = new List<Transform>();
 
 			foreach (string playbackTargetTag in playbackTargetTags)
@@ -78,6 +86,40 @@ namespace SIGVerse.Competition
 					}
 				}
 			}
+
+			// Video Player
+			this.targetVideoPlayers = new List<VideoPlayer>();
+
+			VideoPlayer[] videoPlayersAll = Resources.FindObjectsOfTypeAll(typeof(VideoPlayer)) as VideoPlayer[];
+
+			foreach (VideoPlayer videoPlayerAll in videoPlayersAll)
+			{
+				if(videoPlayerAll.GetInstanceID() <= 0){ continue; }
+
+				this.targetVideoPlayers.Add(videoPlayerAll);
+			}
+		}
+
+
+		public string GetFilePath()
+		{
+			return this.filePath;
+		}
+
+		public List<Transform> GetTargetTransforms()
+		{
+			return this.targetTransforms;
+		}
+
+		public List<VideoPlayer> GetTargetVideoPlayers()
+		{
+			return this.targetVideoPlayers;
+		}
+
+
+		public bool IsReplayVideoPlayers()
+		{
+			return replayVideoPlayers;
 		}
 	}
 }

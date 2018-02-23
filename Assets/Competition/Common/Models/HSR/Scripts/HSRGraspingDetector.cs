@@ -199,9 +199,12 @@ namespace SIGVerse.ToyotaHSR
 
 			this.graspedRigidbody.useGravity  = true;
 //			this.graspedRigidbody.isKinematic = false;
-			this.graspedRigidbody.constraints = RigidbodyConstraints.None;
 
-			Destroy(this.graspedRigidbody.gameObject.GetComponent<HSRGraspedObjectFixer>());
+			HSRGraspedObjectFixer graspedObjectFixer = this.graspedRigidbody.gameObject.GetComponent<HSRGraspedObjectFixer>();
+			graspedObjectFixer.enabled = false;
+			Destroy(graspedObjectFixer);
+
+			this.graspedRigidbody.constraints = RigidbodyConstraints.None;
 
 			this.graspedRigidbody = null;
 			this.savedParentObj = null;

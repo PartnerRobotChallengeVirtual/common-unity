@@ -214,8 +214,8 @@ namespace SIGVerse.ToyotaHSR
 			if (name == HSRCommon.WristRollJointName)     { return Mathf.Clamp(value, -1.919f, +3.665f); }
 			if (name == HSRCommon.HeadPanJointName)       { return Mathf.Clamp(value, -3.839f, +1.745f); }
 			if (name == HSRCommon.HeadTiltJointName)      { return Mathf.Clamp(value, -1.570f, +0.523f); }
-			if (name == HSRCommon.HandLProximalJointName) { return Mathf.Clamp(value, +0.000f, +0.611f); }
-			if (name == HSRCommon.HandRProximalJointName) { return Mathf.Clamp(value, -0.611f, +0.000f); }
+			if (name == HSRCommon.HandLProximalJointName) { return Mathf.Clamp(value, -0.052f, +0.611f); }
+			if (name == HSRCommon.HandRProximalJointName) { return Mathf.Clamp(value, -0.611f, +0.052f); }
 
 			return value;
 		}
@@ -228,8 +228,8 @@ namespace SIGVerse.ToyotaHSR
 			if (name == HSRCommon.WristRollJointName)     { value = GetCorrectedEulerAngle(value, -110f, 210f); }
 			if (name == HSRCommon.HeadPanJointName)       { value = GetCorrectedEulerAngle(value, -220f, 100f); }
 			if (name == HSRCommon.HeadTiltJointName)      { value = GetCorrectedEulerAngle(value, - 90f,  30f); }
-			if (name == HSRCommon.HandLProximalJointName) { value = GetCorrectedEulerAngle(value,    0f,  35f); }
-			if (name == HSRCommon.HandRProximalJointName) { value = GetCorrectedEulerAngle(value, - 35f,   0f); }
+			if (name == HSRCommon.HandLProximalJointName) { value = GetCorrectedEulerAngle(value, -  3f,  35f); }
+			if (name == HSRCommon.HandRProximalJointName) { value = GetCorrectedEulerAngle(value, - 35f,   3f); }
 			return value;
 		}
 

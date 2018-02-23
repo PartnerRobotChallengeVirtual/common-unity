@@ -32,12 +32,16 @@ namespace SIGVerse.ToyotaHSR
 		{
 			if(collision.collider.transform.root == this.transform.root) { return; }
 
+			if(!this.enabled){ return; }
+
 			this.graspedRigidbody.constraints = RigidbodyConstraints.None;
 		}
 
 		void OnCollisionExit(Collision collision)
 		{
 			if(collision.collider.transform.root == this.transform.root) { return; }
+
+			if(!this.enabled){ return; }
 
 			this.graspedRigidbody.constraints = RigidbodyConstraints.FreezeAll;
 

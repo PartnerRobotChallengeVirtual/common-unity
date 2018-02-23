@@ -133,7 +133,7 @@ namespace SIGVerse.ToyotaHSR
 				this.rightCollidingObjects.Add(other.attachedRigidbody);
 			}
 
-			if(this.isHandClosing && this.leftCollidingObjects.Contains(other.attachedRigidbody) && this.rightCollidingObjects.Contains(other.attachedRigidbody))
+			if(this.isHandClosing && this.graspedRigidbody==null && this.leftCollidingObjects.Contains(other.attachedRigidbody) && this.rightCollidingObjects.Contains(other.attachedRigidbody))
 			{
 				this.Grasp(other.attachedRigidbody);
 			}

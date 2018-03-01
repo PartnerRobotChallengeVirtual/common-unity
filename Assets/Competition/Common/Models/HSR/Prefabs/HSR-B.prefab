@@ -742,6 +742,7 @@ GameObject:
   - component: {fileID: 54847272062785676}
   - component: {fileID: 114475964585069650}
   - component: {fileID: 114886854865315070}
+  - component: {fileID: 114309637398272472}
   m_Layer: 0
   m_Name: HSR-B
   m_TagString: Robot
@@ -4706,6 +4707,17 @@ MonoBehaviour:
   sigverseBridgePort: 0
   topicName: /sigverse/HSR/tf
   sendingInterval: 100
+--- !u!114 &114309637398272472
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1490779182462594}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fd4d7fd8ca2c8994bbf3c66d2989339c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &114475964585069650
 MonoBehaviour:
   m_ObjectHideFlags: 1

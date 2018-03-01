@@ -8,9 +8,8 @@ namespace SIGVerse.Competition
 {
 	public class PlacementChecker : MonoBehaviour
 	{
-		private const float MaxWaitingTime = 2.0f;
-		private const string JudgeTriggersName = "JudgeTriggers";
-
+		private float maxWaitingTime = 2.0f;
+		
 		private Dictionary<GameObject, int> placedObjectMap;
 
 
@@ -21,11 +20,17 @@ namespace SIGVerse.Competition
 			CheckExistanceOfColliders(this.transform);
 		}
 
+		public void Initialize(float maxWaitingTime)
+		{
+			this.maxWaitingTime = maxWaitingTime;
+		}
+
+
 		public IEnumerator<bool?> IsPlaced(GameObject targetObj)
 		{
 			Rigidbody targetRigidbody = targetObj.GetComponent<Rigidbody>();
 
-			float timeLimit = Time.time + MaxWaitingTime;
+			float timeLimit = Time.time + this.maxWaitingTime;
 
 			while (!this.IsPlacedNow(targetObj, targetRigidbody) && Time.time < timeLimit)
 			{
@@ -45,23 +50,29 @@ namespace SIGVerse.Competition
 		}
 
 
-		private static void CheckExistanceOfColliders(Transform rootTransform)
+		private static void CheckExistanceOfColliders(Transform transform)
 		{
-			Transform judgeTriggersTransform = rootTransform.Find(JudgeTriggersName);
-
-			if (judgeTriggersTransform==null)
-			{
-				SIGVerseLogger.Error("No Judge Triggers object");
-				throw new Exception("No Judge Triggers object");
-			}
-
-			BoxCollider[] boxColliders = judgeTriggersTransform.GetComponents<BoxCollider>();
+			Collider[] colliders = transform.GetComponents<Collider>();
 			
-			if(boxColliders.Length==0)
+			if(colliders.Length==0)
 			{
-				SIGVerseLogger.Error("No Box colliders");
-				throw new Exception("No Box colliders");
+				SIGVerseLogger.Error("No Colliders on " + GetHierarchyPath(transform));
+				throw new Exception("No Colliders on " + GetHierarchyPath(transform));
 			}
+		}
+
+		private static string GetHierarchyPath(Transform transform)
+		{
+			string    path   = transform.name;
+			Transform parent = transform.parent;
+
+			while (parent != null)
+			{
+				path   = parent.name + "/" + path;
+				parent = parent.parent;
+			}
+
+			return path;
 		}
 
 

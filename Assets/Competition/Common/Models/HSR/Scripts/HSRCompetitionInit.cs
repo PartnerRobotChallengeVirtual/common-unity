@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
+using SIGVerse.ToyotaHSR;
 
 namespace SIGVerse.Competition
 {
@@ -22,7 +23,7 @@ namespace SIGVerse.Competition
 		// Use this for initialization
 		void Start()
 		{
-			this.transform.root.GetComponent<Rigidbody>().maxDepenetrationVelocity = 0.5f;
+			this.transform.root.Find(HSRCommon.OdomName + "/" + HSRCommon.BaseFootPrintName).GetComponent<Rigidbody>().maxDepenetrationVelocity = 0.5f;
 
 			Texture texture = this.CreateTextureFromImageFile(teamLogoPath);
 

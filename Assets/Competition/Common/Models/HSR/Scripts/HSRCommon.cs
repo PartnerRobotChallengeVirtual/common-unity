@@ -20,6 +20,7 @@ namespace SIGVerse.ToyotaHSR
 		// Link names
 		// TODO Want to change into Enum.
 //		public const string MapName           = "map";
+		public const string OdomName          = "odom";
 		public const string BaseFootPrintName = "base_footprint";
 		public const string BaseLinkName      = "base_link";
 

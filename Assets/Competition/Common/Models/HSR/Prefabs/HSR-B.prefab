@@ -1228,6 +1228,7 @@ GameObject:
   - component: {fileID: 114911359765921930}
   - component: {fileID: 114752285558952874}
   - component: {fileID: 114256865905274884}
+  - component: {fileID: 114776877642247912}
   m_Layer: 9
   m_Name: RosBridgeScripts
   m_TagString: Untagged
@@ -1927,7 +1928,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1473647900119970}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0.014, z: 0.001}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4057800344084932}
@@ -2105,8 +2106,8 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1490779182462594}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: -0.5, y: 0.5, z: 0.5, w: 0.5}
+  m_LocalPosition: {x: -2, y: 0, z: -3.5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4483783422753622}
@@ -2494,7 +2495,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1308490438446276}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0, y: 0, z: 0}
+  m_LocalPosition: {x: -0, y: -0.014, z: 0.001}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4814966626881126}
@@ -4570,7 +4571,7 @@ BoxCollider:
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 0.035, y: 0.025, z: 0.004}
-  m_Center: {x: 0, y: -0.012, z: 0.001}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!65 &65930516420155698
 BoxCollider:
   m_ObjectHideFlags: 1
@@ -4582,7 +4583,7 @@ BoxCollider:
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 0.035, y: 0.025, z: 0.004}
-  m_Center: {x: 0, y: 0.012, z: 0.001}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!65 &65955948995835062
 BoxCollider:
   m_ObjectHideFlags: 1
@@ -4818,6 +4819,17 @@ MonoBehaviour:
   rosBridgeIP: 
   rosBridgePort: 0
   topicName: /hsrb/arm_trajectory_controller/command
+--- !u!114 &114776877642247912
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1872639706377518}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1677765f6a2140d4faeafcd25d2de363, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &114848057640865240
 MonoBehaviour:
   m_ObjectHideFlags: 1

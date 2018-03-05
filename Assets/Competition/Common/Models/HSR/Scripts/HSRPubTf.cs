@@ -7,9 +7,12 @@ using SIGVerse.SIGVerseROSBridge;
 using SIGVerse.ROSBridge.geometry_msgs;
 using System.Collections.Generic;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace SIGVerse.ToyotaHSR
 {
+	[RequireComponent(typeof (HSRPubSynchronizer))]
+
 	public class HSRPubTf : MonoBehaviour
 	{
 		public string rosBridgeIP;
@@ -51,6 +54,8 @@ namespace SIGVerse.ToyotaHSR
 			}
 		}
 
+		private int publishSequenceNumber;
+
 		private System.Net.Sockets.TcpClient tcpClient = null;
 		private System.Net.Sockets.NetworkStream networkStream = null;
 
@@ -78,6 +83,8 @@ namespace SIGVerse.ToyotaHSR
 
 				this.localTfInfoList.Add(localTfInfo);
 			}
+
+			this.publishSequenceNumber = HSRPubSynchronizer.GetAssignedSequenceNumber();
 		}
 
 		void Start()
@@ -118,20 +125,22 @@ namespace SIGVerse.ToyotaHSR
 				return;
 			}
 
+			if(!HSRPubSynchronizer.CanExecute(this.publishSequenceNumber)) { return; }
+
 			this.isPublishing = true;
 			this.elapsedTime = 0.0f;
 
-			StartCoroutine(this.PubTF());
+			this.PubTF();
 		}
 
-		private IEnumerator PubTF()
+		private void PubTF()
 		{
 //			System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
 //			sw.Start();
 
 			TransformStamped[] transformStampedArray = new TransformStamped[localTfInfoList.Count];
 
-			// Add local tf infos
+			// Add local TF infos
 			for (int i=0; i<localTfInfoList.Count; i++)
 			{
 				localTfInfoList[i].UpdateTransformForLocal();
@@ -143,37 +152,14 @@ namespace SIGVerse.ToyotaHSR
 
 			this.transformStampedMsg.msg = transformStampedArray;
 
-			yield return null;
-
-			//this.isPublishing = false;
-			//this.transformStampedMsg.sendMsg(this.networkStream);
-
-
-			Thread thSendSensorData = new Thread(new ParameterizedThreadStart(this.SendTF));
-
-			ThreadArgsData thArgsData = new ThreadArgsData();
-			thArgsData.sigverseRosBridgeMessage = this.transformStampedMsg;
-			thArgsData.networkStream = this.networkStream;
-
-			thSendSensorData.Start(thArgsData);
+			Task.Run(() => 
+			{
+				this.transformStampedMsg.sendMsg(this.networkStream);
+				this.isPublishing = false;
+			});
 
 //			sw.Stop();
 //			Debug.Log("tf sending time="+sw.Elapsed);
-		}
-
-		private struct ThreadArgsData
-		{
-			public SIGVerseROSBridgeMessage<TransformStamped[]> sigverseRosBridgeMessage;
-			public System.Net.Sockets.NetworkStream networkStream;
-		}
-
-		private void SendTF(object obj)
-		{
-			ThreadArgsData argsData = (ThreadArgsData)obj;
-
-			argsData.sigverseRosBridgeMessage.sendMsg(argsData.networkStream);
-
-			this.isPublishing = false;
 		}
 	}
 }

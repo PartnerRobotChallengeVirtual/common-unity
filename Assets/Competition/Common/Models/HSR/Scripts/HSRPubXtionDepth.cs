@@ -7,9 +7,12 @@ using SIGVerse.ROSBridge.std_msgs;
 using SIGVerse.Common;
 using SIGVerse.SIGVerseROSBridge;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace SIGVerse.ToyotaHSR
 {
+	[RequireComponent(typeof (HSRPubSynchronizer))]
+
 	public class HSRPubXtionDepth : MonoBehaviour
 	{
 		public string rosBridgeIP;
@@ -25,7 +28,9 @@ namespace SIGVerse.ToyotaHSR
 
 		//--------------------------------------------------
 
-		System.Net.Sockets.TcpClient tcpClient = null;
+		private int publishSequenceNumber;
+
+		private System.Net.Sockets.TcpClient tcpClient = null;
 		private System.Net.Sockets.NetworkStream networkStream = null;
 
 		SIGVerseROSBridgeMessage<CameraInfoForSIGVerseBridge> cameraInfoMsg = null;
@@ -47,6 +52,11 @@ namespace SIGVerse.ToyotaHSR
 
 		private bool isPublishing = false;
 
+
+		void Awake()
+		{
+			this.publishSequenceNumber = HSRPubSynchronizer.GetAssignedSequenceNumber();
+		}
 
 		void Start()
 		{
@@ -132,13 +142,16 @@ namespace SIGVerse.ToyotaHSR
 				return;
 			}
 
+			if(!HSRPubSynchronizer.CanExecute(this.publishSequenceNumber)) { return; }
+
 			this.isPublishing = true;
 			this.elapsedTime = 0.0f;
 
-			StartCoroutine(this.PubImage());
+			this.PubImage();
 		}
 
-		private IEnumerator PubImage()
+
+		private void PubImage()
 		{
 //			System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
 //			sw.Start();
@@ -154,8 +167,7 @@ namespace SIGVerse.ToyotaHSR
 			// Convert pixel values to depth buffer for ROS message
 			byte[] depthBytes = this.imageTexture.GetRawTextureData();
 
-			yield return null;
-
+//			yield return null;
 
 			this.header.Update();
 
@@ -163,12 +175,9 @@ namespace SIGVerse.ToyotaHSR
 			this.cameraInfoData.header = this.header;
 			this.cameraInfoMsg.msg = this.cameraInfoData;
 
-			this.cameraInfoMsg.sendMsg(this.networkStream);
+			Task.Run(() => { this.cameraInfoMsg.sendMsg(this.networkStream); });
 
-//			System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
-//			sw.Start();
-
-			yield return null;
+//			yield return null;
 
 			// [camera/depth/Image_raw]
 			int textureWidth = this.imageTexture.width;
@@ -184,43 +193,20 @@ namespace SIGVerse.ToyotaHSR
 				}
 			}
 
-			yield return null;
-
-//			sw.Stop();
-//			UnityEngine.Debug.Log("time="+sw.Elapsed);
+//			yield return null;
 
 			this.imageData.header = this.header;
 			this.imageData.data = this.byteArray;
 			this.imageMsg.msg = this.imageData;
 
-			//this.isPublishing = false;
-			//this.imageMsg.sendMsg(this.networkStream);
-
-			Thread thSendSensorData = new Thread(new ParameterizedThreadStart(this.SendSensorData));
-
-			ThreadArgsData thArgsData = new ThreadArgsData();
-			thArgsData.sigverseRosBridgeMessage = this.imageMsg;
-			thArgsData.networkStream = this.networkStream;
-
-			thSendSensorData.Start(thArgsData);
+			Task.Run(() => 
+			{
+				this.imageMsg.sendMsg(this.networkStream);
+				this.isPublishing = false;
+			});
 
 //			sw.Stop();
 //			UnityEngine.Debug.Log("time=" + sw.Elapsed);
-		}
-
-		private struct ThreadArgsData
-		{
-			public SIGVerseROSBridgeMessage<ImageForSIGVerseBridge> sigverseRosBridgeMessage;
-			public System.Net.Sockets.NetworkStream networkStream;
-		}
-
-		private void SendSensorData(object obj)
-		{
-			ThreadArgsData argsData = (ThreadArgsData)obj;
-
-			argsData.sigverseRosBridgeMessage.sendMsg(argsData.networkStream);
-
-			this.isPublishing = false;
 		}
 	}
 }

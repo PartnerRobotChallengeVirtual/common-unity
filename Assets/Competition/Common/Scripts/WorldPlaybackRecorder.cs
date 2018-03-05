@@ -5,6 +5,7 @@ using System.Threading;
 using System.Collections.Generic;
 using SIGVerse.Common;
 using UnityEngine.Video;
+using System.Text;
 
 namespace SIGVerse.Competition
 {
@@ -234,30 +235,30 @@ namespace SIGVerse.Competition
 
 		protected virtual void SaveTransforms()
 		{
-			string dataLine = string.Empty;
+			StringBuilder stringBuilder = new StringBuilder();
 
-			dataLine += this.GetHeaderElapsedTime() + "," + WorldPlaybackCommon.DataType1Transform + "," + WorldPlaybackCommon.DataType2TransformVal;
+			stringBuilder.Append(this.GetHeaderElapsedTime()).Append(",").Append(WorldPlaybackCommon.DataType1Transform).Append(",").Append(WorldPlaybackCommon.DataType2TransformVal);
 
 			foreach (Transform transform in this.targetTransforms)
 			{
-				dataLine += "\t" +
-					Math.Round(transform.position.x,    4, MidpointRounding.AwayFromZero) + "," +
-					Math.Round(transform.position.y,    4, MidpointRounding.AwayFromZero) + "," +
-					Math.Round(transform.position.z,    4, MidpointRounding.AwayFromZero) + "," +
-					Math.Round(transform.eulerAngles.x, 4, MidpointRounding.AwayFromZero) + "," +
-					Math.Round(transform.eulerAngles.y, 4, MidpointRounding.AwayFromZero) + "," +
-					Math.Round(transform.eulerAngles.z, 4, MidpointRounding.AwayFromZero) + "," +
-					Math.Round(transform.localScale.x,  4, MidpointRounding.AwayFromZero) + "," +
-					Math.Round(transform.localScale.y,  4, MidpointRounding.AwayFromZero) + "," +
-					Math.Round(transform.localScale.z,  4, MidpointRounding.AwayFromZero);
+				stringBuilder.Append("\t")
+					.Append(Math.Round(transform.position.x,    4, MidpointRounding.AwayFromZero)).Append(",")
+					.Append(Math.Round(transform.position.y,    4, MidpointRounding.AwayFromZero)).Append(",")
+					.Append(Math.Round(transform.position.z,    4, MidpointRounding.AwayFromZero)).Append(",")
+					.Append(Math.Round(transform.eulerAngles.x, 4, MidpointRounding.AwayFromZero)).Append(",")
+					.Append(Math.Round(transform.eulerAngles.y, 4, MidpointRounding.AwayFromZero)).Append(",")
+					.Append(Math.Round(transform.eulerAngles.z, 4, MidpointRounding.AwayFromZero)).Append(",")
+					.Append(Math.Round(transform.localScale.x,  4, MidpointRounding.AwayFromZero)).Append(",")
+					.Append(Math.Round(transform.localScale.y,  4, MidpointRounding.AwayFromZero)).Append(",")
+					.Append(Math.Round(transform.localScale.z,  4, MidpointRounding.AwayFromZero));
 			}
 
-			this.dataLines.Add(dataLine);
+			this.dataLines.Add(stringBuilder.ToString());
 		}
 
 		protected virtual void SaveVideoPlayers()
 		{
-			if(!this.isReplayVideoPlayers){ return; }
+			if (!this.isReplayVideoPlayers) { return; }
 
 			string dataLine = string.Empty;
 

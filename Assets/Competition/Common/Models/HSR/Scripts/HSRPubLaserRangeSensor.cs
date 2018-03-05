@@ -7,9 +7,12 @@ using SIGVerse.Common;
 using SIGVerse.SIGVerseROSBridge;
 using System.Collections;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace SIGVerse.ToyotaHSR
 {
+	[RequireComponent(typeof (HSRPubSynchronizer))]
+
 	public class HSRPubLaserRangeSensor : MonoBehaviour
 	{
 		public string rosBridgeIP;
@@ -35,6 +38,8 @@ namespace SIGVerse.ToyotaHSR
 		private const float LaserAngle = HalfOfLaserAngle * 2.0f;
 		private const float LaserAngularResolution = 0.25f;
 
+		private int publishSequenceNumber;
+
 		private int numLines;
 
 		private System.Net.Sockets.TcpClient tcpClient = null;
@@ -51,6 +56,11 @@ namespace SIGVerse.ToyotaHSR
 
 		private bool isPublishing = false;
 
+
+		void Awake()
+		{
+			this.publishSequenceNumber = HSRPubSynchronizer.GetAssignedSequenceNumber();
+		}
 
 		void Start()
 		{
@@ -110,13 +120,16 @@ namespace SIGVerse.ToyotaHSR
 				return;
 			}
 
+			if(!HSRPubSynchronizer.CanExecute(this.publishSequenceNumber)) { return; }
+
 			this.isPublishing = true;
 			this.elapsedTime = 0.0f;
 
-			StartCoroutine(this.PubSensorData());
+			this.PubSensorData();
 		}
 
-		private IEnumerator PubSensorData()
+
+		private void PubSensorData()
 		{
 //			System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
 //			sw.Start();
@@ -145,37 +158,18 @@ namespace SIGVerse.ToyotaHSR
 				}
 			}
 
-			yield return null;
+//			yield return null;
 
 			this.laserScanMsg.msg = this.laserScan;
-			//this.laserScanMsg.sendMsg(this.networkStream);
-			//this.isPublishing = false;
 
-			Thread thSendSensorData = new Thread(new ParameterizedThreadStart(this.SendSensorData));
-
-			ThreadArgsData thArgsData = new ThreadArgsData();
-			thArgsData.sigverseRosBridgeMessage = this.laserScanMsg;
-			thArgsData.networkStream = this.networkStream;
-
-			thSendSensorData.Start(thArgsData);
+			Task.Run(() => 
+			{
+				this.laserScanMsg.sendMsg(this.networkStream);
+				this.isPublishing = false;
+			});
 
 //			sw.Stop();
 //			Debug.Log("LRF sending time=" + sw.Elapsed);
-		}
-
-		private struct ThreadArgsData
-		{
-			public SIGVerseROSBridgeMessage<LaserScanForSIGVerseBridge> sigverseRosBridgeMessage;
-			public System.Net.Sockets.NetworkStream networkStream;
-		}
-
-		private void SendSensorData(object obj)
-		{
-			ThreadArgsData argsData = (ThreadArgsData)obj;
-
-			argsData.sigverseRosBridgeMessage.sendMsg(argsData.networkStream);
-
-			this.isPublishing = false;
 		}
 	}
 }

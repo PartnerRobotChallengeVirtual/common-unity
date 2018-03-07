@@ -10,9 +10,14 @@ namespace SIGVerse.Competition
 	[RequireComponent(typeof (TrialPlaybackCommon))]
 	public class TrialPlaybackRecorder : WorldPlaybackRecorder, IScoreHandler, IHSRCollisionHandler, IPanelNoticeHandler
 	{
+		public GameObject mainPanel;
 		public GameObject scorePanel;
 
 		protected ScoreStatus latestScoreStatus = new ScoreStatus();
+
+		protected Text trialNumberText;
+		protected Text timeLeftValText;
+		protected Text taskMessageText;
 
 		protected Text totalValText;
 
@@ -23,6 +28,10 @@ namespace SIGVerse.Competition
 
 			if(this.isRecord)
 			{
+				this.trialNumberText = this.mainPanel.transform.Find("TargetsOfHiding/TrialNumberText")             .GetComponent<Text>();
+				this.timeLeftValText = this.mainPanel.transform.Find("TargetsOfHiding/TimeLeftInfo/TimeLeftValText").GetComponent<Text>();
+				this.taskMessageText = this.mainPanel.transform.Find("TargetsOfHiding/TaskMessageText")             .GetComponent<Text>();
+
 				this.totalValText = this.scorePanel.transform.Find("TotalValText").GetComponent<Text>();
 			}
 		}
@@ -31,8 +40,17 @@ namespace SIGVerse.Competition
 		{
 			List<string> definitionLines = base.GetDefinitionLines();
 
+			string definitionLine;
+
+			// Task Info
+			definitionLine = "0.0," + TrialPlaybackCommon.DataType1TaskInfo; // Elapsed time is dummy.
+
+			definitionLine += "\t"+Regex.Escape(this.trialNumberText.text) + "\t" + Regex.Escape(this.timeLeftValText.text) + "\t" + Regex.Escape(this.taskMessageText.text);
+
+			definitionLines.Add(definitionLine);
+
 			// Score (Initial status of score)
-			string definitionLine = "0.0," + TrialPlaybackCommon.DataType1Score; // Elapsed time is dummy.
+			definitionLine = "0.0," + TrialPlaybackCommon.DataType1Score; // Elapsed time is dummy.
 
 			definitionLine += "\t0,0," + this.totalValText.text;
 
@@ -52,7 +70,7 @@ namespace SIGVerse.Competition
 
 			this.latestScoreStatus.Subscore = 0;
 
-			base.dataLines.Add(CreateScoreDataLine(this.latestScoreStatus));
+			this.dataLines.Add(CreateScoreDataLine(this.latestScoreStatus));
 
 			base.StopRecording();
 		}
@@ -60,19 +78,9 @@ namespace SIGVerse.Competition
 		private string CreateScoreDataLine(ScoreStatus scoreStatus)
 		{
 			// Score 
-			string dataLine = base.GetHeaderElapsedTime() + "," + TrialPlaybackCommon.DataType1Score;
+			string dataLine = this.GetHeaderElapsedTime() + "," + TrialPlaybackCommon.DataType1Score;
 
 			dataLine += "\t" + scoreStatus.Subscore + "," + scoreStatus.Score + "," + scoreStatus.Total;
-
-			return dataLine;
-		}
-
-		private string CreateHsrCollisionDataLine(Vector3 contactPoint)
-		{
-			// HSR Collision
-			string dataLine = base.GetHeaderElapsedTime() + "," + TrialPlaybackCommon.DataType1HsrCollision;
-
-			dataLine += "\t" + contactPoint.x + "," + contactPoint.y + "," + contactPoint.z;
 
 			return dataLine;
 		}
@@ -80,7 +88,7 @@ namespace SIGVerse.Competition
 		private string CreatePanelNoticeDataLine(PanelNoticeStatus panelNoticeStatus)
 		{
 			// Notice of a Panel
-			string dataLine = base.GetHeaderElapsedTime() + "," + TrialPlaybackCommon.DataType1PanelNotice;
+			string dataLine = this.GetHeaderElapsedTime() + "," + TrialPlaybackCommon.DataType1PanelNotice;
 
 			dataLine += "\t" + 
 				Regex.Escape(panelNoticeStatus.Message) + "\t" + 
@@ -91,21 +99,31 @@ namespace SIGVerse.Competition
 			return dataLine;
 		}
 
+		private string CreateHsrCollisionDataLine(Vector3 contactPoint)
+		{
+			// HSR Collision
+			string dataLine = this.GetHeaderElapsedTime() + "," + TrialPlaybackCommon.DataType1HsrCollision;
+
+			dataLine += "\t" + contactPoint.x + "," + contactPoint.y + "," + contactPoint.z;
+
+			return dataLine;
+		}
+
 		public void OnScoreChange(ScoreStatus scoreStatus)
 		{
-			base.dataLines.Add(this.CreateScoreDataLine(scoreStatus));
+			this.dataLines.Add(this.CreateScoreDataLine(scoreStatus));
 
 			this.latestScoreStatus = scoreStatus;
 		}
 
-		public void OnHsrCollisionEnter(Vector3 contactPoint)
+		public void OnPanelNoticeChange(PanelNoticeStatus panelNoticeStatus)
 		{
-			base.dataLines.Add(this.CreateHsrCollisionDataLine(contactPoint));
+			this.dataLines.Add(this.CreatePanelNoticeDataLine(panelNoticeStatus));
 		}
 
-		public void OnChange(PanelNoticeStatus panelNoticeStatus)
+		public void OnHsrCollisionEnter(Vector3 contactPoint)
 		{
-			base.dataLines.Add(this.CreatePanelNoticeDataLine(panelNoticeStatus));
+			this.dataLines.Add(this.CreateHsrCollisionDataLine(contactPoint));
 		}
 	}
 }

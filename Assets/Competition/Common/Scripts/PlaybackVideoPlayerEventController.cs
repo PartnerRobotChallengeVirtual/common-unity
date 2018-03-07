@@ -23,7 +23,7 @@ namespace SIGVerse.Competition
 	{
 		public PlaybackVideoPlayerEventList()
 		{
-			base.EventList = new List<PlaybackVideoPlayerEvent>();
+			this.EventList = new List<PlaybackVideoPlayerEvent>();
 		}
 	}
 
@@ -59,7 +59,7 @@ namespace SIGVerse.Competition
 
 		public override void StartInitializingEvents()
 		{
-			base.eventLists = new List<PlaybackVideoPlayerEventList>();
+			this.eventLists = new List<PlaybackVideoPlayerEventList>();
 
 			this.videoPlayerOrder = new List<VideoPlayer>();
 			
@@ -116,7 +116,7 @@ namespace SIGVerse.Competition
 						playbackVideoPlayerEventList.EventList.Add(videoPlayerEvent);
 					}
 					
-					base.eventLists.Add(playbackVideoPlayerEventList);
+					this.eventLists.Add(playbackVideoPlayerEventList);
 				}
 
 				return true;

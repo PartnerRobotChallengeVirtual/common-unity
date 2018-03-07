@@ -26,7 +26,7 @@ namespace SIGVerse.Competition
 	{
 		public PlaybackTransformEventList()
 		{
-			base.EventList = new List<PlaybackTransformEvent>();
+			this.EventList = new List<PlaybackTransformEvent>();
 		}
 	}
 
@@ -62,7 +62,7 @@ namespace SIGVerse.Competition
 
 		public override void StartInitializingEvents()
 		{
-			base.eventLists = new List<PlaybackTransformEventList>();
+			this.eventLists = new List<PlaybackTransformEventList>();
 
 			this.transformOrder = new List<Transform>();
 			
@@ -147,7 +147,7 @@ namespace SIGVerse.Competition
 						playbackTransformEventList.EventList.Add(transformEvent);
 					}
 					
-					base.eventLists.Add(playbackTransformEventList);
+					this.eventLists.Add(playbackTransformEventList);
 				}
 
 				return true;

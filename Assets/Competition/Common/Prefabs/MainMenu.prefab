@@ -468,7 +468,7 @@ GameObject:
   - component: {fileID: 222412005421637730}
   - component: {fileID: 114273816151693942}
   m_Layer: 5
-  m_Name: ChallengeInfoText
+  m_Name: TrialNumberText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4358,7 +4358,7 @@ MonoBehaviour:
     m_BestFit: 0
     m_MinSize: 2
     m_MaxSize: 40
-    m_Alignment: 0
+    m_Alignment: 3
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
@@ -5158,7 +5158,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 20, y: -150}
+  m_AnchoredPosition: {x: 20, y: -170}
   m_SizeDelta: {x: 650, y: 240}
   m_Pivot: {x: 0, y: 1}
 --- !u!224 &224313304892893124
@@ -5647,7 +5647,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 20, y: -20}
-  m_SizeDelta: {x: 1120, y: 120}
+  m_SizeDelta: {x: 1120, y: 145}
   m_Pivot: {x: 0, y: 1}
 --- !u!224 &224558965714300166
 RectTransform:
@@ -5837,7 +5837,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 80, y: -72}
-  m_SizeDelta: {x: 1040, y: 160}
+  m_SizeDelta: {x: 1030, y: 70}
   m_Pivot: {x: 0, y: 1}
 --- !u!224 &224615527341393504
 RectTransform:

@@ -9,7 +9,7 @@ namespace SIGVerse.Competition
 {
 	public interface IPanelNoticeHandler : IEventSystemHandler
 	{
-		void OnChange(PanelNoticeStatus panelNoticeStatus);
+		void OnPanelNoticeChange(PanelNoticeStatus panelNoticeStatus);
 	}
 	
 	public class PanelNoticeStatus
@@ -80,7 +80,7 @@ namespace SIGVerse.Competition
 			this.noticePanel.SetActive(false);
 		}
 
-		public void OnChange(PanelNoticeStatus panelNoticeStatus)
+		public void OnPanelNoticeChange(PanelNoticeStatus panelNoticeStatus)
 		{
 			this.ShowNotice(panelNoticeStatus);
 		}

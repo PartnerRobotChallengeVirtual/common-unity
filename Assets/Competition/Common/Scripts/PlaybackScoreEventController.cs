@@ -24,7 +24,7 @@ namespace SIGVerse.Competition
 	{
 		public PlaybackScoreEventList()
 		{
-			base.EventList = new List<PlaybackScoreEvent>();
+			this.EventList = new List<PlaybackScoreEvent>();
 		}
 	}
 
@@ -44,7 +44,7 @@ namespace SIGVerse.Competition
 
 		public override void StartInitializingEvents()
 		{
-			base.eventLists = new List<PlaybackScoreEventList>();
+			this.eventLists = new List<PlaybackScoreEventList>();
 		}
 
 
@@ -65,7 +65,7 @@ namespace SIGVerse.Competition
 
 				scoreEventList.EventList.Add(scoreEvent);
 
-				base.eventLists.Add(scoreEventList);
+				this.eventLists.Add(scoreEventList);
 
 				return true;
 			}

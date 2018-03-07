@@ -24,7 +24,7 @@ namespace SIGVerse.Competition
 	{
 		public PlaybackHsrCollisionEventList()
 		{
-			base.EventList = new List<PlaybackHsrCollisionEvent>();
+			this.EventList = new List<PlaybackHsrCollisionEvent>();
 		}
 	}
 
@@ -42,7 +42,7 @@ namespace SIGVerse.Competition
 
 		public override void StartInitializingEvents()
 		{
-			base.eventLists = new List<PlaybackHsrCollisionEventList>();
+			this.eventLists = new List<PlaybackHsrCollisionEventList>();
 		}
 
 		public override bool ReadEvents(string[] headerArray, string dataStr)
@@ -61,7 +61,7 @@ namespace SIGVerse.Competition
 
 				hsrCollisionEventList.EventList.Add(hsrCollisionEvent);
 
-				base.eventLists.Add(hsrCollisionEventList);
+				this.eventLists.Add(hsrCollisionEventList);
 
 				return true;
 			}

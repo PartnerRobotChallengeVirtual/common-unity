@@ -1,7 +1,6 @@
 using SIGVerse.Common;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Video;
@@ -35,6 +34,7 @@ namespace SIGVerse.Competition
 		protected bool isStepChanged = true;
 		protected bool isFileRead = false;
 
+		protected PlaybackTaskInfoEventController     taskInfoController;      // Task Info
 		protected PlaybackScoreEventController        scoreController;         // Score
 		protected PlaybackHsrCollisionEventController hsrCollisionController;  // HSR Collision
 		protected PlaybackPanelNoticeEventController  panelNoticeController;   // Notice of a Panel
@@ -46,6 +46,10 @@ namespace SIGVerse.Competition
 		protected GameObject mainMenu;
 
 		protected Button giveUpButton;
+
+		protected Text trialNumberText;
+		protected Text timeLeftValText;
+		protected Text taskMessageText;
 
 		protected Text scoreText;
 		protected Text totalText;
@@ -83,6 +87,10 @@ namespace SIGVerse.Competition
 				this.giveUpButton = this.mainPanel.transform.Find("TargetsOfHiding/Buttons/GiveUpButton").GetComponent<Button>();
 				this.giveUpButton.interactable = false;
 
+				this.trialNumberText = this.mainPanel.transform.Find("TargetsOfHiding/TrialNumberText")             .GetComponent<Text>();
+				this.timeLeftValText = this.mainPanel.transform.Find("TargetsOfHiding/TimeLeftInfo/TimeLeftValText").GetComponent<Text>();
+				this.taskMessageText = this.mainPanel.transform.Find("TargetsOfHiding/TaskMessageText")             .GetComponent<Text>();
+
 				this.scoreText = this.scorePanel.transform.Find("ScoreValText").GetComponent<Text>();
 				this.totalText = this.scorePanel.transform.Find("TotalValText").GetComponent<Text>();
 
@@ -110,6 +118,7 @@ namespace SIGVerse.Competition
 		{
 			base.Start();
 
+			this.taskInfoController     = new PlaybackTaskInfoEventController(this.trialNumberText, this.timeLeftValText, this.taskMessageText);
 			this.scoreController        = new PlaybackScoreEventController(this.scoreText, this.totalText); // Score
 			this.hsrCollisionController = new PlaybackHsrCollisionEventController(this.collisionEffect);    // HSR Collision
 			this.panelNoticeController  = new PlaybackPanelNoticeEventController(this, this.mainMenu);      // Notice of a Panel
@@ -118,11 +127,11 @@ namespace SIGVerse.Competition
 
 		protected override void Update()
 		{
-			this.isStepChanged = base.step!=this.preStep;
+			this.isStepChanged = this.step!=this.preStep;
 
-			this.isFileRead = base.step==Step.Waiting && this.preStep==Step.Initializing;
+			this.isFileRead = this.step==Step.Waiting && this.preStep==Step.Initializing;
 
-			this.preStep = base.step;
+			this.preStep = this.step;
 
 			base.Update();
 		}
@@ -132,6 +141,7 @@ namespace SIGVerse.Competition
 		{
 			base.ReadData(headerArray, dataStr);
 
+			this.taskInfoController    .ReadEvents(headerArray, dataStr); // Task Info
 			this.scoreController       .ReadEvents(headerArray, dataStr); // Score
 			this.hsrCollisionController.ReadEvents(headerArray, dataStr); // HSR Collision
 			this.panelNoticeController .ReadEvents(headerArray, dataStr); // Notice of a Panel
@@ -140,7 +150,7 @@ namespace SIGVerse.Competition
 		protected override void StartInitializing()
 		{
 			// Pause the video players at first when playing by TrialPlaybackPlayer
-			List<VideoPlayer> targetVideoPlayers = base.videoPlayerController.GetTargetVideoPlayers();
+			List<VideoPlayer> targetVideoPlayers = this.videoPlayerController.GetTargetVideoPlayers();
 
 			foreach (VideoPlayer videoPlayers in targetVideoPlayers)
 			{
@@ -149,6 +159,7 @@ namespace SIGVerse.Competition
 
 			base.StartInitializing();
 
+			this.taskInfoController    .StartInitializingEvents(); // Task Info
 			this.scoreController       .StartInitializingEvents(); // Score
 			this.hsrCollisionController.StartInitializingEvents(); // HSR Collision
 			this.panelNoticeController .StartInitializingEvents(); // Notice of a Panel
@@ -158,6 +169,7 @@ namespace SIGVerse.Competition
 		{
 			base.UpdateIndexAndElapsedTime(elapsedTime);
 
+			this.taskInfoController    .UpdateIndex(elapsedTime); // Task Info
 			this.scoreController       .UpdateIndex(elapsedTime); // Score
 			this.hsrCollisionController.UpdateIndex(elapsedTime); // HSR Collision
 			this.panelNoticeController .UpdateIndex(elapsedTime); // Notice of a Panel
@@ -168,21 +180,29 @@ namespace SIGVerse.Competition
 		{
 			base.UpdateData();
 
+			this.taskInfoController    .ExecutePassedLatestEvents(this.elapsedTime, this.deltaTime); // Task Info
 			this.scoreController       .ExecutePassedLatestEvents(this.elapsedTime, this.deltaTime); // Score
-			this.hsrCollisionController.ExecutePassedAllEvents(this.elapsedTime, this.deltaTime); // HSR Collision
-			this.panelNoticeController .ExecutePassedAllEvents(this.elapsedTime, this.deltaTime); // Notice of a Panel
+			this.hsrCollisionController.ExecutePassedAllEvents(this.elapsedTime, this.deltaTime);    // HSR Collision
+			this.panelNoticeController .ExecutePassedAllEvents(this.elapsedTime, this.deltaTime);    // Notice of a Panel
 		}
 
 		protected override void UpdateDataByLatest(float elapsedTime)
 		{
 			base.UpdateDataByLatest(elapsedTime);
 
-			this.scoreController.ExecuteLatestEvents(); // Score
+			this.taskInfoController.ExecuteLatestEvents(); // Task Info
+			this.scoreController   .ExecuteLatestEvents(); // Score
 		}
 
 		protected override float GetTotalTime()
 		{
-			return Mathf.Max(base.GetTotalTime(), this.scoreController.GetTotalTime(), this.hsrCollisionController.GetTotalTime(), this.panelNoticeController.GetTotalTime());
+			return Mathf.Max(
+				base.GetTotalTime(), 
+				this.taskInfoController    .GetTotalTime(), 
+				this.scoreController       .GetTotalTime(), 
+				this.hsrCollisionController.GetTotalTime(), 
+				this.panelNoticeController .GetTotalTime()
+			);
 		}
 
 
@@ -192,15 +212,15 @@ namespace SIGVerse.Competition
 		void OnGUI()
 		{
 			// Update a text of status
-			if(base.errorMsg != string.Empty)
+			if(this.errorMsg != string.Empty)
 			{
-				this.statusText.text = base.errorMsg;
+				this.statusText.text = this.errorMsg;
 				this.SetTextColorAlpha(this.statusText, 1.0f);
 
 				return;
 			}
 
-			switch(base.step)
+			switch(this.step)
 			{
 				case Step.Waiting:
 				{
@@ -208,7 +228,7 @@ namespace SIGVerse.Competition
 					{
 						Debug.Log("Waiting");
 
-						if(base.isInitialized)
+						if(this.isInitialized)
 						{
 							this.trialNoInputField  .interactable = true;
 							this.readFileButton     .interactable = true;
@@ -222,13 +242,9 @@ namespace SIGVerse.Competition
 
 						if(this.isFileRead)
 						{
-							this.mainPanelController.SetChallengeInfoText(this.trialNo);
-
-							this.mainPanelController.SetTimeLeft(PanelMainController.TimeLimit);
-
 							this.SetTextColorAlpha(this.statusText, 0.0f);
 
-							this.totalTimeText.text = base.elapsedTime.ToString(ElapsedTimeFormat);
+							this.totalTimeText.text = this.elapsedTime.ToString(ElapsedTimeFormat);
 
 							this.totalTimeText.text = Math.Ceiling(this.GetTotalTime()).ToString(TotalTimeFormat);
 							this.totalTimeInt   = int.Parse(this.totalTimeText.text);
@@ -237,7 +253,7 @@ namespace SIGVerse.Competition
 							this.SetStartTime(0);
 							this.SetEndTime(this.totalTimeInt);
 						
-							base.UpdateDataByLatest(0);
+							this.UpdateDataByLatest(0);
 
 							this.isFileRead = false;
 						}
@@ -292,7 +308,7 @@ namespace SIGVerse.Competition
 
 					this.UpdateTimeDisplay();
 
-					this.timeSlider.value = Mathf.Clamp((base.elapsedTime-base.startTime)/(base.endTime-base.startTime), 0.0f, 1.0f);
+					this.timeSlider.value = Mathf.Clamp((this.elapsedTime-this.startTime)/(this.endTime-this.startTime), 0.0f, 1.0f);
 
 					break;
 				}
@@ -301,7 +317,7 @@ namespace SIGVerse.Competition
 
 		private float GetElapsedTimeUsingSlider()
 		{
-			return base.startTime + (base.endTime - base.startTime) * this.timeSlider.value;
+			return this.startTime + (this.endTime - this.startTime) * this.timeSlider.value;
 		}
 
 		private void SetTextColorAlpha(Text text, float alpha)
@@ -316,7 +332,7 @@ namespace SIGVerse.Competition
 
 		private void UpdateTimeDisplay()
 		{
-			float time = (base.elapsedTime < base.endTime)? base.elapsedTime : base.endTime; 
+			float time = (this.elapsedTime < this.endTime)? this.elapsedTime : this.endTime; 
 
 			this.elapsedTimeText.text = time.ToString(ElapsedTimeFormat);
 
@@ -325,13 +341,13 @@ namespace SIGVerse.Competition
 
 		private void SetStartTime(int startTime)
 		{
-			base.startTime                = startTime;
+			this.startTime                = startTime;
 			this.startTimeInputField.text = startTime.ToString();
 		}
 
 		private void SetEndTime(int endTime)
 		{
-			base.endTime                = endTime;
+			this.endTime                = endTime;
 			this.endTimeInputField.text = endTime.ToString();
 		}
 
@@ -339,28 +355,28 @@ namespace SIGVerse.Competition
 
 		public virtual void OnReadFileButtonClick()
 		{
-			base.Initialize(this.filePath);
+			this.Initialize(this.filePath);
 		}
 
 		public virtual void OnPlayButtonClick()
 		{
-			if (base.step == Step.Waiting && base.isInitialized)
+			if (this.step == Step.Waiting && this.isInitialized)
 			{
 				switch(this.speedDropdown.value)
 				{
-					case 0: { base.playingSpeed = 1.0f; break; }
-					case 1: { base.playingSpeed = 2.0f; break; }
-					case 2: { base.playingSpeed = 4.0f; break; }
-					case 3: { base.playingSpeed = 8.0f; break; }
+					case 0: { this.playingSpeed = 1.0f; break; }
+					case 1: { this.playingSpeed = 2.0f; break; }
+					case 2: { this.playingSpeed = 4.0f; break; }
+					case 3: { this.playingSpeed = 8.0f; break; }
 				}
 
-				base.isRepeating = this.repeatToggle.isOn;
+				this.isRepeating = this.repeatToggle.isOn;
 
-				if (!base.Play(this.GetElapsedTimeUsingSlider())){ SIGVerseLogger.Warn("Cannot start the world playing");}
+				if (!this.Play(this.GetElapsedTimeUsingSlider())){ SIGVerseLogger.Warn("Cannot start the world playing");}
 			}
-			else if(base.step==Step.Playing)
+			else if(this.step==Step.Playing)
 			{ 
-				if(!base.Stop()){ SIGVerseLogger.Warn("Cannot stop the world playing"); }
+				if(!this.Stop()){ SIGVerseLogger.Warn("Cannot stop the world playing"); }
 			}
 		}
 
@@ -374,9 +390,9 @@ namespace SIGVerse.Competition
 				{
 					this.SetStartTime(0);
 				}
-				else if(startTimeInt >= base.endTime)
+				else if(startTimeInt >= this.endTime)
 				{
-					this.SetStartTime((int)Math.Floor(base.endTime)-1);
+					this.SetStartTime((int)Math.Floor(this.endTime)-1);
 				}
 				else
 				{
@@ -389,7 +405,7 @@ namespace SIGVerse.Competition
 			}
 
 			this.ResetTimeSlider();
-			base.UpdateDataByLatest(base.startTime);
+			this.UpdateDataByLatest(this.startTime);
 			this.UpdateTimeDisplay();
 		}
 
@@ -399,9 +415,9 @@ namespace SIGVerse.Competition
 			{
 				int endTimeInt = int.Parse(this.endTimeInputField.text);
 
-				if(endTimeInt <= base.startTime)
+				if(endTimeInt <= this.startTime)
 				{
-					this.SetEndTime((int)Math.Ceiling(base.startTime)+1);
+					this.SetEndTime((int)Math.Ceiling(this.startTime)+1);
 				}
 				else if(endTimeInt > this.totalTimeInt)
 				{
@@ -418,7 +434,7 @@ namespace SIGVerse.Competition
 			}
 
 			this.ResetTimeSlider();
-			base.UpdateDataByLatest(base.startTime);
+			this.UpdateDataByLatest(this.startTime);
 			this.UpdateTimeDisplay();
 		}
 
@@ -426,9 +442,9 @@ namespace SIGVerse.Competition
 		{
 			if(!this.timeSlider.interactable){ return; }
 
-			if(base.step == Step.Waiting && base.isInitialized)
+			if(this.step == Step.Waiting && this.isInitialized)
 			{
-				base.deltaTime = this.GetElapsedTimeUsingSlider() - base.elapsedTime;
+				this.deltaTime = this.GetElapsedTimeUsingSlider() - this.elapsedTime;
 			}
 		}
 	}

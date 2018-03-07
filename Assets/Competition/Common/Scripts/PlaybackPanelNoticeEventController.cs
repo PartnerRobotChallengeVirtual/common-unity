@@ -18,7 +18,7 @@ namespace SIGVerse.Competition
 			(
 				target: this.Destination, 
 				eventData: null, 
-				functor: (reciever, eventData) => reciever.OnChange(PanelNoticeStatus)
+				functor: (reciever, eventData) => reciever.OnPanelNoticeChange(PanelNoticeStatus)
 			);
 		}
 	}
@@ -28,13 +28,13 @@ namespace SIGVerse.Competition
 	{
 		public PlaybackPanelNoticeEventList()
 		{
-			base.EventList = new List<PlaybackPanelNoticeEvent>();
+			this.EventList = new List<PlaybackPanelNoticeEvent>();
 		}
 
 		public PlaybackPanelNoticeEventList(PlaybackPanelNoticeEventList panelNoticeEventList)
 		{
-			base.ElapsedTime = panelNoticeEventList.ElapsedTime;
-			base.EventList   = new List<PlaybackPanelNoticeEvent>();
+			this.ElapsedTime = panelNoticeEventList.ElapsedTime;
+			this.EventList   = new List<PlaybackPanelNoticeEvent>();
 
 			foreach(PlaybackPanelNoticeEvent panelNoticeEventOrg in panelNoticeEventList.EventList)
 			{
@@ -45,7 +45,7 @@ namespace SIGVerse.Competition
 				panelNoticeEvent.PanelNoticeStatus = panelNoticeStatus;
 				panelNoticeEvent.Destination       = destination;
 
-				base.EventList.Add(panelNoticeEvent);
+				this.EventList.Add(panelNoticeEvent);
 			}
 		}
 	}
@@ -65,7 +65,7 @@ namespace SIGVerse.Competition
 
 		public override void StartInitializingEvents()
 		{
-			base.eventLists = new List<PlaybackPanelNoticeEventList>();
+			this.eventLists = new List<PlaybackPanelNoticeEventList>();
 		}
 
 		public override bool ReadEvents(string[] headerArray, string dataStr)
@@ -91,7 +91,7 @@ namespace SIGVerse.Competition
 				panelNoticeEventList.ElapsedTime = float.Parse(headerArray[0]);
 				panelNoticeEventList.EventList.Add(panelNotice);
 
-				base.eventLists.Add(panelNoticeEventList);
+				this.eventLists.Add(panelNoticeEventList);
 
 				return true;
 			}

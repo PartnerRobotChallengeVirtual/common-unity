@@ -27,8 +27,8 @@ namespace SIGVerse.Competition
 
 		// ---------------------------------------
 
-		private Text challengeInfoText;
-		private Text timeLeftValueText;
+		private Text trialNumberText;
+		private Text timeLeftValText;
 		private Text taskMessageText;
 
 		private List<GameObject> timeIsUpDestinations;
@@ -41,9 +41,9 @@ namespace SIGVerse.Competition
 
 		void Awake()
 		{
-			this.challengeInfoText = this.mainPanel.transform.Find("TargetsOfHiding/ChallengeInfoText")           .GetComponent<Text>();
-			this.timeLeftValueText = this.mainPanel.transform.Find("TargetsOfHiding/TimeLeftInfo/TimeLeftValText").GetComponent<Text>();
-			this.taskMessageText   = this.mainPanel.transform.Find("TargetsOfHiding/TaskMessageText")             .GetComponent<Text>();
+			this.trialNumberText = this.mainPanel.transform.Find("TargetsOfHiding/TrialNumberText")             .GetComponent<Text>();
+			this.timeLeftValText = this.mainPanel.transform.Find("TargetsOfHiding/TimeLeftInfo/TimeLeftValText").GetComponent<Text>();
+			this.taskMessageText = this.mainPanel.transform.Find("TargetsOfHiding/TaskMessageText")             .GetComponent<Text>();
 
 
 			this.timeIsUpDestinations = new List<GameObject>();
@@ -107,7 +107,7 @@ namespace SIGVerse.Competition
 
 		public void SetTimeLeft(float timeLeft)
 		{
-			this.timeLeftValueText.text = timeLeft.ToString(TimeFormat);
+			this.timeLeftValText.text = timeLeft.ToString(TimeFormat);
 		}
 
 		public void ResetTimeLeftText()
@@ -116,7 +116,7 @@ namespace SIGVerse.Competition
 			this.SetTimeLeft(this.timeLeft);
 		}
 
-		public void SetChallengeInfoText(int numberOfTrials)
+		public void SetTrialNumberText(int numberOfTrials)
 		{
 			string ordinal;
 
@@ -144,12 +144,12 @@ namespace SIGVerse.Competition
 				}
 			}
 
-			this.challengeInfoText.text = numberOfTrials + ordinal + " challenge";
+			this.trialNumberText.text = numberOfTrials + ordinal + " challenge";
 		}
 
-		public string GetChallengeInfoText()
+		public string GetTrialNumberText()
 		{
-			return this.challengeInfoText.text;
+			return this.trialNumberText.text;
 		}
 
 		public void SetTaskMessageText(string taskMessage)

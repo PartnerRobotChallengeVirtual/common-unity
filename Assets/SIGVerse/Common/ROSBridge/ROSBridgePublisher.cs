@@ -114,20 +114,20 @@ namespace SIGVerse.ROSBridge
 				return;
 			}
 
-			base.type = messageType;
+			this.type = messageType;
 
 //			UnityEngine.Debug.LogError("rosbridge publisher("+topicName+") queue size="+queueSize);
 		}
 
 		public bool Publish(Tmsg message)
 		{
-			lock (base.lockPublishQueue)
+			lock (this.lockPublishQueue)
 			{
-				base.publishMsgQue.Enqueue(this.ToMessage(message));
+				this.publishMsgQue.Enqueue(this.ToMessage(message));
 
-				if (base.publishMsgQue.Count > base.queueSize && base.queueSize > 0)
+				if (this.publishMsgQue.Count > this.queueSize && this.queueSize > 0)
 				{
-					base.publishMsgQue.Dequeue();
+					this.publishMsgQue.Dequeue();
 				}
 			}
 

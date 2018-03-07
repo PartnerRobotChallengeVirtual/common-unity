@@ -21,7 +21,7 @@ namespace SIGVerse.ToyotaHSR
 
 		public static int GetAssignedSequenceNumber()
 		{
-			if(isInitialized) { throw new Exception("Please call GetAssignedSequenceNumber in Awake. (HSRPubSynchronizer)"); }
+			if(isInitialized) { throw new Exception("Please call " + System.Reflection.MethodBase.GetCurrentMethod().Name + " in Awake. (" + nameof(HSRPubSynchronizer) + ")"); }
 
 			sequenceNumberForAssignment++;
 

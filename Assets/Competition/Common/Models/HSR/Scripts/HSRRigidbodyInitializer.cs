@@ -9,5 +9,7 @@ public class HSRRigidbodyInitializer : MonoBehaviour
 		Rigidbody bodyRigidbody = GetComponent<Rigidbody>();
 
 		bodyRigidbody.centerOfMass = new Vector3(0.0f, 0.0f, 0.1f);
+
+		bodyRigidbody.maxDepenetrationVelocity = 3.0f;
 	}
 }

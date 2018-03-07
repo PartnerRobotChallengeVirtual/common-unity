@@ -23,8 +23,6 @@ namespace SIGVerse.Competition
 		// Use this for initialization
 		void Start()
 		{
-			this.transform.root.Find(HSRCommon.OdomName + "/" + HSRCommon.BaseFootPrintName).GetComponent<Rigidbody>().maxDepenetrationVelocity = 0.5f;
-
 			Texture texture = this.CreateTextureFromImageFile(teamLogoPath);
 
 			if(texture!=null)

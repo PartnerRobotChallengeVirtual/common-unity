@@ -125,12 +125,14 @@ namespace SIGVerse.ToyotaHSR
 			this.isPublishing = true;
 			this.elapsedTime = 0.0f;
 
-			this.PubSensorData();
+			StartCoroutine(this.PubSensorData());
 		}
 
 
-		private void PubSensorData()
+		private IEnumerator PubSensorData()
 		{
+			yield return new WaitForEndOfFrame();
+
 //			System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
 //			sw.Start();
 
@@ -164,7 +166,7 @@ namespace SIGVerse.ToyotaHSR
 
 			Task.Run(() => 
 			{
-				this.laserScanMsg.sendMsg(this.networkStream);
+				this.laserScanMsg.SendMsg(this.networkStream);
 				this.isPublishing = false;
 			});
 

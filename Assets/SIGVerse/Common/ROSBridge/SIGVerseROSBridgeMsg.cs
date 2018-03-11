@@ -23,7 +23,7 @@ namespace SIGVerse.SIGVerseROSBridge
 		}
 
 
-		public void sendMsg(NetworkStream networkStream)
+		public void SendMsg(NetworkStream networkStream)
 		{
 			MemoryStream memoryStream = new MemoryStream();
 			BsonWriter writer = new BsonWriter(memoryStream);

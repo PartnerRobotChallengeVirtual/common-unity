@@ -130,11 +130,13 @@ namespace SIGVerse.ToyotaHSR
 			this.isPublishing = true;
 			this.elapsedTime = 0.0f;
 
-			this.PubTF();
+			StartCoroutine(this.PubTF());
 		}
 
-		private void PubTF()
+		private IEnumerator PubTF()
 		{
+			yield return new WaitForEndOfFrame();
+
 //			System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
 //			sw.Start();
 
@@ -154,7 +156,7 @@ namespace SIGVerse.ToyotaHSR
 
 			Task.Run(() => 
 			{
-				this.transformStampedMsg.sendMsg(this.networkStream);
+				this.transformStampedMsg.SendMsg(this.networkStream);
 				this.isPublishing = false;
 			});
 

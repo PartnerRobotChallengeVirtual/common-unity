@@ -30,11 +30,15 @@ namespace SIGVerse.ToyotaHSR
 
 		private int publishSequenceNumber;
 
-		private System.Net.Sockets.TcpClient tcpClient = null;
-		private System.Net.Sockets.NetworkStream networkStream = null;
+		private System.Net.Sockets.TcpClient tcpClientCameraInfo = null;
+		private System.Net.Sockets.TcpClient tcpClientImage      = null;
+
+		private System.Net.Sockets.NetworkStream networkStreamCameraInfo = null;
+		private System.Net.Sockets.NetworkStream networkStreamImage      = null;
+
 
 		SIGVerseROSBridgeMessage<CameraInfoForSIGVerseBridge> cameraInfoMsg = null;
-		SIGVerseROSBridgeMessage<ImageForSIGVerseBridge> imageMsg = null;
+		SIGVerseROSBridgeMessage<ImageForSIGVerseBridge>      imageMsg      = null;
 
 		// Camera
 		private Camera rgbCamera;
@@ -48,7 +52,8 @@ namespace SIGVerse.ToyotaHSR
 
 		private float elapsedTime;
 
-		private bool isPublishing = false;
+		private bool isPublishingCameraInfo = false;
+		private bool isPublishingImage      = false;
 
 
 		void Awake()
@@ -68,12 +73,16 @@ namespace SIGVerse.ToyotaHSR
 			}
 
 
-			this.tcpClient = HSRCommon.GetSIGVerseRosbridgeConnection(this.rosBridgeIP, this.sigverseBridgePort);
+			this.tcpClientCameraInfo = HSRCommon.GetSIGVerseRosbridgeConnection(this.rosBridgeIP, this.sigverseBridgePort);
+			this.tcpClientImage      = HSRCommon.GetSIGVerseRosbridgeConnection(this.rosBridgeIP, this.sigverseBridgePort);
 
-			this.networkStream = this.tcpClient.GetStream();
+			this.networkStreamCameraInfo = this.tcpClientCameraInfo.GetStream();
+			this.networkStreamCameraInfo.ReadTimeout  = 100000;
+			this.networkStreamCameraInfo.WriteTimeout = 100000;
 
-			this.networkStream.ReadTimeout  = 100000;
-			this.networkStream.WriteTimeout = 100000;
+			this.networkStreamImage = this.tcpClientImage.GetStream();
+			this.networkStreamImage.ReadTimeout  = 100000;
+			this.networkStreamImage.WriteTimeout = 100000;
 
 
 			// RGB Camera
@@ -117,32 +126,39 @@ namespace SIGVerse.ToyotaHSR
 
 		void OnDestroy()
 		{
-			if (this.networkStream != null) { this.networkStream.Close(); }
-			if (this.tcpClient != null) { this.tcpClient.Close(); }
+			if (this.networkStreamCameraInfo != null) { this.networkStreamCameraInfo.Close(); }
+			if (this.networkStreamImage      != null) { this.networkStreamImage     .Close(); }
+
+			if (this.tcpClientCameraInfo != null) { this.tcpClientCameraInfo.Close(); }
+			if (this.tcpClientImage      != null) { this.tcpClientImage     .Close(); }
 		}
 
 		void Update()
 		{
-			if(this.tcpClient==null) { return; }
+			if(this.networkStreamCameraInfo==null || this.networkStreamImage==null) { return; }
 
 			this.elapsedTime += UnityEngine.Time.deltaTime;
 
-			if (this.isPublishing || this.elapsedTime < this.sendingInterval * 0.001f)
+			if (this.isPublishingCameraInfo || this.isPublishingImage || this.elapsedTime < this.sendingInterval * 0.001f)
 			{
 				return;
 			}
 
 			if(!HSRPubSynchronizer.CanExecute(this.publishSequenceNumber)) { return; }
 
-			this.isPublishing = true;
+			this.isPublishingCameraInfo = true;
+			this.isPublishingImage      = true;
+
 			this.elapsedTime = 0.0f;
 
-			this.PubImage();
+			StartCoroutine(this.PubImage());
 		}
 
 
-		private void PubImage()
+		private IEnumerator PubImage()
 		{
+			yield return new WaitForEndOfFrame();
+
 			//System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
 			//sw.Start();
 
@@ -150,8 +166,7 @@ namespace SIGVerse.ToyotaHSR
 			RenderTexture.active = this.rgbCamera.targetTexture;
 
 			// Apply rgb information to 2D texture
-			this.imageTexture.ReadPixels(new Rect(0, 0, this.imageTexture.width, this.imageTexture.height), 0, 0);
-
+			this.imageTexture.ReadPixels(new Rect(0, 0, this.imageTexture.width, this.imageTexture.height), 0, 0, false);
 			this.imageTexture.Apply();
 
 
@@ -166,7 +181,11 @@ namespace SIGVerse.ToyotaHSR
 			this.cameraInfoData.header = this.header;
 			this.cameraInfoMsg.msg = this.cameraInfoData;
 
-			Task.Run(() => { this.cameraInfoMsg.sendMsg(this.networkStream); });
+			Task.Run(() => 
+			{
+				this.cameraInfoMsg.SendMsg(this.networkStreamCameraInfo);
+				this.isPublishingCameraInfo = false;
+			});
 
 //			yield return null;
 
@@ -177,8 +196,8 @@ namespace SIGVerse.ToyotaHSR
 
 			Task.Run(() => 
 			{
-				this.imageMsg.sendMsg(this.networkStream);
-				this.isPublishing = false;
+				this.imageMsg.SendMsg(this.networkStreamImage);
+				this.isPublishingImage = false;
 			});
 
 			//sw.Stop();

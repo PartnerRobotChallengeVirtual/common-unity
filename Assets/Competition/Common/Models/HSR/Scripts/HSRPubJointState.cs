@@ -42,13 +42,13 @@ namespace SIGVerse.ToyotaHSR
 
 		void Awake()
 		{
-			this.armLiftLink   = HSRCommon.FindGameObjectFromChild(this.transform.root, HSRCommon.ArmLiftLinkName );
-			this.armFlexLink   = HSRCommon.FindGameObjectFromChild(this.transform.root, HSRCommon.ArmFlexLinkName );
-			this.armRollLink   = HSRCommon.FindGameObjectFromChild(this.transform.root, HSRCommon.ArmRollLinkName );
-			this.wristFlexLink = HSRCommon.FindGameObjectFromChild(this.transform.root, HSRCommon.WristFlexLinkName );
-			this.wristRollLink = HSRCommon.FindGameObjectFromChild(this.transform.root, HSRCommon.WristRollLinkName );
-			this.headPanLink   = HSRCommon.FindGameObjectFromChild(this.transform.root, HSRCommon.HeadPanLinkName );
-			this.headTiltLink  = HSRCommon.FindGameObjectFromChild(this.transform.root, HSRCommon.HeadTiltLinkName );
+			this.armLiftLink   = SIGVerseUtil.FindTransformFromChild(this.transform.root, HSRCommon.ArmLiftLinkName );
+			this.armFlexLink   = SIGVerseUtil.FindTransformFromChild(this.transform.root, HSRCommon.ArmFlexLinkName );
+			this.armRollLink   = SIGVerseUtil.FindTransformFromChild(this.transform.root, HSRCommon.ArmRollLinkName );
+			this.wristFlexLink = SIGVerseUtil.FindTransformFromChild(this.transform.root, HSRCommon.WristFlexLinkName );
+			this.wristRollLink = SIGVerseUtil.FindTransformFromChild(this.transform.root, HSRCommon.WristRollLinkName );
+			this.headPanLink   = SIGVerseUtil.FindTransformFromChild(this.transform.root, HSRCommon.HeadPanLinkName );
+			this.headTiltLink  = SIGVerseUtil.FindTransformFromChild(this.transform.root, HSRCommon.HeadTiltLinkName );
 
 			this.armLiftLinkIniPosZ = this.armLiftLink.localPosition.z;
 		}

@@ -1,3 +1,4 @@
+using SIGVerse.Common;
 using SIGVerse.ToyotaHSR;
 using System;
 using System.Collections.Generic;
@@ -99,9 +100,11 @@ namespace SIGVerse.Competition
 			return dataLine;
 		}
 
-		private string CreateHsrCollisionDataLine(Vector3 contactPoint)
+		private string CreateHsrCollisionDataLine(Collision collision)
 		{
 			// HSR Collision
+			Vector3 contactPoint = SIGVerseUtil.CalcContactAveragePoint(collision);
+
 			string dataLine = this.GetHeaderElapsedTime() + "," + TrialPlaybackCommon.DataType1HsrCollision;
 
 			dataLine += "\t" + contactPoint.x + "," + contactPoint.y + "," + contactPoint.z;
@@ -121,9 +124,9 @@ namespace SIGVerse.Competition
 			this.dataLines.Add(this.CreatePanelNoticeDataLine(panelNoticeStatus));
 		}
 
-		public void OnHsrCollisionEnter(Vector3 contactPoint)
+		public void OnHsrCollisionEnter(Collision collision)
 		{
-			this.dataLines.Add(this.CreateHsrCollisionDataLine(contactPoint));
+			this.dataLines.Add(this.CreateHsrCollisionDataLine(collision));
 		}
 	}
 }

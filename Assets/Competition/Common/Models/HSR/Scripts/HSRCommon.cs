@@ -129,71 +129,56 @@ namespace SIGVerse.ToyotaHSR
 		}
 
 
-		public static Transform FindGameObjectFromChild(Transform root, string name)
-		{
-			Transform[] transforms = root.GetComponentsInChildren<Transform>();
-
-			foreach (Transform transform in transforms)
-			{
-				if (transform.name == name)
-				{
-					return transform;
-				}
-			}
-
-			return null;
-		}
-
 		public static List<Transform> GetLinksInChildren(Transform root)
 		{
 			List<Transform> linkList = new List<Transform>();
 
-			AddLink(linkList, FindGameObjectFromChild(root, BaseFootPrintName));
-			AddLink(linkList, FindGameObjectFromChild(root, BaseLinkName));
-			AddLink(linkList, FindGameObjectFromChild(root, ArmLiftLinkName));
-			AddLink(linkList, FindGameObjectFromChild(root, ArmFlexLinkName));
-			AddLink(linkList, FindGameObjectFromChild(root, ArmRollLinkName));
-			AddLink(linkList, FindGameObjectFromChild(root, WristFlexLinkName));
-			AddLink(linkList, FindGameObjectFromChild(root, WristRollLinkName));
-			AddLink(linkList, FindGameObjectFromChild(root, HandPalmLinkName));
-			AddLink(linkList, FindGameObjectFromChild(root, HandCameraFrameName));
-			AddLink(linkList, FindGameObjectFromChild(root, HandCameraRgbFrameName));
-			AddLink(linkList, FindGameObjectFromChild(root, HandLProximalLinkName));
-			AddLink(linkList, FindGameObjectFromChild(root, HandLSpringProximalLinkName));
-			AddLink(linkList, FindGameObjectFromChild(root, HandLMimicDistalLinkName));
-			AddLink(linkList, FindGameObjectFromChild(root, HandLDistalLinkName));
-			AddLink(linkList, FindGameObjectFromChild(root, HandLFingerTipFrameName));
-			AddLink(linkList, FindGameObjectFromChild(root, HandLFingerVacuumFrameName));
-			AddLink(linkList, FindGameObjectFromChild(root, HandMotorDummyLinkName));
-			AddLink(linkList, FindGameObjectFromChild(root, HandRProximalLinkName));
-			AddLink(linkList, FindGameObjectFromChild(root, HandRSpringProximalLinkName));
-			AddLink(linkList, FindGameObjectFromChild(root, HandRMimicDistalLinkName));
-			AddLink(linkList, FindGameObjectFromChild(root, HandRDistalLinkName));
-			AddLink(linkList, FindGameObjectFromChild(root, HandRFingerTipFrameName));
-			AddLink(linkList, FindGameObjectFromChild(root, WristFtSensorFrameName));
-			AddLink(linkList, FindGameObjectFromChild(root, BaseImuFrameName));
-			AddLink(linkList, FindGameObjectFromChild(root, BaseRangeSensorLink));
-			AddLink(linkList, FindGameObjectFromChild(root, BaseRollLlinkName));
-			AddLink(linkList, FindGameObjectFromChild(root, BaseLDriveWheelLinkName));
-			AddLink(linkList, FindGameObjectFromChild(root, BaseLPassiveWheelXFrameName));
-			AddLink(linkList, FindGameObjectFromChild(root, BaseLPassiveWheelYFrameName));
-			AddLink(linkList, FindGameObjectFromChild(root, BaseLPassiveWheelZLinkName));
-			AddLink(linkList, FindGameObjectFromChild(root, BaseRDriveWheelLinkName));
-			AddLink(linkList, FindGameObjectFromChild(root, BaseRPassiveWheelXFramName));
-			AddLink(linkList, FindGameObjectFromChild(root, BaseRPassiveWheelYFrameName));
-			AddLink(linkList, FindGameObjectFromChild(root, BaseRPassiveWheelZLinkName));
-			AddLink(linkList, FindGameObjectFromChild(root, TorsoLiftLinkName));
-			AddLink(linkList, FindGameObjectFromChild(root, HeadPanLinkName));
-			AddLink(linkList, FindGameObjectFromChild(root, HeadTiltLinkName));
-			AddLink(linkList, FindGameObjectFromChild(root, HeadCenterCameraFrameName));
-			AddLink(linkList, FindGameObjectFromChild(root, HeadCenterCameraRgbFrameName));
-			AddLink(linkList, FindGameObjectFromChild(root, HeadLStereoCameraLinkName));
-			AddLink(linkList, FindGameObjectFromChild(root, HeadLStereoCameraRgbFrameName));
-			AddLink(linkList, FindGameObjectFromChild(root, HeadRStereoCameraLinkName));
-			AddLink(linkList, FindGameObjectFromChild(root, HeadRStereoCameraRgbFrameName));
-			AddLink(linkList, FindGameObjectFromChild(root, HeadRgbdSensorLinkName));
-			AddLink(linkList, FindGameObjectFromChild(root, HeadRgbdSensorRgbFrameName));
-			AddLink(linkList, FindGameObjectFromChild(root, HeadRgbdSensorDepthFrameName));
+			AddLink(linkList, SIGVerseUtil.FindTransformFromChild(root, BaseFootPrintName));
+			AddLink(linkList, SIGVerseUtil.FindTransformFromChild(root, BaseLinkName));
+			AddLink(linkList, SIGVerseUtil.FindTransformFromChild(root, ArmLiftLinkName));
+			AddLink(linkList, SIGVerseUtil.FindTransformFromChild(root, ArmFlexLinkName));
+			AddLink(linkList, SIGVerseUtil.FindTransformFromChild(root, ArmRollLinkName));
+			AddLink(linkList, SIGVerseUtil.FindTransformFromChild(root, WristFlexLinkName));
+			AddLink(linkList, SIGVerseUtil.FindTransformFromChild(root, WristRollLinkName));
+			AddLink(linkList, SIGVerseUtil.FindTransformFromChild(root, HandPalmLinkName));
+			AddLink(linkList, SIGVerseUtil.FindTransformFromChild(root, HandCameraFrameName));
+			AddLink(linkList, SIGVerseUtil.FindTransformFromChild(root, HandCameraRgbFrameName));
+			AddLink(linkList, SIGVerseUtil.FindTransformFromChild(root, HandLProximalLinkName));
+			AddLink(linkList, SIGVerseUtil.FindTransformFromChild(root, HandLSpringProximalLinkName));
+			AddLink(linkList, SIGVerseUtil.FindTransformFromChild(root, HandLMimicDistalLinkName));
+			AddLink(linkList, SIGVerseUtil.FindTransformFromChild(root, HandLDistalLinkName));
+			AddLink(linkList, SIGVerseUtil.FindTransformFromChild(root, HandLFingerTipFrameName));
+			AddLink(linkList, SIGVerseUtil.FindTransformFromChild(root, HandLFingerVacuumFrameName));
+			AddLink(linkList, SIGVerseUtil.FindTransformFromChild(root, HandMotorDummyLinkName));
+			AddLink(linkList, SIGVerseUtil.FindTransformFromChild(root, HandRProximalLinkName));
+			AddLink(linkList, SIGVerseUtil.FindTransformFromChild(root, HandRSpringProximalLinkName));
+			AddLink(linkList, SIGVerseUtil.FindTransformFromChild(root, HandRMimicDistalLinkName));
+			AddLink(linkList, SIGVerseUtil.FindTransformFromChild(root, HandRDistalLinkName));
+			AddLink(linkList, SIGVerseUtil.FindTransformFromChild(root, HandRFingerTipFrameName));
+			AddLink(linkList, SIGVerseUtil.FindTransformFromChild(root, WristFtSensorFrameName));
+			AddLink(linkList, SIGVerseUtil.FindTransformFromChild(root, BaseImuFrameName));
+			AddLink(linkList, SIGVerseUtil.FindTransformFromChild(root, BaseRangeSensorLink));
+			AddLink(linkList, SIGVerseUtil.FindTransformFromChild(root, BaseRollLlinkName));
+			AddLink(linkList, SIGVerseUtil.FindTransformFromChild(root, BaseLDriveWheelLinkName));
+			AddLink(linkList, SIGVerseUtil.FindTransformFromChild(root, BaseLPassiveWheelXFrameName));
+			AddLink(linkList, SIGVerseUtil.FindTransformFromChild(root, BaseLPassiveWheelYFrameName));
+			AddLink(linkList, SIGVerseUtil.FindTransformFromChild(root, BaseLPassiveWheelZLinkName));
+			AddLink(linkList, SIGVerseUtil.FindTransformFromChild(root, BaseRDriveWheelLinkName));
+			AddLink(linkList, SIGVerseUtil.FindTransformFromChild(root, BaseRPassiveWheelXFramName));
+			AddLink(linkList, SIGVerseUtil.FindTransformFromChild(root, BaseRPassiveWheelYFrameName));
+			AddLink(linkList, SIGVerseUtil.FindTransformFromChild(root, BaseRPassiveWheelZLinkName));
+			AddLink(linkList, SIGVerseUtil.FindTransformFromChild(root, TorsoLiftLinkName));
+			AddLink(linkList, SIGVerseUtil.FindTransformFromChild(root, HeadPanLinkName));
+			AddLink(linkList, SIGVerseUtil.FindTransformFromChild(root, HeadTiltLinkName));
+			AddLink(linkList, SIGVerseUtil.FindTransformFromChild(root, HeadCenterCameraFrameName));
+			AddLink(linkList, SIGVerseUtil.FindTransformFromChild(root, HeadCenterCameraRgbFrameName));
+			AddLink(linkList, SIGVerseUtil.FindTransformFromChild(root, HeadLStereoCameraLinkName));
+			AddLink(linkList, SIGVerseUtil.FindTransformFromChild(root, HeadLStereoCameraRgbFrameName));
+			AddLink(linkList, SIGVerseUtil.FindTransformFromChild(root, HeadRStereoCameraLinkName));
+			AddLink(linkList, SIGVerseUtil.FindTransformFromChild(root, HeadRStereoCameraRgbFrameName));
+			AddLink(linkList, SIGVerseUtil.FindTransformFromChild(root, HeadRgbdSensorLinkName));
+			AddLink(linkList, SIGVerseUtil.FindTransformFromChild(root, HeadRgbdSensorRgbFrameName));
+			AddLink(linkList, SIGVerseUtil.FindTransformFromChild(root, HeadRgbdSensorDepthFrameName));
 
 			return linkList;
 		}

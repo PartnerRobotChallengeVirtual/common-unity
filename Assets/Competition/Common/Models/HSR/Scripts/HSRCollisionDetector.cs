@@ -9,7 +9,7 @@ namespace SIGVerse.ToyotaHSR
 {
 	public interface IHSRCollisionHandler : IEventSystemHandler
 	{
-		void OnHsrCollisionEnter(Vector3 contactPoint);
+		void OnHsrCollisionEnter(Collision collision);
 	}
 
 
@@ -78,12 +78,12 @@ namespace SIGVerse.ToyotaHSR
 
 		private void ExecCollisionProcess(Collision collision)
 		{
-			SIGVerseLogger.Info("Collision detection! Collided object="+GetHierarchyPath(collision.collider.transform));
+			SIGVerseLogger.Info("Collision detection! Collided object="+SIGVerseUtil.GetHierarchyPath(collision.collider.transform));
 
 			// Effect
 			GameObject effect = MonoBehaviour.Instantiate(this.collisionEffect);
 			
-			Vector3 contactPoint = this.CalcContactPoint(collision);
+			Vector3 contactPoint = SIGVerseUtil.CalcContactAveragePoint(collision);
 
 			effect.transform.position = contactPoint;
 			Destroy(effect, 1.0f);
@@ -95,40 +95,11 @@ namespace SIGVerse.ToyotaHSR
 				(
 					target: destination,
 					eventData: null,
-					functor: (reciever, eventData) => reciever.OnHsrCollisionEnter(contactPoint)
+					functor: (reciever, eventData) => reciever.OnHsrCollisionEnter(collision)
 				);
 			}
 
 			this.collidedTime = Time.time;
-		}
-
-		private Vector3 CalcContactPoint(Collision collision)
-		{
-			ContactPoint[] contactPoints = collision.contacts;
-
-			Vector3 contactPointAve = Vector3.zero;
-
-			foreach(ContactPoint contactPoint in contactPoints)
-			{
-				contactPointAve += contactPoint.point;
-			}
-
-			contactPointAve /= contactPoints.Length;
-
-			return contactPointAve;
-		}
-
-		public static string GetHierarchyPath(Transform transform)
-		{
-			string path = transform.name;
-
-			while (transform.parent != null)
-			{
-				transform = transform.parent;
-				path = transform.name + "/" + path;
-			}
-
-			return path;
 		}
 	}
 }

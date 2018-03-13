@@ -117,7 +117,7 @@ namespace SIGVerse.SampleScenes.Playbacker
 
 				foreach (Transform transform in transforms)
 				{
-					this.targetObjectsPathMap.Add(PlaybackerCommon.GetLinkPath(transform), transform);
+					this.targetObjectsPathMap.Add(SIGVerseUtil.GetHierarchyPath(transform), transform);
 				}
 			}
 		}

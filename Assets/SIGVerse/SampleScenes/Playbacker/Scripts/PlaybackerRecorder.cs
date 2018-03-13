@@ -239,7 +239,7 @@ namespace SIGVerse.SampleScenes.Playbacker
 						// Save Transform instance list
 						this.targetTransformInstances.Add(transform);
 
-						string linkPath = PlaybackerCommon.GetLinkPath(transform);
+						string linkPath = SIGVerseUtil.GetHierarchyPath(transform);
 
 						// Make a header line
 						this.savedHeaderStrings += "\t" + linkPath;

@@ -52,7 +52,7 @@ namespace SIGVerse.Competition
 
 			foreach (VideoPlayer targetVideoPlayer in this.targetVideoPlayers)
 			{
-				this.targetVideoPlayerPathMap.Add(WorldPlaybackCommon.GetLinkPath(targetVideoPlayer.transform), targetVideoPlayer);
+				this.targetVideoPlayerPathMap.Add(SIGVerseUtil.GetHierarchyPath(targetVideoPlayer.transform), targetVideoPlayer);
 			}
 		}
 		

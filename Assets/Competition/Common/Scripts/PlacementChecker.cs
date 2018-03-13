@@ -56,23 +56,9 @@ namespace SIGVerse.Competition
 			
 			if(colliders.Length==0)
 			{
-				SIGVerseLogger.Error("No Colliders on " + GetHierarchyPath(transform));
-				throw new Exception("No Colliders on " + GetHierarchyPath(transform));
+				SIGVerseLogger.Error("No Colliders on " + SIGVerseUtil.GetHierarchyPath(transform));
+				throw new Exception ("No Colliders on " + SIGVerseUtil.GetHierarchyPath(transform));
 			}
-		}
-
-		private static string GetHierarchyPath(Transform transform)
-		{
-			string    path   = transform.name;
-			Transform parent = transform.parent;
-
-			while (parent != null)
-			{
-				path   = parent.name + "/" + path;
-				parent = parent.parent;
-			}
-
-			return path;
 		}
 
 

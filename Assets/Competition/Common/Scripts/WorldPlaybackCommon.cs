@@ -44,19 +44,6 @@ namespace SIGVerse.Competition
 		protected List<Transform>   targetTransforms;
 		protected List<VideoPlayer> targetVideoPlayers;
 
-		public static string GetLinkPath(Transform transform)
-		{
-			string path = transform.name;
-
-			while (transform.parent != null)
-			{
-				transform = transform.parent;
-				path = transform.name + "/" + path;
-			}
-
-			return path;
-		}
-
 		protected virtual void Awake()
 		{
 			// Transform

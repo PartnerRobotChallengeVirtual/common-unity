@@ -7,7 +7,7 @@ namespace SIGVerse.Competition
 {
 	public interface ITransferredCollisionHandler : IEventSystemHandler
 	{
-		void OnTransferredCollisionEnter(Collision collision, GameObject collidingObject);
+		void OnTransferredCollisionEnter(Collision collision);
 	}
 
 	public class CollisionTransferer : MonoBehaviour
@@ -41,7 +41,7 @@ namespace SIGVerse.Competition
 				(
 					target: destination,
 					eventData: null,
-					functor: (reciever, eventData) => reciever.OnTransferredCollisionEnter(collision, this.gameObject)
+					functor: (reciever, eventData) => reciever.OnTransferredCollisionEnter(collision)
 				);
 			}
 		}

@@ -153,7 +153,7 @@ namespace SIGVerse.Competition
 			foreach (Transform targetTransform in this.targetTransforms)
 			{
 				// Make a header line
-				definitionLine += "\t" + WorldPlaybackCommon.GetLinkPath(targetTransform);
+				definitionLine += "\t" + SIGVerseUtil.GetHierarchyPath(targetTransform);
 			}
 
 			definitionLines.Add(definitionLine);
@@ -166,7 +166,7 @@ namespace SIGVerse.Competition
 				foreach (VideoPlayer targetVideoPlayer in this.targetVideoPlayers)
 				{
 					// Make a header line
-					definitionLine += "\t" + WorldPlaybackCommon.GetLinkPath(targetVideoPlayer.transform);
+					definitionLine += "\t" + SIGVerseUtil.GetHierarchyPath(targetVideoPlayer.transform);
 				}
 
 				definitionLines.Add(definitionLine);

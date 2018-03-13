@@ -55,7 +55,7 @@ namespace SIGVerse.Competition
 
 			foreach (Transform targetTransform in this.targetTransforms)
 			{
-				this.targetTransformPathMap.Add(WorldPlaybackCommon.GetLinkPath(targetTransform), targetTransform);
+				this.targetTransformPathMap.Add(SIGVerseUtil.GetHierarchyPath(targetTransform), targetTransform);
 			}
 		}
 		

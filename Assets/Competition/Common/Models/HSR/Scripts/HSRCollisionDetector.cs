@@ -78,7 +78,7 @@ namespace SIGVerse.ToyotaHSR
 
 		private void ExecCollisionProcess(Collision collision)
 		{
-			SIGVerseLogger.Info("Collision detection! Collided object="+collision.collider.name);
+			SIGVerseLogger.Info("Collision detection! Collided object="+GetHierarchyPath(collision.collider.transform));
 
 			// Effect
 			GameObject effect = MonoBehaviour.Instantiate(this.collisionEffect);
@@ -116,6 +116,19 @@ namespace SIGVerse.ToyotaHSR
 			contactPointAve /= contactPoints.Length;
 
 			return contactPointAve;
+		}
+
+		public static string GetHierarchyPath(Transform transform)
+		{
+			string path = transform.name;
+
+			while (transform.parent != null)
+			{
+				transform = transform.parent;
+				path = transform.name + "/" + path;
+			}
+
+			return path;
 		}
 	}
 }

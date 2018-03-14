@@ -118,6 +118,21 @@ namespace SIGVerse.Competition
 
 			return panelNoticeEventList;
 		}
+
+
+
+		public static string GetDataLine(string elapsedTime, PanelNoticeStatus panelNoticeStatus)
+		{
+			string dataLine = elapsedTime + "," + TrialPlaybackCommon.DataType1PanelNotice;
+
+			dataLine += "\t" + 
+				Regex.Escape(panelNoticeStatus.Message) + "\t" + 
+				panelNoticeStatus.FontSize + "\t" + 
+				panelNoticeStatus.Color.r + "\t" + panelNoticeStatus.Color.g + "\t" + panelNoticeStatus.Color.b + "\t" + panelNoticeStatus.Color.a + "\t" + 
+				panelNoticeStatus.Duration;
+
+			return dataLine;
+		}
 	}
 }
 

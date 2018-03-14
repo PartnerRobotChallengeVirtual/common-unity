@@ -82,6 +82,17 @@ namespace SIGVerse.Competition
 
 			return false;
 		}
+
+
+
+		public static string GetDefinitionLine(string trialNumberText, string timeLeftValText, string taskMessageText)
+		{
+			string definitionLine = "0.0," + TrialPlaybackCommon.DataType1TaskInfo; // Elapsed time is dummy.
+
+			definitionLine += "\t"+Regex.Escape(trialNumberText) + "\t" + Regex.Escape(timeLeftValText) + "\t" + Regex.Escape(taskMessageText);
+
+			return definitionLine;
+		}
 	}
 }
 

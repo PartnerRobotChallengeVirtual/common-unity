@@ -1,6 +1,7 @@
 using UnityEngine;
 using System;
 using System.Collections.Generic;
+using SIGVerse.Common;
 
 namespace SIGVerse.Competition
 {
@@ -50,7 +51,7 @@ namespace SIGVerse.Competition
 			// HSR Collision
 			if (headerArray[1] == TrialPlaybackCommon.DataType1HsrCollision)
 			{
-				string[] dataArray = dataStr.Split(',');
+				string[] dataArray = dataStr.Split('\t');
 
 				PlaybackHsrCollisionEventList hsrCollisionEventList = new PlaybackHsrCollisionEventList();
 				hsrCollisionEventList.ElapsedTime = float.Parse(headerArray[0]);
@@ -67,6 +68,24 @@ namespace SIGVerse.Competition
 			}
 
 			return false;
+		}
+
+
+
+		public static string GetDataLine(string elapsedTime, Collision collision)
+		{
+			Vector3 contactAve = SIGVerseUtil.CalcContactAveragePoint(collision);
+
+			string dataLine = elapsedTime + "," + TrialPlaybackCommon.DataType1HsrCollision;
+
+			dataLine += "\t" + contactAve.x + "\t" + contactAve.y + "\t" + contactAve.z;
+
+			foreach(ContactPoint contactPoint in collision.contacts)
+			{
+				// Following data is unused now
+				dataLine += "\t" + SIGVerseUtil.GetHierarchyPath(contactPoint.thisCollider.transform) + "\t" + SIGVerseUtil.GetHierarchyPath(contactPoint.otherCollider.transform);
+			}
+			return dataLine;
 		}
 	}
 }

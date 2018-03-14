@@ -148,28 +148,12 @@ namespace SIGVerse.Competition
 			List<string> definitionLines = new List<string>();
 
 			// Transform
-			string definitionLine = "0.0," + WorldPlaybackCommon.DataType1Transform + "," + WorldPlaybackCommon.DataType2TransformDef; // Elapsed time is dummy.
-
-			foreach (Transform targetTransform in this.targetTransforms)
-			{
-				// Make a header line
-				definitionLine += "\t" + SIGVerseUtil.GetHierarchyPath(targetTransform);
-			}
-
-			definitionLines.Add(definitionLine);
+			definitionLines.Add(PlaybackTransformEventController.GetDefinitionLine(this.targetTransforms));
 
 			// Video Player
 			if(this.isReplayVideoPlayers)
 			{
-				definitionLine = "0.0," + WorldPlaybackCommon.DataType1VideoPlayer + "," + WorldPlaybackCommon.DataType2VideoPlayerDef; // Elapsed time is dummy.
-
-				foreach (VideoPlayer targetVideoPlayer in this.targetVideoPlayers)
-				{
-					// Make a header line
-					definitionLine += "\t" + SIGVerseUtil.GetHierarchyPath(targetVideoPlayer.transform);
-				}
-
-				definitionLines.Add(definitionLine);
+				definitionLines.Add(PlaybackVideoPlayerEventController.GetDefinitionLine(this.targetVideoPlayers));
 			}
 
 			return definitionLines;
@@ -235,42 +219,14 @@ namespace SIGVerse.Competition
 
 		protected virtual void SaveTransforms()
 		{
-			StringBuilder stringBuilder = new StringBuilder();
-
-			stringBuilder.Append(this.GetHeaderElapsedTime()).Append(",").Append(WorldPlaybackCommon.DataType1Transform).Append(",").Append(WorldPlaybackCommon.DataType2TransformVal);
-
-			foreach (Transform transform in this.targetTransforms)
-			{
-				stringBuilder.Append("\t")
-					.Append(Math.Round(transform.position.x,    4, MidpointRounding.AwayFromZero)).Append(",")
-					.Append(Math.Round(transform.position.y,    4, MidpointRounding.AwayFromZero)).Append(",")
-					.Append(Math.Round(transform.position.z,    4, MidpointRounding.AwayFromZero)).Append(",")
-					.Append(Math.Round(transform.eulerAngles.x, 4, MidpointRounding.AwayFromZero)).Append(",")
-					.Append(Math.Round(transform.eulerAngles.y, 4, MidpointRounding.AwayFromZero)).Append(",")
-					.Append(Math.Round(transform.eulerAngles.z, 4, MidpointRounding.AwayFromZero)).Append(",")
-					.Append(Math.Round(transform.localScale.x,  4, MidpointRounding.AwayFromZero)).Append(",")
-					.Append(Math.Round(transform.localScale.y,  4, MidpointRounding.AwayFromZero)).Append(",")
-					.Append(Math.Round(transform.localScale.z,  4, MidpointRounding.AwayFromZero));
-			}
-
-			this.dataLines.Add(stringBuilder.ToString());
+			this.dataLines.Add(PlaybackTransformEventController.GetDataLine(this.GetHeaderElapsedTime(), this.targetTransforms));
 		}
 
 		protected virtual void SaveVideoPlayers()
 		{
 			if (!this.isReplayVideoPlayers) { return; }
 
-			string dataLine = string.Empty;
-
-			// Video Player
-			dataLine += this.GetHeaderElapsedTime() + "," + WorldPlaybackCommon.DataType1VideoPlayer + "," + WorldPlaybackCommon.DataType2VideoPlayerVal;
-
-			foreach (VideoPlayer targetVideoPlayer in this.targetVideoPlayers)
-			{
-				dataLine += "\t" + targetVideoPlayer.frame;
-			}
-
-			this.dataLines.Add(dataLine);
+			this.dataLines.Add(PlaybackVideoPlayerEventController.GetDataLine(this.GetHeaderElapsedTime(), this.targetVideoPlayers));
 		}
 
 

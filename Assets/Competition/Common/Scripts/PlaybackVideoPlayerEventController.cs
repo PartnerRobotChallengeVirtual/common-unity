@@ -130,6 +130,36 @@ namespace SIGVerse.Competition
 		{
 			return this.targetVideoPlayers;
 		}
+
+
+
+		public static string GetDefinitionLine(List<VideoPlayer> targetVideoPlayers)
+		{
+			string definitionLine = "0.0," + WorldPlaybackCommon.DataType1VideoPlayer + "," + WorldPlaybackCommon.DataType2VideoPlayerDef; // Elapsed time is dummy.
+
+			foreach (VideoPlayer targetVideoPlayer in targetVideoPlayers)
+			{
+				// Make a header line
+				definitionLine += "\t" + SIGVerseUtil.GetHierarchyPath(targetVideoPlayer.transform);
+			}
+
+			return definitionLine;
+		}
+
+		public static string GetDataLine(string elapsedTime, List<VideoPlayer> targetVideoPlayers)
+		{
+			string dataLine = string.Empty;
+
+			// Video Player
+			dataLine += elapsedTime + "," + WorldPlaybackCommon.DataType1VideoPlayer + "," + WorldPlaybackCommon.DataType2VideoPlayerVal;
+
+			foreach (VideoPlayer targetVideoPlayer in targetVideoPlayers)
+			{
+				dataLine += "\t" + targetVideoPlayer.frame;
+			}
+
+			return dataLine;
+		}
 	}
 }
 

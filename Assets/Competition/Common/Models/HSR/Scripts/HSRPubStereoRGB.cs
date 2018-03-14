@@ -239,8 +239,8 @@ namespace SIGVerse.ToyotaHSR
 
 		void OnDestroy()
 		{
-			this.leftCamera.OnDestroy();
-			this.rightCamera.OnDestroy();
+			if(this.leftCamera !=null){ this.leftCamera .OnDestroy(); }
+			if(this.rightCamera!=null){ this.rightCamera.OnDestroy(); }
 		}
 
 		void Update()

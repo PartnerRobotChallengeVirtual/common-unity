@@ -53,7 +53,7 @@ namespace SIGVerse.Competition
 			// Score
 			if (headerArray[1] == TrialPlaybackCommon.DataType1Score)
 			{
-				string[] dataArray = dataStr.Split(',');
+				string[] dataArray = dataStr.Split('\t');
 
 				PlaybackScoreEventList scoreEventList = new PlaybackScoreEventList();
 				scoreEventList.ElapsedTime = float.Parse(headerArray[0]);
@@ -71,6 +71,26 @@ namespace SIGVerse.Competition
 			}
 
 			return false;
+		}
+
+
+
+		public static string GetDefinitionLine(string totalValText)
+		{
+			string definitionLine = "0.0," + TrialPlaybackCommon.DataType1Score; // Elapsed time is dummy.
+
+			definitionLine += "\t0\t0\t" + totalValText;
+
+			return definitionLine;
+		}
+
+		public static string GetDataLine(string elapsedTime, ScoreStatus scoreStatus)
+		{
+			string dataLine = elapsedTime + "," + TrialPlaybackCommon.DataType1Score;
+
+			dataLine += "\t" + scoreStatus.Subscore + "\t" + scoreStatus.Score + "\t" + scoreStatus.Total;
+
+			return dataLine;
 		}
 	}
 }

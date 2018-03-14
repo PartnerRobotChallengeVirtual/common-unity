@@ -33,7 +33,7 @@ namespace SIGVerse.ToyotaHSR
 
 		void Awake()
 		{
-			this.baseFootPrint = SIGVerseUtil.FindTransformFromChild(this.transform.root, HSRCommon.BaseFootPrintName);
+			this.baseFootPrint = SIGVerseUtils.FindTransformFromChild(this.transform.root, HSRCommon.BaseFootPrintName);
 		}
 
 		void Start()

@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using SIGVerse.Common;
+using SIGVerse.Competition;
 using UnityEngine.EventSystems;
 
 namespace SIGVerse.ToyotaHSR
 {
 	public interface IHSRCollisionHandler : IEventSystemHandler
 	{
-		void OnHsrCollisionEnter(Collision collision);
+		void OnHsrCollisionEnter(Collision collision, float effectScale);
 	}
 
 
@@ -21,7 +22,7 @@ namespace SIGVerse.ToyotaHSR
 
 		public List<string> exclusionColliderTags;
 
-		public GameObject collisionEffect;
+		private GameObject collisionEffect;
 
 		//------------------------
 
@@ -31,6 +32,8 @@ namespace SIGVerse.ToyotaHSR
 
 		protected void Awake()
 		{
+			this.collisionEffect = (GameObject)Resources.Load(CompetitionUtils.CollisionEffectPath);
+
 			this.exclusionColliderList = new List<Collider>();
 
 			foreach(string exclusionColliderTag in exclusionColliderTags)
@@ -54,9 +57,9 @@ namespace SIGVerse.ToyotaHSR
 		}
 
 		// Update is called once per frame
-		void Update()
-		{
-		}
+		//void Update()
+		//{
+		//}
 
 
 		void OnCollisionEnter(Collision collision)
@@ -78,14 +81,16 @@ namespace SIGVerse.ToyotaHSR
 
 		private void ExecCollisionProcess(Collision collision)
 		{
-			SIGVerseLogger.Info("Collision detection! Collided object="+SIGVerseUtil.GetHierarchyPath(collision.collider.transform));
+			SIGVerseLogger.Info("Collision detection! parts[0]=" +collision.contacts[0].thisCollider.name + " Collided object=" + SIGVerseUtils.GetHierarchyPath(collision.collider.transform));
 
 			// Effect
 			GameObject effect = MonoBehaviour.Instantiate(this.collisionEffect);
 			
-			Vector3 contactPoint = SIGVerseUtil.CalcContactAveragePoint(collision);
+			Vector3 contactPoint = SIGVerseUtils.CalcContactAveragePoint(collision);
 
 			effect.transform.position = contactPoint;
+			effect.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
+
 			Destroy(effect, 1.0f);
 
 			// Send the collision notification
@@ -95,7 +100,7 @@ namespace SIGVerse.ToyotaHSR
 				(
 					target: destination,
 					eventData: null,
-					functor: (reciever, eventData) => reciever.OnHsrCollisionEnter(collision)
+					functor: (reciever, eventData) => reciever.OnHsrCollisionEnter(collision, 0.5f)
 				);
 			}
 

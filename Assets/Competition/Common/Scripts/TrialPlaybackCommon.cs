@@ -9,7 +9,8 @@ namespace SIGVerse.Competition
 		public const string DataType1TaskInfo     = "21";
 		public const string DataType1Score        = "22";
 		public const string DataType1PanelNotice  = "23";
-		public const string DataType1HsrCollision = "24";
+		public const string DataType1Collision    = "24";
+		public const string DataType1HsrCollision = "25";
 	}
 }
 

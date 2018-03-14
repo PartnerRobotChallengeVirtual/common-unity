@@ -52,7 +52,7 @@ namespace SIGVerse.Competition
 
 			foreach (VideoPlayer targetVideoPlayer in this.targetVideoPlayers)
 			{
-				this.targetVideoPlayerPathMap.Add(SIGVerseUtil.GetHierarchyPath(targetVideoPlayer.transform), targetVideoPlayer);
+				this.targetVideoPlayerPathMap.Add(SIGVerseUtils.GetHierarchyPath(targetVideoPlayer.transform), targetVideoPlayer);
 			}
 		}
 		
@@ -140,7 +140,7 @@ namespace SIGVerse.Competition
 			foreach (VideoPlayer targetVideoPlayer in targetVideoPlayers)
 			{
 				// Make a header line
-				definitionLine += "\t" + SIGVerseUtil.GetHierarchyPath(targetVideoPlayer.transform);
+				definitionLine += "\t" + SIGVerseUtils.GetHierarchyPath(targetVideoPlayer.transform);
 			}
 
 			return definitionLine;

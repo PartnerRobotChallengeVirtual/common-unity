@@ -1,3 +1,4 @@
+using SIGVerse.Common;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,7 +8,7 @@ namespace SIGVerse.Competition
 {
 	public interface ITransferredCollisionHandler : IEventSystemHandler
 	{
-		void OnTransferredCollisionEnter(Collision collision);
+		void OnTransferredCollisionEnter(Collision collision, float effectScale);
 	}
 
 	public class CollisionTransferer : MonoBehaviour
@@ -17,6 +18,14 @@ namespace SIGVerse.Competition
 		private float minimumSendingInterval;
 
 		private float lastSendingTime = 0.0f;
+
+		private GameObject collisionEffect;
+
+
+		protected void Awake()
+		{
+			this.collisionEffect = (GameObject)Resources.Load(CompetitionUtils.CollisionEffectPath);
+		}
 
 
 		public void Initialize(List<GameObject> destinations, float velocityThreshold=0.1f, float minimumSendingInterval=0.1f)
@@ -33,7 +42,31 @@ namespace SIGVerse.Competition
 
 			if(Time.time - this.lastSendingTime < this.minimumSendingInterval){ return; }
 
+			foreach(ContactPoint contactPoint in collision.contacts)
+			{
+				if(contactPoint.otherCollider.CompareTag("NoDeductionCollider")){ return; }
+			}
+
+			this.ExecCollisionProcess(collision);
+		}
+
+
+		private void ExecCollisionProcess(Collision collision)
+		{
+			SIGVerseLogger.Info("Object collision occurred. name=" + this.name + " Collided object=" + SIGVerseUtils.GetHierarchyPath(collision.collider.transform));
+
 			this.lastSendingTime = Time.time;
+
+			// Effect
+			GameObject effect = MonoBehaviour.Instantiate(this.collisionEffect);
+			
+			Vector3 contactPoint = SIGVerseUtils.CalcContactAveragePoint(collision);
+
+			effect.transform.position = contactPoint;
+			effect.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
+
+			Destroy(effect, 1.0f);
+
 
 			foreach(GameObject destination in this.destinations)
 			{
@@ -41,7 +74,7 @@ namespace SIGVerse.Competition
 				(
 					target: destination,
 					eventData: null,
-					functor: (reciever, eventData) => reciever.OnTransferredCollisionEnter(collision)
+					functor: (reciever, eventData) => reciever.OnTransferredCollisionEnter(collision, 0.1f)
 				);
 			}
 		}

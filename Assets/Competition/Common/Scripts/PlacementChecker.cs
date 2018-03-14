@@ -56,8 +56,8 @@ namespace SIGVerse.Competition
 			
 			if(colliders.Length==0)
 			{
-				SIGVerseLogger.Error("No Colliders on " + SIGVerseUtil.GetHierarchyPath(transform));
-				throw new Exception ("No Colliders on " + SIGVerseUtil.GetHierarchyPath(transform));
+				SIGVerseLogger.Error("No Colliders on " + SIGVerseUtils.GetHierarchyPath(transform));
+				throw new Exception ("No Colliders on " + SIGVerseUtils.GetHierarchyPath(transform));
 			}
 		}
 

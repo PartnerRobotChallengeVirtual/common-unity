@@ -117,7 +117,7 @@ namespace SIGVerse.SampleScenes.Playbacker
 
 				foreach (Transform transform in transforms)
 				{
-					this.targetObjectsPathMap.Add(SIGVerseUtil.GetHierarchyPath(transform), transform);
+					this.targetObjectsPathMap.Add(SIGVerseUtils.GetHierarchyPath(transform), transform);
 				}
 			}
 		}
@@ -397,7 +397,7 @@ namespace SIGVerse.SampleScenes.Playbacker
 			SIGVerseLogger.Error(ex.Message);
 			SIGVerseLogger.Error(ex.StackTrace);
 
-			GameObject warningWindow = (GameObject)Resources.Load(SIGVerseCommon.WarningWindowResourcePath);
+			GameObject warningWindow = (GameObject)Resources.Load(SIGVerseUtils.WarningWindowResourcePath);
 
 			warningWindow.GetComponent<SIGVerseWarningWindow>().message.text = "Please check SIGVerse log.\n" + ex.Message;
 

@@ -56,7 +56,7 @@ namespace SIGVerse.Competition
 
 			foreach (Transform targetTransform in this.targetTransforms)
 			{
-				this.targetTransformPathMap.Add(SIGVerseUtil.GetHierarchyPath(targetTransform), targetTransform);
+				this.targetTransformPathMap.Add(SIGVerseUtils.GetHierarchyPath(targetTransform), targetTransform);
 			}
 		}
 		
@@ -171,7 +171,7 @@ namespace SIGVerse.Competition
 			foreach (Transform targetTransform in targetTransforms)
 			{
 				// Make a header line
-				definitionLine += "\t" + SIGVerseUtil.GetHierarchyPath(targetTransform);
+				definitionLine += "\t" + SIGVerseUtils.GetHierarchyPath(targetTransform);
 			}
 
 			return definitionLine;

@@ -107,7 +107,7 @@ namespace SIGVerse.Common
 				this.subviewImages         = new Image        [SubviewNum];
 				this.subviewLastUpdateTime = new DateTime     [SubviewNum];
 
-				this.unlitTexturShader = (Shader)Resources.Load(SIGVerseCommon.UnlitShaderResourcePath);
+				this.unlitTexturShader = (Shader)Resources.Load(SIGVerseUtils.UnlitShaderResourcePath);
 
 				// Initialize Subviews
 				for(int i=0; i<this.subviewPanels.Length; i++)

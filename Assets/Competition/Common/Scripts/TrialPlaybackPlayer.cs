@@ -18,9 +18,6 @@ namespace SIGVerse.Competition
 		public GameObject scorePanel;
 		public GameObject playbackPanel;
 
-		[HeaderAttribute("Resources")]
-		public GameObject collisionEffect;
-
 		public Sprite playSprite;
 		public Sprite pauseSprite;
 
@@ -36,8 +33,9 @@ namespace SIGVerse.Competition
 
 		protected PlaybackTaskInfoEventController     taskInfoController;      // Task Info
 		protected PlaybackScoreEventController        scoreController;         // Score
-		protected PlaybackHsrCollisionEventController hsrCollisionController;  // HSR Collision
 		protected PlaybackPanelNoticeEventController  panelNoticeController;   // Notice of a Panel
+		protected PlaybackCollisionEventController    collisionController;     // Collision
+		protected PlaybackHsrCollisionEventController hsrCollisionController;  // HSR Collision
 
 		//----------------------------
 
@@ -70,6 +68,8 @@ namespace SIGVerse.Competition
 
 		protected InputField startTimeInputField;
 		protected InputField endTimeInputField;
+
+		protected GameObject collisionEffect;
 
 
 		protected override void Awake()
@@ -105,6 +105,8 @@ namespace SIGVerse.Competition
 				this.repeatToggle        = this.playbackPanel.transform.Find("Repeat/RepeatToggle")        .GetComponent<Toggle>();
 				this.startTimeInputField = this.playbackPanel.transform.Find("StartTimeInputField")        .GetComponent<InputField>();
 				this.endTimeInputField   = this.playbackPanel.transform.Find("EndTimeInputField")          .GetComponent<InputField>();
+
+				this.collisionEffect = (GameObject)Resources.Load(CompetitionUtils.CollisionEffectPath);
 			}
 			else
 			{
@@ -120,8 +122,9 @@ namespace SIGVerse.Competition
 
 			this.taskInfoController     = new PlaybackTaskInfoEventController(this.trialNumberText, this.timeLeftValText, this.taskMessageText);
 			this.scoreController        = new PlaybackScoreEventController(this.scoreText, this.totalText); // Score
-			this.hsrCollisionController = new PlaybackHsrCollisionEventController(this.collisionEffect);    // HSR Collision
 			this.panelNoticeController  = new PlaybackPanelNoticeEventController(this, this.mainMenu);      // Notice of a Panel
+			this.collisionController    = new PlaybackCollisionEventController(this.collisionEffect);       // Collision
+			this.hsrCollisionController = new PlaybackHsrCollisionEventController(this.collisionEffect);    // HSR Collision
 		}
 
 
@@ -143,8 +146,9 @@ namespace SIGVerse.Competition
 
 			this.taskInfoController    .ReadEvents(headerArray, dataStr); // Task Info
 			this.scoreController       .ReadEvents(headerArray, dataStr); // Score
-			this.hsrCollisionController.ReadEvents(headerArray, dataStr); // HSR Collision
 			this.panelNoticeController .ReadEvents(headerArray, dataStr); // Notice of a Panel
+			this.collisionController   .ReadEvents(headerArray, dataStr); // Collision
+			this.hsrCollisionController.ReadEvents(headerArray, dataStr); // HSR Collision
 		}
 
 		protected override void StartInitializing()
@@ -161,8 +165,9 @@ namespace SIGVerse.Competition
 
 			this.taskInfoController    .StartInitializingEvents(); // Task Info
 			this.scoreController       .StartInitializingEvents(); // Score
-			this.hsrCollisionController.StartInitializingEvents(); // HSR Collision
 			this.panelNoticeController .StartInitializingEvents(); // Notice of a Panel
+			this.collisionController   .StartInitializingEvents(); // Collision
+			this.hsrCollisionController.StartInitializingEvents(); // HSR Collision
 		}
 
 		protected override void UpdateIndexAndElapsedTime(float elapsedTime)
@@ -171,8 +176,9 @@ namespace SIGVerse.Competition
 
 			this.taskInfoController    .UpdateIndex(elapsedTime); // Task Info
 			this.scoreController       .UpdateIndex(elapsedTime); // Score
-			this.hsrCollisionController.UpdateIndex(elapsedTime); // HSR Collision
 			this.panelNoticeController .UpdateIndex(elapsedTime); // Notice of a Panel
+			this.collisionController   .UpdateIndex(elapsedTime); // Collision
+			this.hsrCollisionController.UpdateIndex(elapsedTime); // HSR Collision
 		}
 
 
@@ -182,8 +188,9 @@ namespace SIGVerse.Competition
 
 			this.taskInfoController    .ExecutePassedLatestEvents(this.elapsedTime, this.deltaTime); // Task Info
 			this.scoreController       .ExecutePassedLatestEvents(this.elapsedTime, this.deltaTime); // Score
-			this.hsrCollisionController.ExecutePassedAllEvents(this.elapsedTime, this.deltaTime);    // HSR Collision
 			this.panelNoticeController .ExecutePassedAllEvents(this.elapsedTime, this.deltaTime);    // Notice of a Panel
+			this.collisionController   .ExecutePassedAllEvents(this.elapsedTime, this.deltaTime);    // Collision
+			this.hsrCollisionController.ExecutePassedAllEvents(this.elapsedTime, this.deltaTime);    // HSR Collision
 		}
 
 		protected override void UpdateDataByLatest(float elapsedTime)
@@ -200,8 +207,9 @@ namespace SIGVerse.Competition
 				base.GetTotalTime(), 
 				this.taskInfoController    .GetTotalTime(), 
 				this.scoreController       .GetTotalTime(), 
-				this.hsrCollisionController.GetTotalTime(), 
-				this.panelNoticeController .GetTotalTime()
+				this.panelNoticeController .GetTotalTime(),
+				this.collisionController   .GetTotalTime(), 
+				this.hsrCollisionController.GetTotalTime()
 			);
 		}
 

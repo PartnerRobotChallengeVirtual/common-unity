@@ -85,7 +85,7 @@ namespace SIGVerse.Common
 
 			if(!ConfigManager.Instance.configInfo.useSigverseMenu) { return; }
 
-			GameObject sigverseMenuObjPrefab = (GameObject)Resources.Load(SIGVerseCommon.SIGVerseMenuResourcePath);
+			GameObject sigverseMenuObjPrefab = (GameObject)Resources.Load(SIGVerseUtils.SIGVerseMenuResourcePath);
 
 			GameObject sigverseMenuObj = Instantiate(sigverseMenuObjPrefab);
 			sigverseMenuObj.name = SIGVerseMenuName;
@@ -146,7 +146,7 @@ namespace SIGVerse.Common
 
 			if(eventSystem==null)
 			{
-				GameObject sigverseEventSystemObjPrefab = (GameObject)Resources.Load(SIGVerseCommon.EventSystemResourcePath);
+				GameObject sigverseEventSystemObjPrefab = (GameObject)Resources.Load(SIGVerseUtils.EventSystemResourcePath);
 
 				Instantiate(sigverseEventSystemObjPrefab);
 			}

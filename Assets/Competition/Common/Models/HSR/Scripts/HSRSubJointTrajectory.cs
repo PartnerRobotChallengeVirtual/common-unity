@@ -58,16 +58,16 @@ namespace SIGVerse.ToyotaHSR
 
 		void Awake()
 		{
-			this.armLiftLink       = SIGVerseUtil.FindTransformFromChild(this.transform.root, HSRCommon.ArmLiftLinkName );
-			this.armFlexLink       = SIGVerseUtil.FindTransformFromChild(this.transform.root, HSRCommon.ArmFlexLinkName );
-			this.armRollLink       = SIGVerseUtil.FindTransformFromChild(this.transform.root, HSRCommon.ArmRollLinkName );
-			this.wristFlexLink     = SIGVerseUtil.FindTransformFromChild(this.transform.root, HSRCommon.WristFlexLinkName );
-			this.wristRollLink     = SIGVerseUtil.FindTransformFromChild(this.transform.root, HSRCommon.WristRollLinkName );
-			this.headPanLink       = SIGVerseUtil.FindTransformFromChild(this.transform.root, HSRCommon.HeadPanLinkName );
-			this.headTiltLink      = SIGVerseUtil.FindTransformFromChild(this.transform.root, HSRCommon.HeadTiltLinkName );
-			this.torsoLiftLink     = SIGVerseUtil.FindTransformFromChild(this.transform.root, HSRCommon.TorsoLiftLinkName );
-			this.handLProximalLink = SIGVerseUtil.FindTransformFromChild(this.transform.root, HSRCommon.HandLProximalLinkName );
-			this.handRProximalLink = SIGVerseUtil.FindTransformFromChild(this.transform.root, HSRCommon.HandRProximalLinkName );
+			this.armLiftLink       = SIGVerseUtils.FindTransformFromChild(this.transform.root, HSRCommon.ArmLiftLinkName );
+			this.armFlexLink       = SIGVerseUtils.FindTransformFromChild(this.transform.root, HSRCommon.ArmFlexLinkName );
+			this.armRollLink       = SIGVerseUtils.FindTransformFromChild(this.transform.root, HSRCommon.ArmRollLinkName );
+			this.wristFlexLink     = SIGVerseUtils.FindTransformFromChild(this.transform.root, HSRCommon.WristFlexLinkName );
+			this.wristRollLink     = SIGVerseUtils.FindTransformFromChild(this.transform.root, HSRCommon.WristRollLinkName );
+			this.headPanLink       = SIGVerseUtils.FindTransformFromChild(this.transform.root, HSRCommon.HeadPanLinkName );
+			this.headTiltLink      = SIGVerseUtils.FindTransformFromChild(this.transform.root, HSRCommon.HeadTiltLinkName );
+			this.torsoLiftLink     = SIGVerseUtils.FindTransformFromChild(this.transform.root, HSRCommon.TorsoLiftLinkName );
+			this.handLProximalLink = SIGVerseUtils.FindTransformFromChild(this.transform.root, HSRCommon.HandLProximalLinkName );
+			this.handRProximalLink = SIGVerseUtils.FindTransformFromChild(this.transform.root, HSRCommon.HandRProximalLinkName );
 
 			this.armLiftLinkIniPosZ   = this.armLiftLink.localPosition.z;
 			this.torsoLiftLinkIniPosZ = this.torsoLiftLink.localPosition.z;

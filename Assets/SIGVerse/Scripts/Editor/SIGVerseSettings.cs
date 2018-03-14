@@ -43,7 +43,7 @@ namespace SIGVerse.Common
 
 		void OnEnable ()
 		{
-			this.conceptTexture = (Texture2D)Resources.Load(SIGVerseCommon.ConceptImageResourcePath);
+			this.conceptTexture = (Texture2D)Resources.Load(SIGVerseUtils.ConceptImageResourcePath);
 
 			this.headerRect = new Rect(0, 0, 720, 100);
 

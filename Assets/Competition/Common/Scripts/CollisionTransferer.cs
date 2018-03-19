@@ -28,7 +28,7 @@ namespace SIGVerse.Competition
 		}
 
 
-		public void Initialize(List<GameObject> destinations, float velocityThreshold=0.1f, float minimumSendingInterval=0.1f)
+		public void Initialize(List<GameObject> destinations, float velocityThreshold=1.0f, float minimumSendingInterval=0.1f)
 		{
 			this.destinations           = destinations;
 			this.velocityThreshold      = velocityThreshold;
@@ -44,7 +44,7 @@ namespace SIGVerse.Competition
 
 			foreach(ContactPoint contactPoint in collision.contacts)
 			{
-				if(contactPoint.otherCollider.CompareTag("NoDeductionCollider")){ return; }
+				if(contactPoint.otherCollider.CompareTag("NonDeductionCollider")){ return; }
 			}
 
 			this.ExecCollisionProcess(collision);

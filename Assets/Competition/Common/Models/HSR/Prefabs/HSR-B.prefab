@@ -2685,7 +2685,7 @@ Camera:
     height: 1
   near clip plane: 0.01
   far clip plane: 100
-  field of view: 45
+  field of view: 46.82
   orthographic: 0
   orthographic size: 5
   m_Depth: 0
@@ -2721,7 +2721,7 @@ Camera:
     height: 1
   near clip plane: 0.01
   far clip plane: 100
-  field of view: 50.18
+  field of view: 52.71
   orthographic: 0
   orthographic size: 5
   m_Depth: 0
@@ -2757,7 +2757,7 @@ Camera:
     height: 1
   near clip plane: 0.01
   far clip plane: 100
-  field of view: 50.18
+  field of view: 52.71
   orthographic: 0
   orthographic size: 5
   m_Depth: 0
@@ -2793,7 +2793,7 @@ Camera:
     height: 1
   near clip plane: 0.01
   far clip plane: 100
-  field of view: 85.94
+  field of view: 98.86
   orthographic: 0
   orthographic size: 5
   m_Depth: 0
@@ -2829,7 +2829,7 @@ Camera:
     height: 1
   near clip plane: 0.01
   far clip plane: 100
-  field of view: 85.94
+  field of view: 98.86
   orthographic: 0
   orthographic size: 5
   m_Depth: 0
@@ -2901,7 +2901,7 @@ Camera:
     height: 1
   near clip plane: 0.01
   far clip plane: 4
-  field of view: 45
+  field of view: 46.82
   orthographic: 0
   orthographic size: 5
   m_Depth: 0
@@ -4865,15 +4865,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9ac38c5e87cdec7408a2fb0955bd8414, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  collisionNotificationDestinations:
-  - {fileID: 0}
-  - {fileID: 0}
+  collisionNotificationDestinations: []
   exclusionColliderTags:
   - GraspingCandidates
   - DummyGraspingCandidates
   - Ground
-  collisionEffect: {fileID: 1600245392930048, guid: 3ef8c8ac6a526b644b05d40d67ed7dc8,
-    type: 2}
 --- !u!114 &114391285596937942
 MonoBehaviour:
   m_ObjectHideFlags: 1

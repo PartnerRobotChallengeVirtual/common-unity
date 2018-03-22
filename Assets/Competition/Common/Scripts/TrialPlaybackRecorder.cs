@@ -78,14 +78,14 @@ namespace SIGVerse.Competition
 			this.dataLines.Add(PlaybackPanelNoticeEventController.GetDataLine(this.GetHeaderElapsedTime(), panelNoticeStatus));
 		}
 
-		public void OnTransferredCollisionEnter(Collision collision, float effectScale)
+		public void OnTransferredCollisionEnter(Collision collision, float collisionVelocity, float effectScale)
 		{
-			this.dataLines.Add(PlaybackCollisionEventController.GetDataLine(this.GetHeaderElapsedTime(), collision, effectScale));
+			this.dataLines.Add(PlaybackCollisionEventController.GetDataLine(this.GetHeaderElapsedTime(), collision, collisionVelocity, effectScale));
 		}
 
-		public void OnHsrCollisionEnter(Collision collision, float effectScale)
+		public void OnHsrCollisionEnter(Collision collision, float collisionVelocity, float effectScale)
 		{
-			this.dataLines.Add(PlaybackHsrCollisionEventController.GetDataLine(this.GetHeaderElapsedTime(), collision, effectScale));
+			this.dataLines.Add(PlaybackHsrCollisionEventController.GetDataLine(this.GetHeaderElapsedTime(), collision, collisionVelocity, effectScale));
 		}
 	}
 }

@@ -81,13 +81,13 @@ namespace SIGVerse.Competition
 
 
 
-		public static string GetDataLine(string elapsedTime, Collision collision, float effectScalen)
+		public static string GetDataLine(string elapsedTime, Collision collision, float collisionVelocity, float effectScalen)
 		{
-			return GetDataLine(elapsedTime, collision, effectScalen, DataType1);
+			return GetDataLine(elapsedTime, collision, collisionVelocity, effectScalen, DataType1);
 		}
 
 
-		protected static string GetDataLine(string elapsedTime, Collision collision, float effectScale, string dataType)
+		protected static string GetDataLine(string elapsedTime, Collision collision, float collisionVelocity, float effectScale, string dataType)
 		{
 			Vector3 contactAve = SIGVerseUtils.CalcContactAveragePoint(collision);
 
@@ -95,11 +95,11 @@ namespace SIGVerse.Competition
 
 			dataLine += "\t" + contactAve.x + "\t" + contactAve.y + "\t" + contactAve.z + "\t" + effectScale;
 
-			foreach(ContactPoint contactPoint in collision.contacts)
-			{
-				// Following data is unused now
-				dataLine += "\t" + SIGVerseUtils.GetHierarchyPath(contactPoint.thisCollider.transform) + "\t" + SIGVerseUtils.GetHierarchyPath(contactPoint.otherCollider.transform);
-			}
+			// Following data is unused now
+			dataLine += "\t" + collisionVelocity + 
+				"\t" + SIGVerseUtils.GetHierarchyPath(collision.contacts[0].thisCollider .transform) + 
+				"\t" + SIGVerseUtils.GetHierarchyPath(collision.contacts[0].otherCollider.transform);
+
 			return dataLine;
 		}
 	}

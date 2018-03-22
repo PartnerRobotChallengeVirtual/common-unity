@@ -10,7 +10,7 @@ namespace SIGVerse.ToyotaHSR
 {
 	public interface IHSRCollisionHandler : IEventSystemHandler
 	{
-		void OnHsrCollisionEnter(Collision collision, float effectScale);
+		void OnHsrCollisionEnter(Collision collision, float collisionVelocity, float effectScale);
 	}
 
 
@@ -22,13 +22,18 @@ namespace SIGVerse.ToyotaHSR
 
 		public List<string> exclusionColliderTags;
 
-		private GameObject collisionEffect;
-
 		//------------------------
+
+		private GameObject collisionEffect;
 
 		private List<Collider> exclusionColliderList;
 
 		private float collidedTime;
+
+		private Collider[] colliders;
+		private float[]    colliderVelocities;
+		private Vector3[]  prePoss;
+
 
 		protected void Awake()
 		{
@@ -47,24 +52,42 @@ namespace SIGVerse.ToyotaHSR
 					this.exclusionColliderList.AddRange(colliders);
 				}
 			}
+
+			this.colliders = this.GetComponentsInChildren<Collider>();
+			this.colliderVelocities  = new float[this.colliders.Length];
+			this.prePoss = new Vector3[this.colliders.Length];
+
+			SIGVerseLogger.Info("HSR collider count=" + this.colliders.Length);
 		}
 
 		// Use this for initialization
 		void Start()
 		{
 			this.collidedTime = 0.0f;
-//			Debug.Log("HSRCollisionDetector:"+this.graspables.Count);
+
+			for(int i=0; i<this.colliders.Length; i++)
+			{
+				this.colliderVelocities[i] = 0.0f;
+
+				this.prePoss[i] = this.colliders[i].transform.position;
+			}
 		}
 
 		// Update is called once per frame
-		//void Update()
-		//{
-		//}
+		void FixedUpdate()
+		{
+			for (int i=0; i<this.colliders.Length; i++)
+			{
+				this.colliderVelocities[i] = (this.colliders[i].transform.position - this.prePoss[i]).magnitude / Time.fixedDeltaTime;
+
+				this.prePoss[i] = this.colliders[i].transform.position;
+			}
+		}
 
 
 		void OnCollisionEnter(Collision collision)
 		{
-			if(Time.time - this.collidedTime < CollisionInterval) { return; }
+			if (Time.time - this.collidedTime < CollisionInterval) { return; }
 
 			if(collision.collider.transform.root==this.transform.root) { return; }
 
@@ -81,7 +104,10 @@ namespace SIGVerse.ToyotaHSR
 
 		private void ExecCollisionProcess(Collision collision)
 		{
-			SIGVerseLogger.Info("Collision detection! parts[0]=" +collision.contacts[0].thisCollider.name + " Collided object=" + SIGVerseUtils.GetHierarchyPath(collision.collider.transform));
+			float collisionVelocity = this.colliderVelocities[Array.IndexOf(this.colliders, collision.contacts[0].thisCollider)];
+
+			SIGVerseLogger.Info("HSR Collision Detection! Time=" + Time.time + ", Collision Velocity=" + collisionVelocity + 
+				", Part=" +collision.contacts[0].thisCollider.name + ", Collided object=" + SIGVerseUtils.GetHierarchyPath(collision.collider.transform));
 
 			// Effect
 			GameObject effect = MonoBehaviour.Instantiate(this.collisionEffect);
@@ -100,7 +126,7 @@ namespace SIGVerse.ToyotaHSR
 				(
 					target: destination,
 					eventData: null,
-					functor: (reciever, eventData) => reciever.OnHsrCollisionEnter(collision, 0.5f)
+					functor: (reciever, eventData) => reciever.OnHsrCollisionEnter(collision, collisionVelocity,  0.5f)
 				);
 			}
 

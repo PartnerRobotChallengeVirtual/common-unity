@@ -25,9 +25,9 @@ namespace SIGVerse.Competition
 		}
 
 
-		new public static string GetDataLine(string elapsedTime, Collision collision, float effectScalen)
+		new public static string GetDataLine(string elapsedTime, Collision collision, float collisionVelocity, float effectScalen)
 		{
-			return GetDataLine(elapsedTime, collision, effectScalen, DataType1);
+			return GetDataLine(elapsedTime, collision, collisionVelocity, effectScalen, DataType1);
 		}
 	}
 }

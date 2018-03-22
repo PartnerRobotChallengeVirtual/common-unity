@@ -24,6 +24,7 @@ namespace SIGVerse.ToyotaHSR
 		private ROSBridgeSubscriber<SIGVerse.ROSBridge.geometry_msgs.Twist> subscriber = null;
 
 		private Transform baseFootPrint;
+		private Rigidbody baseRigidbody;
 
 		private float linearVel  = 0.0f;
 		private float angularVel = 0.0f;
@@ -34,6 +35,8 @@ namespace SIGVerse.ToyotaHSR
 		void Awake()
 		{
 			this.baseFootPrint = SIGVerseUtils.FindTransformFromChild(this.transform.root, HSRCommon.BaseFootPrintName);
+
+			this.baseRigidbody = this.baseFootPrint.GetComponent<Rigidbody>();
 		}
 
 		void Start()
@@ -60,6 +63,7 @@ namespace SIGVerse.ToyotaHSR
 			this.linearVel  = Mathf.Sign(twist.linear.x)  * Mathf.Clamp(Mathf.Abs(twist.linear.x),  0.0f, HSRCommon.MaxSpeedBase);
 			this.angularVel = Mathf.Sign(twist.angular.z) * Mathf.Clamp(Mathf.Abs(twist.angular.z), 0.0f, HSRCommon.MaxSpeedBaseRad);
 
+//			Debug.Log("linearVel=" + linearVel + ", angularVel=" + angularVel);
 			this.isMoving = Mathf.Abs(this.linearVel) >= 0.001f || Mathf.Abs(this.angularVel) >= 0.001f;
 		}
 
@@ -74,20 +78,27 @@ namespace SIGVerse.ToyotaHSR
 			}
 		}
 
-		void Update()
+		void FixedUpdate()
+		{
+			if (Mathf.Abs(this.baseFootPrint.forward.y) < wheelInclinationThreshold) { return; }
+
+			if (!this.isMoving) { return; }
+
+			UnityEngine.Vector3 deltaPosition = -this.baseFootPrint.right * linearVel * Time.fixedDeltaTime;
+			this.baseRigidbody.MovePosition(this.baseFootPrint.position + deltaPosition);
+
+			Quaternion deltaRotation = Quaternion.Euler(new Vector3(0.0f, 0.0f, -angularVel * Mathf.Rad2Deg * Time.fixedDeltaTime));
+			this.baseRigidbody.MoveRotation(this.baseRigidbody.rotation * deltaRotation);
+		}
+
+		private void Update()
 		{
 			if(this.webSocketConnection==null || !this.webSocketConnection.IsConnected) { return; }
 
 			this.webSocketConnection.Render();
 
-			if (Mathf.Abs(this.baseFootPrint.forward.y) < wheelInclinationThreshold) { return; }
-
-			if (!this.isMoving) { return; }
-
-			UnityEngine.Vector3 robotLocalPosition = -this.baseFootPrint.right * linearVel * Time.deltaTime;
-
-			this.baseFootPrint.position += robotLocalPosition;
-			this.baseFootPrint.Rotate(0.0f, 0.0f, -angularVel * Mathf.Rad2Deg * Time.deltaTime);
+//			this.baseFootPrint.position += deltaPosition;
+//			this.baseFootPrint.Rotate(0.0f, 0.0f, -angularVel * Mathf.Rad2Deg * Time.deltaTime);
 		}
 	}
 }

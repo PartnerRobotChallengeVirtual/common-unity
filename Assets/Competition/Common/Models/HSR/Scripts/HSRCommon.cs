@@ -9,7 +9,7 @@ namespace SIGVerse.ToyotaHSR
 	public class HSRCommon
 	{
 		public const float MaxSpeedBase  = 0.22f; // [m/s]
-		public const float MaxSpeedBaseRad = MaxSpeedBase / 0.133f; // [rad/s] Roughly value. 
+		public const float MaxSpeedBaseRad = 1.2f; // [rad/s] Roughly value. 
 		public const float MaxSpeedTorso = 0.15f; // [m/s]
 //		public const float MaxSpeedArm   = 1.1f / 0.6f; // [rad/s] Roughly value. Max speed of Hand is 1.1[m/s]. And a radius of the orbit is 0.6[m]=Hand length.
 		public const float MaxSpeedArm   = 1.2f;        // [rad/s] Roughly value. 

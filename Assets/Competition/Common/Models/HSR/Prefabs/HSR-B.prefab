@@ -467,6 +467,7 @@ GameObject:
   - component: {fileID: 4602489440438392}
   - component: {fileID: 20467848513274776}
   - component: {fileID: 114207804642290272}
+  - component: {fileID: 114656556221913386}
   m_Layer: 9
   m_Name: HandCamera
   m_TagString: Untagged
@@ -747,6 +748,7 @@ GameObject:
   - component: {fileID: 4588250188339346}
   - component: {fileID: 20086671578992012}
   - component: {fileID: 114455243504148116}
+  - component: {fileID: 114622106836767416}
   m_Layer: 9
   m_Name: HeadLeftStereoCamera
   m_TagString: Untagged
@@ -883,6 +885,7 @@ GameObject:
   - component: {fileID: 4334686986477884}
   - component: {fileID: 20867107503394510}
   - component: {fileID: 114159230524599132}
+  - component: {fileID: 114338407033134826}
   m_Layer: 9
   m_Name: HeadDepthCamera
   m_TagString: Untagged
@@ -962,6 +965,7 @@ GameObject:
   - component: {fileID: 4510812659773862}
   - component: {fileID: 20384119017587018}
   - component: {fileID: 114133783016511792}
+  - component: {fileID: 114131408768519802}
   m_Layer: 9
   m_Name: HeadCenterCamera
   m_TagString: Untagged
@@ -1029,6 +1033,7 @@ GameObject:
   - component: {fileID: 4017094470025538}
   - component: {fileID: 20080244569720898}
   - component: {fileID: 114391285596937942}
+  - component: {fileID: 114505855950665860}
   m_Layer: 9
   m_Name: HeadRightStereoCamera
   m_TagString: Untagged
@@ -1264,13 +1269,13 @@ GameObject:
   - component: {fileID: 114906370492146204}
   - component: {fileID: 114528225059217990}
   - component: {fileID: 114776877642247912}
-  - component: {fileID: 114902140591885036}
-  - component: {fileID: 114982468544135584}
-  - component: {fileID: 114946110456114272}
-  - component: {fileID: 114838861320295126}
-  - component: {fileID: 114911359765921930}
-  - component: {fileID: 114752285558952874}
   - component: {fileID: 114256865905274884}
+  - component: {fileID: 114902140591885036}
+  - component: {fileID: 114049945588189110}
+  - component: {fileID: 114613339065414956}
+  - component: {fileID: 114247472335588442}
+  - component: {fileID: 114626428202431274}
+  - component: {fileID: 114242712182628556}
   m_Layer: 9
   m_Name: RosBridgeScripts
   m_TagString: Untagged
@@ -1401,6 +1406,7 @@ GameObject:
   - component: {fileID: 4799017317076866}
   - component: {fileID: 20031372873827714}
   - component: {fileID: 114086694942703548}
+  - component: {fileID: 114689788974510812}
   m_Layer: 9
   m_Name: HeadRGBCamera
   m_TagString: Untagged
@@ -4860,6 +4866,23 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fingerType: 1
+--- !u!114 &114049945588189110
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1872639706377518}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a6d19f6f985073d40b25b637e38ff4e4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rosBridgeIP: 
+  sigverseBridgePort: 0
+  publisher: {fileID: 114338407033134826}
+  topicNameCameraInfo: /hsrb/head_rgbd_sensor/depth/camera_info
+  topicNameImage: /hsrb/head_rgbd_sensor/depth/image_raw
+  sendingInterval: 100
 --- !u!114 &114086694942703548
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -4872,6 +4895,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mat: {fileID: 2100000, guid: b38cf38245764d4478d92d908c8197ca, type: 2}
+--- !u!114 &114131408768519802
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1598201731158416}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5fad8acd44abe4c4caaf18aadb5ccdea, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &114133783016511792
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -4919,6 +4953,43 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9c08cb014ae73c74bac75a2e18830cc8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &114242712182628556
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1872639706377518}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0e5e086b12a47b94b88582136f52c1b7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rosBridgeIP: 
+  sigverseBridgePort: 0
+  publisher: {fileID: 114656556221913386}
+  topicNameCameraInfo: /hsrb/hand_camera/camera_info
+  topicNameImage: /hsrb/hand_camera/image_raw
+  sendingInterval: 100
+--- !u!114 &114247472335588442
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1872639706377518}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dd7be57a506559e43b211f5b6b152d4b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rosBridgeIP: 
+  sigverseBridgePort: 0
+  leftPublisher: {fileID: 114622106836767416}
+  topicNameLeftCameraInfo: /hsrb/head_l_stereo_camera/camera_info
+  topicNameLeftImage: /hsrb/head_l_stereo_camera/image_rect_color
+  rightPublisher: {fileID: 114505855950665860}
+  topicNameRightCameraInfo: /hsrb/head_r_stereo_camera/camera_info
+  topicNameRightImage: /hsrb/head_r_stereo_camera/image_rect_color
+  sendingInterval: 250
 --- !u!114 &114256865905274884
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -4934,6 +5005,17 @@ MonoBehaviour:
   sigverseBridgePort: 0
   topicName: /sigverse/HSR/tf
   sendingInterval: 100
+--- !u!114 &114338407033134826
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1570401646123134}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c0b7955e5fca55449bf3f7e074717337, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &114346628091449176
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -4985,6 +5067,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fd4d7fd8ca2c8994bbf3c66d2989339c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &114505855950665860
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1630992756009462}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1d83a08077c2e9f45baae925cc626ba4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &114528225059217990
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -5023,6 +5116,51 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fd4d7fd8ca2c8994bbf3c66d2989339c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &114613339065414956
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1872639706377518}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a943125b41e83ea41b96a5b62b0d7f37, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rosBridgeIP: 
+  sigverseBridgePort: 0
+  publisher: {fileID: 114689788974510812}
+  topicNameCameraInfo: /hsrb/head_rgbd_sensor/rgb/camera_info
+  topicNameImage: /hsrb/head_rgbd_sensor/rgb/image_raw
+  sendingInterval: 100
+--- !u!114 &114622106836767416
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1479470703982374}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1d83a08077c2e9f45baae925cc626ba4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &114626428202431274
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1872639706377518}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0e5e086b12a47b94b88582136f52c1b7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rosBridgeIP: 
+  sigverseBridgePort: 0
+  publisher: {fileID: 114131408768519802}
+  topicNameCameraInfo: /hsrb/head_center_camera/camera_info
+  topicNameImage: /hsrb/head_center_camera/image_raw
+  sendingInterval: 100
 --- !u!114 &114636849987304382
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -5037,23 +5175,28 @@ MonoBehaviour:
   rosBridgeIP: 
   rosBridgePort: 0
   topicName: /hsrb/head_trajectory_controller/command
---- !u!114 &114752285558952874
+--- !u!114 &114656556221913386
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1872639706377518}
+  m_GameObject: {fileID: 1315399384410384}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5fad8acd44abe4c4caaf18aadb5ccdea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rosBridgeIP: 
-  sigverseBridgePort: 0
-  cameraObj: {fileID: 1581133470603728}
-  topicNameCameraInfo: /hsrb/hand_camera/camera_info
-  topicNameImage: /hsrb/hand_camera/image_raw
-  sendingInterval: 100
+--- !u!114 &114689788974510812
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1925378392142408}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 476325c2b841bb649befaa09a105696d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &114766174649297666
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -5079,26 +5222,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1677765f6a2140d4faeafcd25d2de363, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &114838861320295126
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1872639706377518}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1d83a08077c2e9f45baae925cc626ba4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  rosBridgeIP: 
-  sigverseBridgePort: 0
-  leftCameraObj: {fileID: 1348018880746848}
-  topicNameLeftCameraInfo: /hsrb/head_l_stereo_camera/camera_info
-  topicNameLeftImage: /hsrb/head_l_stereo_camera/image_rect_color
-  rightCameraObj: {fileID: 1635269517629456}
-  topicNameRightCameraInfo: /hsrb/head_r_stereo_camera/camera_info
-  topicNameRightImage: /hsrb/head_r_stereo_camera/image_rect_color
-  sendingInterval: 250
 --- !u!114 &114848057640865240
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -5169,23 +5292,6 @@ MonoBehaviour:
   rosBridgeIP: 
   rosBridgePort: 0
   topicName: /hsrb/gripper_trajectory_controller/command
---- !u!114 &114911359765921930
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1872639706377518}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5fad8acd44abe4c4caaf18aadb5ccdea, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  rosBridgeIP: 
-  sigverseBridgePort: 0
-  cameraObj: {fileID: 1929834601087090}
-  topicNameCameraInfo: /hsrb/head_center_camera/camera_info
-  topicNameImage: /hsrb/head_center_camera/image_raw
-  sendingInterval: 100
 --- !u!114 &114936645230342036
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -5198,40 +5304,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fingerType: 0
---- !u!114 &114946110456114272
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1872639706377518}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c0b7955e5fca55449bf3f7e074717337, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  rosBridgeIP: 
-  sigverseBridgePort: 0
-  depthCamera: {fileID: 1686410476266082}
-  topicNameCameraInfo: /hsrb/head_rgbd_sensor/depth/camera_info
-  topicNameImage: /hsrb/head_rgbd_sensor/depth/image_raw
-  sendingInterval: 100
---- !u!114 &114982468544135584
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1872639706377518}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 476325c2b841bb649befaa09a105696d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  rosBridgeIP: 
-  sigverseBridgePort: 0
-  rgbCamera: {fileID: 1689786976982818}
-  topicNameCameraInfo: /hsrb/head_rgbd_sensor/rgb/camera_info
-  topicNameImage: /hsrb/head_rgbd_sensor/rgb/image_raw
-  sendingInterval: 100
 --- !u!135 &135198054059109462
 SphereCollider:
   m_ObjectHideFlags: 1

@@ -67,6 +67,8 @@ namespace SIGVerse.ToyotaHSR
 
 		private bool isPublishing = false;
 
+		private bool shouldSendMessage = false;
+
 
 		void Awake()
 		{
@@ -127,18 +129,27 @@ namespace SIGVerse.ToyotaHSR
 
 			if(!HSRPubSynchronizer.CanExecute(this.publishSequenceNumber)) { return; }
 
-			this.isPublishing = true;
 			this.elapsedTime = 0.0f;
 
-			StartCoroutine(this.PubTF());
+			this.shouldSendMessage = true;
 		}
 
-		private IEnumerator PubTF()
+		void LateUpdate()
 		{
-			yield return new WaitForEndOfFrame();
+			if(this.shouldSendMessage)
+			{
+				this.PubTF();
 
+				this.shouldSendMessage = false;
+			}
+		}
+
+		private void PubTF()
+		{
 //			System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
 //			sw.Start();
+
+			this.isPublishing = true;
 
 			TransformStamped[] transformStampedArray = new TransformStamped[localTfInfoList.Count];
 

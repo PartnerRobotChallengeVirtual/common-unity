@@ -56,6 +56,8 @@ namespace SIGVerse.ToyotaHSR
 
 		private bool isPublishing = false;
 
+		private bool shouldSendMessage = false;
+
 
 		void Awake()
 		{
@@ -122,19 +124,27 @@ namespace SIGVerse.ToyotaHSR
 
 			if(!HSRPubSynchronizer.CanExecute(this.publishSequenceNumber)) { return; }
 
-			this.isPublishing = true;
 			this.elapsedTime = 0.0f;
 
-			StartCoroutine(this.PubSensorData());
+			this.shouldSendMessage = true;
 		}
 
-
-		private IEnumerator PubSensorData()
+		void LateUpdate()
 		{
-			yield return new WaitForEndOfFrame();
+			if(this.shouldSendMessage)
+			{
+				this.PubSensorData();
 
+				this.shouldSendMessage = false;
+			}
+		}
+
+		private void PubSensorData()
+		{
 //			System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
 //			sw.Start();
+
+			this.isPublishing = true;
 
 			// Set current time to the header
 			this.laserScan.header.Update();

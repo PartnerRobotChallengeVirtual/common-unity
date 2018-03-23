@@ -44,6 +44,9 @@ namespace SIGVerse.Competition
 
 		private List<Transform>  transformOrder;
 
+		public bool IsRigidbodiesDisable{ get; set; }
+		public bool IsCollidersDisable  { get; set; }
+
 		
 		public PlaybackTransformEventController(WorldPlaybackCommon playbackCommon)
 		{
@@ -58,8 +61,10 @@ namespace SIGVerse.Competition
 			{
 				this.targetTransformPathMap.Add(SIGVerseUtils.GetHierarchyPath(targetTransform), targetTransform);
 			}
+
+			this.IsRigidbodiesDisable = true;
+			this.IsCollidersDisable   = true;
 		}
-		
 
 		public override void StartInitializingEvents()
 		{
@@ -72,21 +77,27 @@ namespace SIGVerse.Competition
 			foreach (Transform targetTransform in this.targetTransforms)
 			{
 				// Disable rigidbodies
-				Rigidbody[] rigidbodies = targetTransform.GetComponentsInChildren<Rigidbody>(true);
-
-				foreach (Rigidbody rigidbody in rigidbodies)
+				if(this.IsRigidbodiesDisable)
 				{
-					rigidbody.isKinematic     = true;
-					rigidbody.velocity        = Vector3.zero;
-					rigidbody.angularVelocity = Vector3.zero;
+					Rigidbody[] rigidbodies = targetTransform.GetComponentsInChildren<Rigidbody>(true);
+
+					foreach (Rigidbody rigidbody in rigidbodies)
+					{
+						rigidbody.isKinematic     = true;
+						rigidbody.velocity        = Vector3.zero;
+						rigidbody.angularVelocity = Vector3.zero;
+					}
 				}
 
 				// Disable colliders
-				Collider[] colliders = targetTransform.GetComponentsInChildren<Collider>(true);
-
-				foreach (Collider collider in colliders)
+				if(this.IsCollidersDisable)
 				{
-					collider.enabled = false;
+					Collider[] colliders = targetTransform.GetComponentsInChildren<Collider>(true);
+
+					foreach (Collider collider in colliders)
+					{
+						collider.enabled = false;
+					}
 				}
 			}
 		}

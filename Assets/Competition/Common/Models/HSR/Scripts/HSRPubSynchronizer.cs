@@ -14,6 +14,11 @@ namespace SIGVerse.ToyotaHSR
 
 		private static bool isInitialized = false;
 
+		void Awake()
+		{
+			this.ResetParameters();
+		}
+
 		void Start()
 		{
 			isInitialized = true;
@@ -58,7 +63,12 @@ namespace SIGVerse.ToyotaHSR
 			executed = false;
 		}
 
-		private void OnDestroy()
+		void OnDestroy()
+		{
+			this.ResetParameters();
+		}
+
+		private void ResetParameters()
 		{
 			sequenceNumberForAssignment = 0;
 

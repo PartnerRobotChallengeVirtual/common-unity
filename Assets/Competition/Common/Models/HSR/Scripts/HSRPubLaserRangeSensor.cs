@@ -7,7 +7,6 @@ using SIGVerse.Common;
 using SIGVerse.SIGVerseROSBridge;
 using System.Collections;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace SIGVerse.ToyotaHSR
 {
@@ -174,14 +173,17 @@ namespace SIGVerse.ToyotaHSR
 
 			this.laserScanMsg.msg = this.laserScan;
 
-			Task.Run(() => 
-			{
-				this.laserScanMsg.SendMsg(this.networkStream);
-				this.isPublishing = false;
-			});
+			Thread thread = new Thread(new ThreadStart(SendSensorData));
+			thread.Start();
 
 //			sw.Stop();
 //			Debug.Log("LRF sending time=" + sw.Elapsed);
+		}
+
+		private void SendSensorData()
+		{
+			this.laserScanMsg.SendMsg(this.networkStream);
+			this.isPublishing = false;
 		}
 	}
 }

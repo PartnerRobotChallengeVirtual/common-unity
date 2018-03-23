@@ -7,7 +7,6 @@ using SIGVerse.SIGVerseROSBridge;
 using SIGVerse.ROSBridge.geometry_msgs;
 using System.Collections.Generic;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace SIGVerse.ToyotaHSR
 {
@@ -165,14 +164,18 @@ namespace SIGVerse.ToyotaHSR
 
 			this.transformStampedMsg.msg = transformStampedArray;
 
-			Task.Run(() => 
-			{
-				this.transformStampedMsg.SendMsg(this.networkStream);
-				this.isPublishing = false;
-			});
+			Thread thread = new Thread(new ThreadStart(SendTF));
+			thread.Start();
 
 //			sw.Stop();
 //			Debug.Log("tf sending time="+sw.Elapsed);
+		}
+
+
+		private void SendTF()
+		{
+			this.transformStampedMsg.SendMsg(this.networkStream);
+			this.isPublishing = false;
 		}
 	}
 }

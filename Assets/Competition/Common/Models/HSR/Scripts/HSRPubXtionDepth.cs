@@ -7,7 +7,6 @@ using SIGVerse.ROSBridge.std_msgs;
 using SIGVerse.Common;
 using SIGVerse.SIGVerseROSBridge;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace SIGVerse.ToyotaHSR
 {
@@ -187,11 +186,8 @@ namespace SIGVerse.ToyotaHSR
 			this.cameraInfoData.header = this.header;
 			this.cameraInfoMsg.msg = this.cameraInfoData;
 
-			Task.Run(() => 
-			{
-				this.cameraInfoMsg.SendMsg(this.networkStreamCameraInfo);
-				this.isPublishingCameraInfo = false;
-			});
+			Thread threadCameraInfo = new Thread(new ThreadStart(SendCameraInfo));
+			threadCameraInfo.Start();
 
 //			yield return null;
 
@@ -215,14 +211,24 @@ namespace SIGVerse.ToyotaHSR
 			this.imageData.data = this.byteArray;
 			this.imageMsg.msg = this.imageData;
 
-			Task.Run(() => 
-			{
-				this.imageMsg.SendMsg(this.networkStreamImage);
-				this.isPublishingImage = false;
-			});
+			Thread threadImage = new Thread(new ThreadStart(SendImage));
+			threadImage.Start();
 
 //			sw.Stop();
 //			UnityEngine.Debug.Log("time=" + sw.Elapsed);
+		}
+
+
+		private void SendCameraInfo()
+		{
+			this.cameraInfoMsg.SendMsg(this.networkStreamCameraInfo);
+			this.isPublishingCameraInfo = false;
+		}
+
+		private void SendImage()
+		{
+			this.imageMsg.SendMsg(this.networkStreamImage);
+			this.isPublishingImage = false;
 		}
 	}
 }

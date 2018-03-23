@@ -37,6 +37,8 @@ namespace SIGVerse.ToyotaHSR
 		private const float LaserAngle = HalfOfLaserAngle * 2.0f;
 		private const float LaserAngularResolution = 0.25f;
 
+		private HSRPubSynchronizer synchronizer;
+
 		private int publishSequenceNumber;
 
 		private int numLines;
@@ -60,7 +62,9 @@ namespace SIGVerse.ToyotaHSR
 
 		void Awake()
 		{
-			this.publishSequenceNumber = HSRPubSynchronizer.GetAssignedSequenceNumber();
+			this.synchronizer = this.GetComponent<HSRPubSynchronizer>();
+
+			this.publishSequenceNumber = this.synchronizer.GetAssignedSequenceNumber();
 		}
 
 		void Start()
@@ -121,7 +125,7 @@ namespace SIGVerse.ToyotaHSR
 				return;
 			}
 
-			if(!HSRPubSynchronizer.CanExecute(this.publishSequenceNumber)) { return; }
+			if(!this.synchronizer.CanExecute(this.publishSequenceNumber)) { return; }
 
 			this.elapsedTime = 0.0f;
 

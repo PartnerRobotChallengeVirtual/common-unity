@@ -53,6 +53,8 @@ namespace SIGVerse.ToyotaHSR
 			}
 		}
 
+		private HSRPubSynchronizer synchronizer;
+
 		private int publishSequenceNumber;
 
 		private System.Net.Sockets.TcpClient tcpClient = null;
@@ -85,7 +87,9 @@ namespace SIGVerse.ToyotaHSR
 				this.localTfInfoList.Add(localTfInfo);
 			}
 
-			this.publishSequenceNumber = HSRPubSynchronizer.GetAssignedSequenceNumber();
+			this.synchronizer = this.GetComponent<HSRPubSynchronizer>();
+
+			this.publishSequenceNumber = this.synchronizer.GetAssignedSequenceNumber();
 		}
 
 		void Start()
@@ -126,7 +130,7 @@ namespace SIGVerse.ToyotaHSR
 				return;
 			}
 
-			if(!HSRPubSynchronizer.CanExecute(this.publishSequenceNumber)) { return; }
+			if(!this.synchronizer.CanExecute(this.publishSequenceNumber)) { return; }
 
 			this.elapsedTime = 0.0f;
 

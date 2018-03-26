@@ -122,7 +122,7 @@ namespace SIGVerse.ToyotaHSR
 		{
 //			if (this.transform.root == other.transform.root){ return; }
 
-			if(!this.isGraspable(other)) { return; }
+			if(!this.IsGraspable(other)) { return; }
 
 			if(fingerType==FingerType.Left)
 			{
@@ -143,7 +143,7 @@ namespace SIGVerse.ToyotaHSR
 		{
 //			if (this.transform.root == other.transform.root){ return; }
 
-			if(!this.isGraspable(other)) { return; }
+			if(!this.IsGraspable(other)) { return; }
 
 			if(fingerType==FingerType.Left)
 			{
@@ -164,7 +164,7 @@ namespace SIGVerse.ToyotaHSR
 			}
 		}
 
-		private bool isGraspable(Collider other)
+		private bool IsGraspable(Collider other)
 		{
 			foreach(Collider collider in this.graspableColliders)
 			{

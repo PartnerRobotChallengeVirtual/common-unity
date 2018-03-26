@@ -48,6 +48,7 @@ namespace SIGVerse.ToyotaHSR
 		private float torsoLiftLinkIniPosZ;
 
 		private Dictionary<string, TrajectoryInfo> trajectoryInfoMap;
+		private List<string> trajectoryKeyList;
 
 		private GameObject graspedObject;
 
@@ -82,6 +83,8 @@ namespace SIGVerse.ToyotaHSR
 			this.trajectoryInfoMap.Add(HSRCommon.HeadTiltJointName, null);
 			this.trajectoryInfoMap.Add(HSRCommon.HandLProximalJointName, null);
 			this.trajectoryInfoMap.Add(HSRCommon.HandRProximalJointName, null);
+
+			this.trajectoryKeyList = new List<string>(trajectoryInfoMap.Keys);
 		}
 
 
@@ -189,17 +192,13 @@ namespace SIGVerse.ToyotaHSR
 		{
 			if(this.webSocketConnection==null || !this.webSocketConnection.IsConnected) { return; }
 
-			foreach(KeyValuePair<string, TrajectoryInfo> trajectoryPair in trajectoryInfoMap)
+			foreach(string jointName in this.trajectoryKeyList)
 			{
-				string jointName = trajectoryPair.Key;
-
-				if (trajectoryPair.Value != null)
+				if (this.trajectoryInfoMap[jointName] != null)
 				{
-					TrajectoryInfo trajectoryInfo = this.trajectoryInfoMap[jointName];
-
 					if (jointName == HSRCommon.ArmLiftJointName)
 					{
-						float newPos = GetPositionAndUpdateTrajectory(ref trajectoryInfo, HSRCommon.MinSpeed, HSRCommon.MaxSpeedTorso);
+						float newPos = GetPositionAndUpdateTrajectory(this.trajectoryInfoMap, jointName, HSRCommon.MinSpeed, HSRCommon.MaxSpeedTorso);
 
 						this.armLiftLink  .localPosition = new Vector3(this.armLiftLink  .localPosition.x, this.armLiftLink.localPosition.y,   this.armLiftLinkIniPosZ   + newPos        );
 						this.torsoLiftLink.localPosition = new Vector3(this.torsoLiftLink.localPosition.x, this.torsoLiftLink.localPosition.y, this.torsoLiftLinkIniPosZ + newPos / 2.0f );
@@ -207,55 +206,55 @@ namespace SIGVerse.ToyotaHSR
 
 					if (jointName == HSRCommon.ArmFlexJointName)
 					{
-						float newPos = HSRCommon.GetCorrectedJointsEulerAngle(GetPositionAndUpdateTrajectory(ref trajectoryInfo, HSRCommon.MinSpeedRad, HSRCommon.MaxSpeedArm) * Mathf.Rad2Deg, jointName);
+						float newPos = HSRCommon.GetCorrectedJointsEulerAngle(GetPositionAndUpdateTrajectory(this.trajectoryInfoMap, jointName, HSRCommon.MinSpeedRad, HSRCommon.MaxSpeedArm) * Mathf.Rad2Deg, jointName);
 						
 						this.armFlexLink.localEulerAngles = new Vector3(this.armFlexLink.localEulerAngles.x, newPos, this.armFlexLink.localEulerAngles.z);
 					}
 
 					if (jointName == HSRCommon.ArmRollJointName)
 					{
-						float newPos = -HSRCommon.GetCorrectedJointsEulerAngle(GetPositionAndUpdateTrajectory(ref trajectoryInfo, HSRCommon.MinSpeedRad, HSRCommon.MaxSpeedArm) * Mathf.Rad2Deg, jointName);
+						float newPos = -HSRCommon.GetCorrectedJointsEulerAngle(GetPositionAndUpdateTrajectory(this.trajectoryInfoMap, jointName, HSRCommon.MinSpeedRad, HSRCommon.MaxSpeedArm) * Mathf.Rad2Deg, jointName);
 
 						this.armRollLink.localEulerAngles = new Vector3(this.armRollLink.localEulerAngles.x, this.armRollLink.localEulerAngles.y, newPos);
 					}
 
 					if (jointName == HSRCommon.WristFlexJointName)
 					{
-						float newPos = HSRCommon.GetCorrectedJointsEulerAngle(GetPositionAndUpdateTrajectory(ref trajectoryInfo, HSRCommon.MinSpeedRad, HSRCommon.MaxSpeedArm) * Mathf.Rad2Deg, jointName);
+						float newPos = HSRCommon.GetCorrectedJointsEulerAngle(GetPositionAndUpdateTrajectory(this.trajectoryInfoMap, jointName, HSRCommon.MinSpeedRad, HSRCommon.MaxSpeedArm) * Mathf.Rad2Deg, jointName);
 
 						this.wristFlexLink.localEulerAngles = new Vector3(this.wristFlexLink.localEulerAngles.x, newPos, this.wristFlexLink.localEulerAngles.z);
 					}
 
 					if (jointName == HSRCommon.WristRollJointName)
 					{
-						float newPos = -HSRCommon.GetCorrectedJointsEulerAngle(GetPositionAndUpdateTrajectory(ref trajectoryInfo, HSRCommon.MinSpeedRad, HSRCommon.MaxSpeedArm) * Mathf.Rad2Deg, jointName);
+						float newPos = -HSRCommon.GetCorrectedJointsEulerAngle(GetPositionAndUpdateTrajectory(this.trajectoryInfoMap, jointName, HSRCommon.MinSpeedRad, HSRCommon.MaxSpeedArm) * Mathf.Rad2Deg, jointName);
 
 						this.wristRollLink.localEulerAngles = new Vector3(this.wristRollLink.localEulerAngles.x, this.wristRollLink.localEulerAngles.y, newPos);
 					}
 
 					if (jointName == HSRCommon.HeadPanJointName)
 					{
-						float newPos = -HSRCommon.GetCorrectedJointsEulerAngle(GetPositionAndUpdateTrajectory(ref trajectoryInfo, HSRCommon.MinSpeedRad, HSRCommon.MaxSpeedHead) * Mathf.Rad2Deg, jointName);
+						float newPos = -HSRCommon.GetCorrectedJointsEulerAngle(GetPositionAndUpdateTrajectory(this.trajectoryInfoMap, jointName, HSRCommon.MinSpeedRad, HSRCommon.MaxSpeedHead) * Mathf.Rad2Deg, jointName);
 
 						this.headPanLink.localEulerAngles = new Vector3(this.headPanLink.localEulerAngles.x, this.headPanLink.localEulerAngles.y, newPos);
 					}
 
 					if (jointName == HSRCommon.HeadTiltJointName)
 					{
-						float newPos = HSRCommon.GetCorrectedJointsEulerAngle(GetPositionAndUpdateTrajectory(ref trajectoryInfo, HSRCommon.MinSpeedRad, HSRCommon.MaxSpeedHead) * Mathf.Rad2Deg, jointName);
+						float newPos = HSRCommon.GetCorrectedJointsEulerAngle(GetPositionAndUpdateTrajectory(this.trajectoryInfoMap, jointName, HSRCommon.MinSpeedRad, HSRCommon.MaxSpeedHead) * Mathf.Rad2Deg, jointName);
 
 						this.headTiltLink.localEulerAngles = new Vector3(this.headTiltLink.localEulerAngles.x, newPos, this.headTiltLink.localEulerAngles.z);
 					}
 
 					if (jointName == HSRCommon.HandLProximalJointName)
 					{
-						float newPos = HSRCommon.GetCorrectedJointsEulerAngle(GetPositionAndUpdateTrajectory(ref trajectoryInfo, HSRCommon.MinSpeedRad, HSRCommon.MaxSpeedArm) * Mathf.Rad2Deg, jointName);
+						float newPos = HSRCommon.GetCorrectedJointsEulerAngle(GetPositionAndUpdateTrajectory(this.trajectoryInfoMap, jointName, HSRCommon.MinSpeedRad, HSRCommon.MaxSpeedArm) * Mathf.Rad2Deg, jointName);
 
 						// Grasping and hand closing
 						if(this.graspedObject!=null && this.IsAngleDecreasing(newPos, this.handLProximalLink.localEulerAngles.x))
 						{
 							// Have to stop
-							trajectoryInfo = null;
+							this.trajectoryInfoMap[jointName] = null;
 						}
 						// Otherwise
 						else
@@ -266,13 +265,13 @@ namespace SIGVerse.ToyotaHSR
 
 					if (jointName == HSRCommon.HandRProximalJointName)
 					{
-						float newPos = HSRCommon.GetCorrectedJointsEulerAngle(GetPositionAndUpdateTrajectory(ref trajectoryInfo, HSRCommon.MinSpeedRad, HSRCommon.MaxSpeedArm) * Mathf.Rad2Deg, jointName);
+						float newPos = HSRCommon.GetCorrectedJointsEulerAngle(GetPositionAndUpdateTrajectory(this.trajectoryInfoMap, jointName, HSRCommon.MinSpeedRad, HSRCommon.MaxSpeedArm) * Mathf.Rad2Deg, jointName);
 
 						// Grasping and hand closing
 						if(this.graspedObject!=null && this.IsAngleIncreasing(newPos, this.handRProximalLink.localEulerAngles.x))
 						{
 							// Have to stop
-							trajectoryInfo = null;
+							this.trajectoryInfoMap[jointName] = null;
 						}
 						// Otherwise
 						else
@@ -287,8 +286,10 @@ namespace SIGVerse.ToyotaHSR
 		}
 
 
-		public static float GetPositionAndUpdateTrajectory(ref TrajectoryInfo trajectoryInfo, float minSpeed, float maxSpeed)
+		private static float GetPositionAndUpdateTrajectory(Dictionary<string, TrajectoryInfo> trajectoryInfoMap, string jointName, float minSpeed, float maxSpeed)
 		{
+			TrajectoryInfo trajectoryInfo = trajectoryInfoMap[jointName];
+
 			// Calculate move speed
 			float speed = 0.0f;
 
@@ -311,7 +312,7 @@ namespace SIGVerse.ToyotaHSR
 			if (movingDistance > Mathf.Abs(trajectoryInfo.GoalPosition - trajectoryInfo.CurrentPosition))
 			{
 				newPosition = trajectoryInfo.GoalPosition;
-				trajectoryInfo = null;
+				trajectoryInfoMap[jointName] = null;
 			}
 			else
 			{
@@ -335,6 +336,7 @@ namespace SIGVerse.ToyotaHSR
 
 			return newPosition;
 		}
+
 
 		private bool IsAngleIncreasing(float newVal, float oldVal)
 		{

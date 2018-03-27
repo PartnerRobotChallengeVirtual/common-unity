@@ -26,8 +26,9 @@ namespace SIGVerse.ToyotaHSR
 		private Transform baseFootPrint;
 		private Rigidbody baseRigidbody;
 
-		private float linearVel  = 0.0f;
-		private float angularVel = 0.0f;
+		private float linearVelX  = 0.0f;
+		private float linearVelY  = 0.0f;
+		private float angularVelZ = 0.0f;
 
 		private bool isMoving = false;
 
@@ -60,11 +61,25 @@ namespace SIGVerse.ToyotaHSR
 
 		public void TwistCallback(SIGVerse.ROSBridge.geometry_msgs.Twist twist)
 		{
-			this.linearVel  = Mathf.Sign(twist.linear.x)  * Mathf.Clamp(Mathf.Abs(twist.linear.x),  0.0f, HSRCommon.MaxSpeedBase);
-			this.angularVel = Mathf.Sign(twist.angular.z) * Mathf.Clamp(Mathf.Abs(twist.angular.z), 0.0f, HSRCommon.MaxSpeedBaseRad);
+			float linearVel = Mathf.Sqrt(Mathf.Pow(twist.linear.x, 2) + Mathf.Pow(twist.linear.y, 2));
+
+			float linearVelClamped = Mathf.Clamp(linearVel, 0.0f, HSRCommon.MaxSpeedBase);
+
+			if(linearVel >= 0.001)
+			{
+				this.linearVelX  = twist.linear.x * linearVelClamped / linearVel;
+				this.linearVelY  = twist.linear.y * linearVelClamped / linearVel;
+			}
+			else
+			{
+				this.linearVelX = 0.0f;
+				this.linearVelY = 0.0f;
+			}
+
+			this.angularVelZ = Mathf.Sign(twist.angular.z) * Mathf.Clamp(Mathf.Abs(twist.angular.z), 0.0f, HSRCommon.MaxSpeedBaseRad);
 
 //			Debug.Log("linearVel=" + linearVel + ", angularVel=" + angularVel);
-			this.isMoving = Mathf.Abs(this.linearVel) >= 0.001f || Mathf.Abs(this.angularVel) >= 0.001f;
+			this.isMoving = Mathf.Abs(this.linearVelX) >= 0.001f || Mathf.Abs(this.linearVelY) >= 0.001f || Mathf.Abs(this.angularVelZ) >= 0.001f;
 		}
 
 
@@ -84,10 +99,10 @@ namespace SIGVerse.ToyotaHSR
 
 			if (!this.isMoving) { return; }
 
-			UnityEngine.Vector3 deltaPosition = -this.baseFootPrint.right * linearVel * Time.fixedDeltaTime;
+			UnityEngine.Vector3 deltaPosition = (-this.baseFootPrint.right * linearVelX + this.baseFootPrint.up * linearVelY) * Time.fixedDeltaTime;
 			this.baseRigidbody.MovePosition(this.baseFootPrint.position + deltaPosition);
 
-			Quaternion deltaRotation = Quaternion.Euler(new Vector3(0.0f, 0.0f, -angularVel * Mathf.Rad2Deg * Time.fixedDeltaTime));
+			Quaternion deltaRotation = Quaternion.Euler(new Vector3(0.0f, 0.0f, -angularVelZ * Mathf.Rad2Deg * Time.fixedDeltaTime));
 			this.baseRigidbody.MoveRotation(this.baseRigidbody.rotation * deltaRotation);
 		}
 

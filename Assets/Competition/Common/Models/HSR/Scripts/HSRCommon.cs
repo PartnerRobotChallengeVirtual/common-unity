@@ -92,21 +92,9 @@ namespace SIGVerse.ToyotaHSR
 		private const int sigverseRosbridgeConnectionTimeOut = 5000;
 		private static bool canConnect = true;
 
-		private static bool CanConnect 
-		{
-			get 
-			{
-				return canConnect;
-			}
-			set
-			{
-				canConnect = value;
-			}
-		}
-
 		public static System.Net.Sockets.TcpClient GetSIGVerseRosbridgeConnection(string rosBridgeIP, int sigverseBridgePort)
 		{
-			if(!HSRCommon.CanConnect)
+			if(!HSRCommon.canConnect)
 			{
 				throw new Exception("Cannot connect HSR. IP="+rosBridgeIP + ", Port="+sigverseBridgePort);
 			}
@@ -119,7 +107,7 @@ namespace SIGVerse.ToyotaHSR
 
 			if (!isConnected)
 			{
-				HSRCommon.CanConnect = false;
+				HSRCommon.canConnect = false;
 
 				SIGVerseLogger.Error("Failed to connect. IP="+rosBridgeIP + ", Port="+sigverseBridgePort);
 				throw new Exception("Failed to connect. IP="+rosBridgeIP + ", Port="+sigverseBridgePort);

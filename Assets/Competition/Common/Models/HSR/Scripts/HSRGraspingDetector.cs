@@ -34,7 +34,7 @@ namespace SIGVerse.ToyotaHSR
 		private float preHandLeftAngleX;
 		private float preHandRightAngleX;
 
-		private List<Collider> graspableColliders;
+		private List<Rigidbody> graspableRigidbodies;
 
 		private Rigidbody graspedRigidbody;
 		private Transform savedParentObj;
@@ -47,17 +47,17 @@ namespace SIGVerse.ToyotaHSR
 
 		protected void Awake()
 		{
-			this.graspableColliders = new List<Collider>();
+			this.graspableRigidbodies = new List<Rigidbody>();
 
 			foreach(string graspableTag in graspableTags)
 			{
-				List<GameObject> graspableColliderObjects = GameObject.FindGameObjectsWithTag(graspableTag).ToList<GameObject>();
+				List<GameObject> graspableObjects = GameObject.FindGameObjectsWithTag(graspableTag).ToList<GameObject>();
 
-				foreach(GameObject graspableColliderObject in graspableColliderObjects)
+				foreach(GameObject graspableObject in graspableObjects)
 				{
-					List<Collider> colliders = graspableColliderObject.GetComponentsInChildren<Collider>().ToList<Collider>();
+					List<Rigidbody> rigidbodies = graspableObject.GetComponentsInChildren<Rigidbody>().ToList<Rigidbody>();
 
-					this.graspableColliders.AddRange(colliders);
+					this.graspableRigidbodies.AddRange(rigidbodies);
 				}
 			}
 
@@ -118,42 +118,37 @@ namespace SIGVerse.ToyotaHSR
 		}
 
 
-		public void OnTransferredTriggerEnter(Collider other, FingerType fingerType)
+		public void OnTransferredTriggerEnter(Rigidbody targetRigidbody, FingerType fingerType)
 		{
-//			if (this.transform.root == other.transform.root){ return; }
-
-			if(!this.IsGraspable(other)) { return; }
+			if(!this.IsGraspable(targetRigidbody)) { return; }
 
 			if(fingerType==FingerType.Left)
 			{
-				this.leftCollidingObjects.Add(other.attachedRigidbody);
+				this.leftCollidingObjects.Add(targetRigidbody);
 			}
 			if(fingerType==FingerType.Right)
 			{
-				this.rightCollidingObjects.Add(other.attachedRigidbody);
+				this.rightCollidingObjects.Add(targetRigidbody);
 			}
 
-			if(this.isHandClosing && this.graspedRigidbody==null && this.leftCollidingObjects.Contains(other.attachedRigidbody) && this.rightCollidingObjects.Contains(other.attachedRigidbody))
+			if(this.isHandClosing && this.graspedRigidbody==null && this.leftCollidingObjects.Contains(targetRigidbody) && this.rightCollidingObjects.Contains(targetRigidbody))
 			{
-				this.Grasp(other.attachedRigidbody);
+				this.Grasp(targetRigidbody);
 			}
 		}
 
-		public void OnTransferredTriggerExit(Collider other, FingerType fingerType)
+		public void OnTransferredTriggerExit(Rigidbody targetRigidbody, FingerType fingerType)
 		{
-//			if (this.transform.root == other.transform.root){ return; }
-
-			if(!this.IsGraspable(other)) { return; }
+			if(!this.IsGraspable(targetRigidbody)) { return; }
 
 			if(fingerType==FingerType.Left)
 			{
-				this.leftCollidingObjects.Remove(other.attachedRigidbody);
+				this.leftCollidingObjects.Remove(targetRigidbody);
 			}
 			if(fingerType==FingerType.Right)
 			{
-				this.rightCollidingObjects.Remove(other.attachedRigidbody);
+				this.rightCollidingObjects.Remove(targetRigidbody);
 			}
-
 
 			if (this.graspedRigidbody != null)
 			{
@@ -164,11 +159,11 @@ namespace SIGVerse.ToyotaHSR
 			}
 		}
 
-		private bool IsGraspable(Collider other)
+		private bool IsGraspable(Rigidbody targetRigidbody)
 		{
-			foreach(Collider collider in this.graspableColliders)
+			foreach(Rigidbody graspableRigidbody in this.graspableRigidbodies)
 			{
-				if(other==collider) { return true; }
+				if(targetRigidbody==graspableRigidbody) { return true; }
 			}
 
 			return false;

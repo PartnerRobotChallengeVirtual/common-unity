@@ -2,16 +2,14 @@ using UnityEngine;
 
 using System;
 using System.Collections;
+using SIGVerse.SIGVerseRosBridge;
 
 namespace SIGVerse.ToyotaHSR
 {
 	[RequireComponent(typeof (HSRPubSynchronizer))]
 
-	public class HSRPubWideRGBController : MonoBehaviour
+	public class HSRPubWideRGBController : SIGVerseRosBridgePubMessage
 	{
-		public string rosBridgeIP;
-		public int sigverseBridgePort;
-
 		public HSRPubWideRGB publisher;
 
 		public string topicNameCameraInfo;
@@ -36,14 +34,16 @@ namespace SIGVerse.ToyotaHSR
 			this.publishSequenceNumber = this.synchronizer.GetAssignedSequenceNumber();
 		}
 
-		void Start()
+		protected override void Start()
 		{
+			base.Start();
+
 			this.publisher.Initialize(this.rosBridgeIP, this.sigverseBridgePort, this.topicNameCameraInfo,  this.topicNameImage);
 		}
 
 		void Update()
 		{
-			if(!this.publisher.IsConnected()) { return; }
+			if(!this.IsConnected()) { return; }
 
 			this.elapsedTime += UnityEngine.Time.deltaTime;
 
@@ -57,6 +57,12 @@ namespace SIGVerse.ToyotaHSR
 			this.elapsedTime = 0.0f;
 
 			this.publisher.SendMessageInThisFrame();
+		}
+
+
+		public override bool IsConnected()
+		{
+			return this.publisher.IsConnected();
 		}
 	}
 }

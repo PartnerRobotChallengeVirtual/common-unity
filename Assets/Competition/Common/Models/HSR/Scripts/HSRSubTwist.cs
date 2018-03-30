@@ -1,27 +1,17 @@
 using UnityEngine;
-using SIGVerse.ROSBridge;
+using SIGVerse.RosBridge;
 using SIGVerse.Common;
 
 
 namespace SIGVerse.ToyotaHSR
 {
-	public class HSRSubTwist : MonoBehaviour
+	public class HSRSubTwist : RosSubMessage<SIGVerse.RosBridge.geometry_msgs.Twist>
 	{
 //		private const float wheelInclinationThreshold = 0.985f; // 80[deg]
 		private const float wheelInclinationThreshold = 0.965f; // 75[deg]
 //		private const float wheelInclinationThreshold = 0.940f; // 70[deg]
 
-		public string rosBridgeIP;
-		public int    rosBridgePort;
-
-		public string topicName;
-
 		//--------------------------------------------------
-
-		// ROS bridge
-		private ROSBridgeWebSocketConnection webSocketConnection = null;
-
-		private ROSBridgeSubscriber<SIGVerse.ROSBridge.geometry_msgs.Twist> subscriber = null;
 
 		private Transform baseFootPrint;
 		private Rigidbody baseRigidbody;
@@ -40,26 +30,7 @@ namespace SIGVerse.ToyotaHSR
 			this.baseRigidbody = this.baseFootPrint.GetComponent<Rigidbody>();
 		}
 
-		void Start()
-		{
-			if (this.rosBridgeIP.Equals(string.Empty))
-			{
-				this.rosBridgeIP   = ConfigManager.Instance.configInfo.rosbridgeIP;
-			}
-			if (this.rosBridgePort == 0)
-			{
-				this.rosBridgePort = ConfigManager.Instance.configInfo.rosbridgePort;
-			}
-
-			this.webSocketConnection = new SIGVerse.ROSBridge.ROSBridgeWebSocketConnection(rosBridgeIP, rosBridgePort);
-
-			this.subscriber = this.webSocketConnection.Subscribe<SIGVerse.ROSBridge.geometry_msgs.Twist>(topicName, this.TwistCallback);
-
-			// Connect to ROSbridge server
-			this.webSocketConnection.Connect();
-		}
-
-		public void TwistCallback(SIGVerse.ROSBridge.geometry_msgs.Twist twist)
+		protected override void SubscribeMessageCallback(SIGVerse.RosBridge.geometry_msgs.Twist twist)
 		{
 			float linearVel = Mathf.Sqrt(Mathf.Pow(twist.linear.x, 2) + Mathf.Pow(twist.linear.y, 2));
 
@@ -83,16 +54,6 @@ namespace SIGVerse.ToyotaHSR
 		}
 
 
-		void OnDestroy()
-		{
-			if (this.webSocketConnection != null)
-			{
-				this.webSocketConnection.Unsubscribe(this.subscriber);
-
-				this.webSocketConnection.Disconnect();
-			}
-		}
-
 		void FixedUpdate()
 		{
 			if (Mathf.Abs(this.baseFootPrint.forward.y) < wheelInclinationThreshold) { return; }
@@ -104,16 +65,6 @@ namespace SIGVerse.ToyotaHSR
 
 			Quaternion deltaRotation = Quaternion.Euler(new Vector3(0.0f, 0.0f, -angularVelZ * Mathf.Rad2Deg * Time.fixedDeltaTime));
 			this.baseRigidbody.MoveRotation(this.baseRigidbody.rotation * deltaRotation);
-		}
-
-		private void Update()
-		{
-			if(this.webSocketConnection==null || !this.webSocketConnection.IsConnected) { return; }
-
-			this.webSocketConnection.Render();
-
-//			this.baseFootPrint.position += deltaPosition;
-//			this.baseFootPrint.Rotate(0.0f, 0.0f, -angularVel * Mathf.Rad2Deg * Time.deltaTime);
 		}
 	}
 }

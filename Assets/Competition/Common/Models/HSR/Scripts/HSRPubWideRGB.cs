@@ -2,10 +2,10 @@ using UnityEngine;
 
 using System;
 using System.Collections;
-using SIGVerse.ROSBridge.sensor_msgs;
-using SIGVerse.ROSBridge.std_msgs;
+using SIGVerse.RosBridge.sensor_msgs;
+using SIGVerse.RosBridge.std_msgs;
 using SIGVerse.Common;
-using SIGVerse.SIGVerseROSBridge;
+using SIGVerse.SIGVerseRosBridge;
 using System.Threading;
 
 namespace SIGVerse.ToyotaHSR
@@ -21,8 +21,8 @@ namespace SIGVerse.ToyotaHSR
 		private System.Net.Sockets.NetworkStream networkStreamImage      = null;
 
 
-		private SIGVerseROSBridgeMessage<CameraInfoForSIGVerseBridge> cameraInfoMsg = null;
-		private SIGVerseROSBridgeMessage<ImageForSIGVerseBridge>      imageMsg      = null;
+		private SIGVerseRosBridgeMessage<CameraInfoForSIGVerseBridge> cameraInfoMsg = null;
+		private SIGVerseRosBridgeMessage<ImageForSIGVerseBridge>      imageMsg      = null;
 
 		private GameObject cameraFrameObj;
 		
@@ -51,18 +51,8 @@ namespace SIGVerse.ToyotaHSR
 
 		public void Initialize(string rosBridgeIP, int sigverseBridgePort, string topicNameCameraInfo, string topicNameImage)
 		{
-			if (rosBridgeIP.Equals(string.Empty))
-			{
-				rosBridgeIP        = ConfigManager.Instance.configInfo.rosbridgeIP;
-			}
-			if (sigverseBridgePort == 0)
-			{
-				sigverseBridgePort = ConfigManager.Instance.configInfo.sigverseBridgePort;
-			}
-
-
-			this.tcpClientCameraInfo = HSRCommon.GetSIGVerseRosbridgeConnection(rosBridgeIP, sigverseBridgePort);
-			this.tcpClientImage      = HSRCommon.GetSIGVerseRosbridgeConnection(rosBridgeIP, sigverseBridgePort);
+			this.tcpClientCameraInfo = SIGVerseRosBridgeConnection.GetConnection(rosBridgeIP, sigverseBridgePort);
+			this.tcpClientImage      = SIGVerseRosBridgeConnection.GetConnection(rosBridgeIP, sigverseBridgePort);
 
 			this.networkStreamCameraInfo = this.tcpClientCameraInfo.GetStream();
 			this.networkStreamCameraInfo.ReadTimeout  = 100000;
@@ -106,10 +96,10 @@ namespace SIGVerse.ToyotaHSR
 
 			this.imageData = new ImageForSIGVerseBridge(null, (uint)imageHeight, (uint)imageWidth, encoding, isBigendian, step, null);
 
-			this.header = new Header(0, new SIGVerse.ROSBridge.msg_helpers.Time(0, 0), this.cameraFrameObj.name);
+			this.header = new Header(0, new SIGVerse.RosBridge.msg_helpers.Time(0, 0), this.cameraFrameObj.name);
 
-			this.cameraInfoMsg = new SIGVerseROSBridgeMessage<CameraInfoForSIGVerseBridge>("publish", topicNameCameraInfo, CameraInfoForSIGVerseBridge.GetMessageType(), this.cameraInfoData);
-			this.imageMsg      = new SIGVerseROSBridgeMessage<ImageForSIGVerseBridge>     ("publish", topicNameImage,      ImageForSIGVerseBridge.GetMessageType(),      this.imageData);
+			this.cameraInfoMsg = new SIGVerseRosBridgeMessage<CameraInfoForSIGVerseBridge>("publish", topicNameCameraInfo, CameraInfoForSIGVerseBridge.GetMessageType(), this.cameraInfoData);
+			this.imageMsg      = new SIGVerseRosBridgeMessage<ImageForSIGVerseBridge>     ("publish", topicNameImage,      ImageForSIGVerseBridge.GetMessageType(),      this.imageData);
 		}
 
 		void OnDestroy()
@@ -128,7 +118,7 @@ namespace SIGVerse.ToyotaHSR
 
 		public bool IsConnected()
 		{
-			return this.networkStreamCameraInfo != null && this.networkStreamImage !=null;
+			return this.tcpClientCameraInfo != null && this.tcpClientImage != null && this.networkStreamCameraInfo != null && this.networkStreamImage !=null;
 		}
 
 		public bool IsPublishing()

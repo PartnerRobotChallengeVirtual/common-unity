@@ -3,15 +3,15 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
 
-namespace SIGVerse.ROSBridge
+namespace SIGVerse.RosBridge
 {
-	public abstract class ROSBridgePublisher
+	public abstract class RosBridgePublisher
 	{
 		private static readonly int SendingInterval = 3; //[ms]
 
 		protected string topic;
 		protected string type;
-		protected ROSBridgeWebSocketConnection webSocketConnection;
+		protected RosBridgeWebSocketConnection webSocketConnection;
 
 		protected System.Threading.Thread publishingThread;
 		protected Object lockPublishQueue;
@@ -30,7 +30,7 @@ namespace SIGVerse.ROSBridge
 			get { return type; }
 		}
 
-		public ROSBridgePublisher(string topicName, uint queueSize)
+		public RosBridgePublisher(string topicName, uint queueSize)
 		{
 			this.topic     = topicName;
 			this.queueSize = queueSize;
@@ -39,12 +39,12 @@ namespace SIGVerse.ROSBridge
 			this.lockPublishQueue = new object();
 		}
 
-		public void SetConnection(ROSBridgeWebSocketConnection webSocketConnection)
+		public void SetConnection(RosBridgeWebSocketConnection webSocketConnection)
 		{
 			this.webSocketConnection = webSocketConnection;
 		}
 
-		public abstract string ToMessage(ROSMessage message);
+		public abstract string ToMessage(RosMessage message);
 
 
 		public void CreatePublishingThread()
@@ -79,13 +79,13 @@ namespace SIGVerse.ROSBridge
 		/// </summary>
 		/// <typeparam name="T">Message type</typeparam>
 		[System.Serializable]
-		protected class ROSMessageWrapper<T>
+		protected class RosMessageWrapper<T>
 		{
 			public string op;
 			public string topic;
 			public T msg;
 
-			public ROSMessageWrapper(string op, string topic, T data)
+			public RosMessageWrapper(string op, string topic, T data)
 			{
 				this.op = op;
 				this.topic = topic;
@@ -94,9 +94,9 @@ namespace SIGVerse.ROSBridge
 		}
 	}
 
-	public class ROSBridgePublisher<Tmsg> : ROSBridgePublisher where Tmsg : ROSMessage
+	public class RosBridgePublisher<Tmsg> : RosBridgePublisher where Tmsg : RosMessage
 	{
-		public ROSBridgePublisher(string topicName, uint queueSize = 0) : base(topicName, queueSize)
+		public RosBridgePublisher(string topicName, uint queueSize = 0) : base(topicName, queueSize)
 		{
 			var getMessageType = typeof(Tmsg).GetMethod("GetMessageType");
 
@@ -134,9 +134,9 @@ namespace SIGVerse.ROSBridge
 			return true;
 		}
 
-		public override string ToMessage(ROSMessage message)
+		public override string ToMessage(RosMessage message)
 		{
-			var msg = new ROSMessageWrapper<Tmsg>("publish", topic, (Tmsg)message);
+			var msg = new RosMessageWrapper<Tmsg>("publish", topic, (Tmsg)message);
 
 			return UnityEngine.JsonUtility.ToJson(msg);
 		}

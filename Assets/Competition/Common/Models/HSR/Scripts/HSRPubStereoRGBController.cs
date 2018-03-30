@@ -3,16 +3,14 @@ using UnityEngine;
 using System;
 using System.Collections;
 using SIGVerse.Common;
+using SIGVerse.SIGVerseRosBridge;
 
 namespace SIGVerse.ToyotaHSR
 {
 	[RequireComponent(typeof (HSRPubSynchronizer))]
 
-	public class HSRPubStereoRGBController : MonoBehaviour
+	public class HSRPubStereoRGBController : SIGVerseRosBridgePubMessage
 	{
-		public string rosBridgeIP;
-		public int sigverseBridgePort;
-
 		[HeaderAttribute("Left Camera")]
 		public HSRPubStereoRGB leftPublisher;
 		public string topicNameLeftCameraInfo;
@@ -42,15 +40,17 @@ namespace SIGVerse.ToyotaHSR
 			this.publishSequenceNumber = this.synchronizer.GetAssignedSequenceNumber();
 		}
 
-		void Start()
+		protected override void Start()
 		{
+			base.Start();
+
 			this.leftPublisher .Initialize(this.rosBridgeIP, this.sigverseBridgePort, this.topicNameLeftCameraInfo,  this.topicNameLeftImage,  false);
 			this.rightPublisher.Initialize(this.rosBridgeIP, this.sigverseBridgePort, this.topicNameRightCameraInfo, this.topicNameRightImage, true);
 		}
 
 		void Update()
 		{
-			if(!this.leftPublisher.IsConnected() || !this.rightPublisher.IsConnected()) { return; }
+			if(!this.IsConnected()) { return; }
 
 			this.elapsedTime += UnityEngine.Time.deltaTime;
 
@@ -65,6 +65,12 @@ namespace SIGVerse.ToyotaHSR
 
 			this.leftPublisher .SendMessageInThisFrame();
 			this.rightPublisher.SendMessageInThisFrame();
+		}
+
+
+		public override bool IsConnected()
+		{
+			return this.leftPublisher.IsConnected() && this.rightPublisher.IsConnected();
 		}
 	}
 }

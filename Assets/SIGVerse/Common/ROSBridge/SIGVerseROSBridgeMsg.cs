@@ -4,17 +4,17 @@ using System.Net.Sockets;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Bson;
 
-namespace SIGVerse.SIGVerseROSBridge
+namespace SIGVerse.SIGVerseRosBridge
 {
 	[System.Serializable]
-	public class SIGVerseROSBridgeMessage<ROSMessage>
+	public class SIGVerseRosBridgeMessage<RosMessage>
 	{
 		public string op { get; set; }
 		public string topic { get; set; }
 		public string type { get; set; }
-		public ROSMessage msg { get; set; }
+		public RosMessage msg { get; set; }
 
-		public SIGVerseROSBridgeMessage(string op, string topic, string type, ROSMessage msg)
+		public SIGVerseRosBridgeMessage(string op, string topic, string type, RosMessage msg)
 		{
 			this.op = op;
 			this.topic = topic;
@@ -51,7 +51,7 @@ namespace SIGVerse.SIGVerseROSBridge
 				{
 					UnityEngine.Debug.Log("Time gap sec=" + messageArray[1] + ", msec=" + messageArray[2]);
 
-					SIGVerse.ROSBridge.std_msgs.Header.SetTimeGap(Int32.Parse(messageArray[1]), Int32.Parse(messageArray[2]));
+					SIGVerse.RosBridge.std_msgs.Header.SetTimeGap(Int32.Parse(messageArray[1]), Int32.Parse(messageArray[2]));
 				}
 				else
 				{

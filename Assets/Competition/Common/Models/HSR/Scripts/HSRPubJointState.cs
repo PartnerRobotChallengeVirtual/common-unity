@@ -1,7 +1,7 @@
 using UnityEngine;
-using SIGVerse.ROSBridge;
-using SIGVerse.ROSBridge.std_msgs;
-using SIGVerse.ROSBridge.sensor_msgs;
+using SIGVerse.RosBridge;
+using SIGVerse.RosBridge.std_msgs;
+using SIGVerse.RosBridge.sensor_msgs;
 using SIGVerse.Common;
 using System.Collections.Generic;
 using SIGVerse.ToyotaHSR;
@@ -9,13 +9,8 @@ using System;
 
 namespace SIGVerse.ToyotaHSR
 {
-	public class HSRPubJointState : MonoBehaviour
+	public class HSRPubJointState : RosPubMessage<JointState>
 	{
-		public string rosBridgeIP;
-		public int rosBridgePort;
-
-		public string topicName;
-
 		[TooltipAttribute("milliseconds")]
 		public float sendingInterval = 100;
 
@@ -31,11 +26,6 @@ namespace SIGVerse.ToyotaHSR
 		private float armLiftLinkIniPosZ;
 
 		private JointState jointState;
-
-		// ROS bridge
-		private ROSBridgeWebSocketConnection webSocketConnection = null;
-
-		private ROSBridgePublisher<JointState> jointStatePublisher;
 
 		private float elapsedTime;
 
@@ -53,26 +43,13 @@ namespace SIGVerse.ToyotaHSR
 			this.armLiftLinkIniPosZ = this.armLiftLink.localPosition.z;
 		}
 
-		void Start()
+		protected override void Start()
 		{
-			if (this.rosBridgeIP.Equals(string.Empty))
-			{
-				this.rosBridgeIP   = ConfigManager.Instance.configInfo.rosbridgeIP;
-			}
-			if (this.rosBridgePort == 0)
-			{
-				this.rosBridgePort = ConfigManager.Instance.configInfo.rosbridgePort;
-			}
-			
-			this.webSocketConnection = new SIGVerse.ROSBridge.ROSBridgeWebSocketConnection(rosBridgeIP, rosBridgePort);
+			base.Start();
 
-			this.jointStatePublisher = this.webSocketConnection.Advertise<JointState>(topicName);
-
-			// Connect to ROSbridge server
-			this.webSocketConnection.Connect();
 
 			this.jointState = new JointState();
-			this.jointState.header = new Header(0, new SIGVerse.ROSBridge.msg_helpers.Time(0, 0), "hsrb_joint_states");
+			this.jointState.header = new Header(0, new SIGVerse.RosBridge.msg_helpers.Time(0, 0), "hsrb_joint_states");
 
 			this.jointState.name = new List<string>();
 			this.jointState.name.Add(HSRCommon.ArmLiftJointName);   //1
@@ -88,19 +65,11 @@ namespace SIGVerse.ToyotaHSR
 			this.jointState.effort   = new List<double> { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 };
 		}
 
-		void OnDestroy()
-		{
-			if (this.webSocketConnection != null)
-			{
-				this.webSocketConnection.Unadvertise(this.jointStatePublisher);
 
-				this.webSocketConnection.Disconnect();
-			}
-		}
-
-		void Update()
+		protected override void Update()
 		{
-			if(this.webSocketConnection==null || !this.webSocketConnection.IsConnected) { return; }
+			base.Update();
+
 
 			this.elapsedTime += UnityEngine.Time.deltaTime;
 
@@ -133,7 +102,7 @@ namespace SIGVerse.ToyotaHSR
 
 //			float position = HSRCommon.GetClampedPosition(value, name);
 
-			this.jointStatePublisher.Publish(this.jointState);
+			this.publisher.Publish(this.jointState);
 		}
 	}
 }

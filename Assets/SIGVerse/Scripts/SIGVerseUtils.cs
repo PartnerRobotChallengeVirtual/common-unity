@@ -74,6 +74,25 @@ namespace SIGVerse.Common
 				return null;
 			}
 		}
+
+		public static T[] FindObjectsOfInterface<T>() where T : class
+		{
+			List<T> list = new List<T>();
+
+			Component[] allComponents = GameObject.FindObjectsOfType<Component>(); // High Load
+
+			foreach (Component component in allComponents)
+			{
+				var componentAsT = component as T;
+
+				if (componentAsT != null)
+				{
+					list.Add (componentAsT);
+				}
+			}
+
+			return list.ToArray();
+		}
 	}
 }
 

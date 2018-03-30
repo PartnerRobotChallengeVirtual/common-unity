@@ -1,5 +1,5 @@
 using UnityEngine;
-using SIGVerse.ROSBridge;
+using SIGVerse.RosBridge;
 using SIGVerse.Common;
 using System.Collections.Generic;
 using SIGVerse.ToyotaHSR;
@@ -7,14 +7,8 @@ using System;
 
 namespace SIGVerse.ToyotaHSR
 {
-	public class HSRSubJointTrajectory : MonoBehaviour, IHSRGraspedObjectHandler
+	public class HSRSubJointTrajectory : RosSubMessage<SIGVerse.RosBridge.trajectory_msgs.JointTrajectory>, IHSRGraspedObjectHandler
 	{
-		public string rosBridgeIP;
-		public int    rosBridgePort;
-
-		public string topicName;
-
-		//--------------------------------------------------
 		public class TrajectoryInfo
 		{
 			public float StartTime    { get; set; }
@@ -52,10 +46,6 @@ namespace SIGVerse.ToyotaHSR
 
 		private GameObject graspedObject;
 
-		// ROS bridge
-		private ROSBridgeWebSocketConnection webSocketConnection = null;
-
-		private ROSBridgeSubscriber<SIGVerse.ROSBridge.trajectory_msgs.JointTrajectory> subscriber = null;
 
 		void Awake()
 		{
@@ -88,28 +78,14 @@ namespace SIGVerse.ToyotaHSR
 		}
 
 
-		void Start()
+		protected override void Start()
 		{
-			if (this.rosBridgeIP.Equals(string.Empty))
-			{
-				this.rosBridgeIP   = ConfigManager.Instance.configInfo.rosbridgeIP;
-			}
-			if (this.rosBridgePort == 0)
-			{
-				this.rosBridgePort = ConfigManager.Instance.configInfo.rosbridgePort;
-			}
+			base.Start();
 			
 			this.graspedObject = null;
-
-			this.webSocketConnection = new SIGVerse.ROSBridge.ROSBridgeWebSocketConnection(rosBridgeIP, rosBridgePort);
-
-			this.subscriber = this.webSocketConnection.Subscribe<SIGVerse.ROSBridge.trajectory_msgs.JointTrajectory>(topicName, this.JointTrajectoryCallback);
-
-			// Connect to ROSbridge server
-			this.webSocketConnection.Connect();
 		}
 
-		public void JointTrajectoryCallback(SIGVerse.ROSBridge.trajectory_msgs.JointTrajectory jointTrajectory)
+		protected override void SubscribeMessageCallback(SIGVerse.RosBridge.trajectory_msgs.JointTrajectory jointTrajectory)
 		{
 			//List<string>  jointNames = jointTrajectory.joint_names;
 			//List<SIGVerse.ROSBridge.trajectory_msgs.JointTrajectoryPoint> points = jointTrajectory.points;
@@ -178,19 +154,9 @@ namespace SIGVerse.ToyotaHSR
 			}
 		}
 
-		void OnDestroy()
+		protected override void Update()
 		{
-			if (this.webSocketConnection != null)
-			{
-				this.webSocketConnection.Unsubscribe(this.subscriber);
-
-				this.webSocketConnection.Disconnect();
-			}
-		}
-
-		void Update()
-		{
-			if(this.webSocketConnection==null || !this.webSocketConnection.IsConnected) { return; }
+			base.Update();
 
 			foreach(string jointName in this.trajectoryKeyList)
 			{
@@ -281,8 +247,6 @@ namespace SIGVerse.ToyotaHSR
 					}
 				}
 			}
-
-			this.webSocketConnection.Render();
 		}
 
 

@@ -154,6 +154,8 @@ namespace SIGVerse.ToyotaHSR
 			{
 				if (!this.leftCollidingObjects.Contains(this.graspedRigidbody) && !this.rightCollidingObjects.Contains(this.graspedRigidbody))
 				{
+					if(this.graspedRigidbody.constraints == RigidbodyConstraints.FreezeAll) { return; }
+
 					this.Release();
 				}
 			}

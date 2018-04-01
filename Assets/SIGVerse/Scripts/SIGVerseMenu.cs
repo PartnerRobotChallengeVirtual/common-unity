@@ -124,6 +124,12 @@ namespace SIGVerse.Common
 
 			this.sceneNameObj.GetComponent<Text>().text = SceneManager.GetActiveScene().name;
 
+			if(ConfigManager.Instance.configInfo.isAutoStartWithMenu)
+			{
+				this.OnHiddingButtonClick();
+				this.OnStartButtonClick();
+			}
+
 			CreateEventSystem();
 
 			SceneManager.sceneLoaded += OnSceneLoaded;
@@ -154,14 +160,9 @@ namespace SIGVerse.Common
 
 
 		// Use this for initialization
-		void Start()
-		{
-			if(ConfigManager.Instance.configInfo.isAutoStartWithMenu)
-			{
-				this.OnHiddingButtonClick();
-				this.OnStartButtonClick();
-			}
-		}
+		//void Start()
+		//{
+		//}
 
 
 		// Update is called once per frame

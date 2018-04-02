@@ -124,13 +124,13 @@ namespace SIGVerse.Common
 
 			this.sceneNameObj.GetComponent<Text>().text = SceneManager.GetActiveScene().name;
 
+			CreateEventSystem();
+
 			if(ConfigManager.Instance.configInfo.isAutoStartWithMenu)
 			{
 				this.OnHiddingButtonClick();
 				this.OnStartButtonClick();
 			}
-
-			CreateEventSystem();
 
 			SceneManager.sceneLoaded += OnSceneLoaded;
 		}

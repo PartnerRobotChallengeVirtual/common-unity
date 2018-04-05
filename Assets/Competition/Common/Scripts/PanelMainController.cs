@@ -18,12 +18,8 @@ namespace SIGVerse.Competition
 		private const string TimeFormat = "#####0";
 		private const string TagNameAudienceCamera = "AudienceCamera";
 
-		public int timeLimit = 600;
-
 		public GameObject mainPanel;
 		public GameObject giveUpPanel;
-
-		public List<string> timeIsUpDestinationTags;
 
 		// ---------------------------------------
 
@@ -31,10 +27,6 @@ namespace SIGVerse.Competition
 		private Text timeLeftValText;
 		private Text taskMessageText;
 
-		private List<GameObject> timeIsUpDestinations;
-
-		private float timeLeft;
-		
 		private List<Camera> audienceCameras;
 		private int mainAudienceCameraNo;
 
@@ -44,19 +36,6 @@ namespace SIGVerse.Competition
 			this.trialNumberText = this.mainPanel.transform.Find("TargetsOfHiding/TrialNumberText")             .GetComponent<Text>();
 			this.timeLeftValText = this.mainPanel.transform.Find("TargetsOfHiding/TimeLeftInfo/TimeLeftValText").GetComponent<Text>();
 			this.taskMessageText = this.mainPanel.transform.Find("TargetsOfHiding/TaskMessageText")             .GetComponent<Text>();
-
-
-			this.timeIsUpDestinations = new List<GameObject>();
-
-			foreach (string timeIsUpDestinationTag in this.timeIsUpDestinationTags)
-			{
-				GameObject[] timeIsUpDestinationArray = GameObject.FindGameObjectsWithTag(timeIsUpDestinationTag);
-
-				foreach(GameObject timeIsUpDestination in timeIsUpDestinationArray)
-				{
-					this.timeIsUpDestinations.Add(timeIsUpDestination);
-				}
-			}
 
 
 			List<GameObject> audienceCameraObjs = GameObject.FindGameObjectsWithTag(TagNameAudienceCamera).ToList();
@@ -75,45 +54,15 @@ namespace SIGVerse.Competition
 		// Use this for initialization
 		void Start()
 		{
-			this.timeLeft = (float)timeLimit;
-
-			this.SetTimeLeft(this.timeLeft);
-
 			this.mainAudienceCameraNo = 0;
 
 			this.UpdateAudienceCameraDepth();
 		}
 
-		// Update is called once per frame
-		void Update()
-		{
-			this.timeLeft = Mathf.Max(0.0f, this.timeLeft-Time.deltaTime);
-
-			this.SetTimeLeft(this.timeLeft);
-
-			if(this.timeLeft == 0.0f)
-			{
-				foreach(GameObject timeIsUpDestination in this.timeIsUpDestinations)
-				{
-					ExecuteEvents.Execute<ITimeIsUpHandler>
-					(
-						target: timeIsUpDestination,
-						eventData: null,
-						functor: (reciever, eventData) => reciever.OnTimeIsUp()
-					);
-				}
-			}
-		}
 
 		public void SetTimeLeft(float timeLeft)
 		{
 			this.timeLeftValText.text = timeLeft.ToString(TimeFormat);
-		}
-
-		public void ResetTimeLeftText()
-		{
-			this.timeLeft = (float)timeLimit;
-			this.SetTimeLeft(this.timeLeft);
 		}
 
 		public void SetTrialNumberText(int numberOfTrials)

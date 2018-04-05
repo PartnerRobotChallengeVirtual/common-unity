@@ -28,6 +28,8 @@ namespace SIGVerse.Competition
 		protected int  trialNo = 0;
 		protected int  totalTimeInt = 0;
 
+		protected int  timeLimit = 0;
+
 		protected bool isStepChanged = true;
 		protected bool isFileRead = false;
 
@@ -344,7 +346,7 @@ namespace SIGVerse.Competition
 
 			this.elapsedTimeText.text = time.ToString(ElapsedTimeFormat);
 
-			this.mainPanelController.SetTimeLeft(this.mainPanelController.timeLimit - time);
+			this.mainPanelController.SetTimeLeft(this.timeLimit - time);
 		}
 
 		private void SetStartTime(int startTime)

@@ -194,6 +194,7 @@ namespace SIGVerse.RosBridge
 		{
 			RosBridgePublisher<Tmsg> publisher = (RosBridgePublisher<Tmsg>)Activator.CreateInstance(typeof(RosBridgePublisher<Tmsg>), new object[] { topic, queueSize });
 			publisher.SetConnection(this);
+			publisher.CreatePublishingThread();
 
 			this.publishers.Add(publisher);
 
@@ -216,6 +217,7 @@ namespace SIGVerse.RosBridge
 				this.webSocket.Send(RosBridgeMsg.UnAdvertiseTopic(publisher.Topic));
 			}
 
+			publisher.Unadvertise();
 			this.publishers.Remove(publisher);
 		}
 
@@ -349,7 +351,7 @@ namespace SIGVerse.RosBridge
 			this.webSocket.OnOpen    += (sender, eventArgs) => { Debug.Log("WebSocket Open  url=" + url); };
 			this.webSocket.OnMessage += (sender, eventArgs) => this.OnMessage(eventArgs.Data);
 			this.webSocket.OnError   += (sender, eventArgs) => { Debug.Log("WebSocket Error Message: " + eventArgs.Message); };
-			this.webSocket.OnClose   += (sender, eventArgs) => { Debug.Log("WebSocket Close"); };
+			this.webSocket.OnClose   += (sender, eventArgs) => this.OnClose();
 
 //			this.webSocket.Connect();
 			this.webSocket.ConnectAsync();
@@ -395,10 +397,10 @@ namespace SIGVerse.RosBridge
 
 				this.isConnected = true;
 
-				foreach (RosBridgePublisher pub in this.publishers)
-				{
-					pub.CreatePublishingThread();
-				}
+				//foreach (RosBridgePublisher pub in this.publishers)
+				//{
+				//	pub.CreatePublishingThread();
+				//}
 			}
 		}
 
@@ -421,6 +423,7 @@ namespace SIGVerse.RosBridge
 			foreach (var pub in this.publishers)
 			{
 				this.webSocket.Send(RosBridgeMsg.UnAdvertiseTopic(pub.Topic));
+				pub.Unadvertise();
 			}
 			foreach (var srv in this.serviceProviders)
 			{
@@ -505,6 +508,12 @@ namespace SIGVerse.RosBridge
 			{
 				Debug.Log("Got an empty message from the web socket");
 			}
+		}
+
+		public void OnClose()
+		{
+			Debug.Log("WebSocket Close");
+			this.Disconnect();
 		}
 
 		/// <summary>

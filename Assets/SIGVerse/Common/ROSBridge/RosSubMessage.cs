@@ -28,23 +28,31 @@ namespace SIGVerse.RosBridge
 				this.rosBridgePort = ConfigManager.Instance.configInfo.rosbridgePort;
 			}
 
-			this.webSocketConnection = new SIGVerse.RosBridge.RosBridgeWebSocketConnection(rosBridgeIP, rosBridgePort);
-
-			this.subscriber = this.webSocketConnection.Subscribe<Tmsg>(topicName, this.SubscribeMessageCallback);
-
-			// Connect to ROSbridge server
-			this.webSocketConnection.Connect();
-		}
-
-		protected virtual void OnDestroy()
-		{
-			if (this.webSocketConnection != null)
+			if(!RosConnectionManager.Instance.rosConnections.rosBridgeWebSocketConnectionMap.ContainsKey(topicName))
 			{
-				this.webSocketConnection.Unsubscribe(this.subscriber);
+				this.webSocketConnection = new SIGVerse.RosBridge.RosBridgeWebSocketConnection(rosBridgeIP, rosBridgePort);
 
-				this.webSocketConnection.Disconnect();
+				RosConnectionManager.Instance.rosConnections.rosBridgeWebSocketConnectionMap.Add(topicName, this.webSocketConnection);
+
+				this.subscriber = this.webSocketConnection.Subscribe<Tmsg>(topicName, this.SubscribeMessageCallback);
+
+				// Connect to ROSbridge server
+				this.webSocketConnection.Connect();
+			}
+			else
+			{
+				this.webSocketConnection = RosConnectionManager.Instance.rosConnections.rosBridgeWebSocketConnectionMap[topicName];
+
+				this.subscriber = this.webSocketConnection.Subscribe<Tmsg>(topicName, this.SubscribeMessageCallback);
 			}
 		}
+
+		//protected virtual void OnDestroy()
+		//{
+		//	this.Clear();
+		//	this.Close();
+		//}
+
 
 		protected virtual void Update()
 		{
@@ -59,6 +67,28 @@ namespace SIGVerse.RosBridge
 		public virtual bool IsConnected()
 		{
 			return this.webSocketConnection!=null && this.webSocketConnection.IsConnected;
+		}
+
+		public virtual void Clear()
+		{
+			if (this.webSocketConnection != null)
+			{
+				this.webSocketConnection.Unsubscribe(this.subscriber);
+			}
+		}
+
+		public virtual void Close()
+		{
+			if (this.webSocketConnection != null)
+			{
+				this.webSocketConnection.Disconnect();
+			}
+		}
+
+		void OnApplicationQuit()
+		{
+			this.Clear();
+			this.Close();
 		}
 	}
 }

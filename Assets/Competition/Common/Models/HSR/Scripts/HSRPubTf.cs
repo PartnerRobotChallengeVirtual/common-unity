@@ -7,6 +7,7 @@ using SIGVerse.SIGVerseRosBridge;
 using SIGVerse.RosBridge.geometry_msgs;
 using System.Collections.Generic;
 using System.Threading;
+using SIGVerse.RosBridge;
 
 namespace SIGVerse.ToyotaHSR
 {
@@ -93,7 +94,16 @@ namespace SIGVerse.ToyotaHSR
 		{
 			base.Start();
 
-			this.tcpClient = SIGVerseRosBridgeConnection.GetConnection(this.rosBridgeIP, this.sigverseBridgePort);
+			if(!RosConnectionManager.Instance.rosConnections.sigverseRosBridgeTcpClientMap.ContainsKey(topicName))
+			{
+				this.tcpClient = SIGVerseRosBridgeConnection.GetConnection(this.rosBridgeIP, this.sigverseBridgePort);
+
+				RosConnectionManager.Instance.rosConnections.sigverseRosBridgeTcpClientMap.Add(topicName, this.tcpClient);
+			}
+			else
+			{
+				this.tcpClient = RosConnectionManager.Instance.rosConnections.sigverseRosBridgeTcpClientMap[topicName];
+			}
 
 			this.networkStream = this.tcpClient.GetStream();
 
@@ -103,11 +113,11 @@ namespace SIGVerse.ToyotaHSR
 			this.transformStampedMsg = new SIGVerseRosBridgeMessage<TransformStamped[]>("publish", this.topicName, "sigverse/TfList", null);
 		}
 
-		void OnDestroy()
-		{
-			if (this.networkStream != null) { this.networkStream.Close(); }
-			if (this.tcpClient     != null) { this.tcpClient.Close(); }
-		}
+		//void OnDestroy()
+		//{
+		//	if (this.networkStream != null) { this.networkStream.Close(); }
+		//	if (this.tcpClient     != null) { this.tcpClient.Close(); }
+		//}
 
 		void Update()
 		{
@@ -176,6 +186,17 @@ namespace SIGVerse.ToyotaHSR
 		public override bool IsConnected()
 		{
 			return this.networkStream != null && this.tcpClient != null;
+		}
+
+		public override void Close()
+		{
+			if (this.networkStream != null) { this.networkStream.Close(); }
+			if (this.tcpClient     != null) { this.tcpClient.Close(); }
+		}
+
+		void OnApplicationQuit()
+		{
+			this.Close();
 		}
 	}
 }

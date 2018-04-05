@@ -64,5 +64,15 @@ namespace SIGVerse.ToyotaHSR
 		{
 			return this.publisher.IsConnected();
 		}
+
+		public override void Close()
+		{
+			this.publisher.Close();
+		}
+
+		void OnApplicationQuit()
+		{
+			this.Close();
+		}
 	}
 }

@@ -7,6 +7,7 @@ using SIGVerse.RosBridge.std_msgs;
 using SIGVerse.Common;
 using SIGVerse.SIGVerseRosBridge;
 using System.Threading;
+using SIGVerse.RosBridge;
 
 namespace SIGVerse.ToyotaHSR
 {
@@ -52,8 +53,27 @@ namespace SIGVerse.ToyotaHSR
 
 		public void Initialize(string rosBridgeIP, int sigverseBridgePort, string topicNameCameraInfo, string topicNameImage)
 		{
-			this.tcpClientCameraInfo = SIGVerseRosBridgeConnection.GetConnection(rosBridgeIP, sigverseBridgePort);
-			this.tcpClientImage      = SIGVerseRosBridgeConnection.GetConnection(rosBridgeIP, sigverseBridgePort);
+			if(!RosConnectionManager.Instance.rosConnections.sigverseRosBridgeTcpClientMap.ContainsKey(topicNameCameraInfo))
+			{
+				this.tcpClientCameraInfo = SIGVerseRosBridgeConnection.GetConnection(rosBridgeIP, sigverseBridgePort);
+
+				RosConnectionManager.Instance.rosConnections.sigverseRosBridgeTcpClientMap.Add(topicNameCameraInfo, this.tcpClientCameraInfo);
+			}
+			else
+			{
+				this.tcpClientCameraInfo = RosConnectionManager.Instance.rosConnections.sigverseRosBridgeTcpClientMap[topicNameCameraInfo];
+			}
+			
+			if(!RosConnectionManager.Instance.rosConnections.sigverseRosBridgeTcpClientMap.ContainsKey(topicNameImage))
+			{
+				this.tcpClientImage = SIGVerseRosBridgeConnection.GetConnection(rosBridgeIP, sigverseBridgePort);
+
+				RosConnectionManager.Instance.rosConnections.sigverseRosBridgeTcpClientMap.Add(topicNameImage, this.tcpClientImage);
+			}
+			else
+			{
+				this.tcpClientImage = RosConnectionManager.Instance.rosConnections.sigverseRosBridgeTcpClientMap[topicNameImage];
+			}
 
 			this.networkStreamCameraInfo = this.tcpClientCameraInfo.GetStream();
 			this.networkStreamCameraInfo.ReadTimeout  = 100000;
@@ -110,14 +130,14 @@ namespace SIGVerse.ToyotaHSR
 			this.imageMsg      = new SIGVerseRosBridgeMessage<ImageForSIGVerseBridge>     ("publish", topicNameImage     , ImageForSIGVerseBridge.GetMessageType(),      this.imageData);
 		}
 
-		void OnDestroy()
-		{
-			if (this.networkStreamCameraInfo != null) { this.networkStreamCameraInfo.Close(); }
-			if (this.networkStreamImage      != null) { this.networkStreamImage     .Close(); }
+		//void OnDestroy()
+		//{
+		//	if (this.networkStreamCameraInfo != null) { this.networkStreamCameraInfo.Close(); }
+		//	if (this.networkStreamImage      != null) { this.networkStreamImage     .Close(); }
 
-			if (this.tcpClientCameraInfo != null) { this.tcpClientCameraInfo.Close(); }
-			if (this.tcpClientImage      != null) { this.tcpClientImage     .Close(); }
-		}
+		//	if (this.tcpClientCameraInfo != null) { this.tcpClientCameraInfo.Close(); }
+		//	if (this.tcpClientImage      != null) { this.tcpClientImage     .Close(); }
+		//}
 
 		public void SendMessageInThisFrame()
 		{
@@ -132,6 +152,15 @@ namespace SIGVerse.ToyotaHSR
 		public bool IsPublishing()
 		{
 			return this.isPublishingCameraInfo || this.isPublishingImage;
+		}
+
+		public void Close()
+		{
+			if (this.networkStreamCameraInfo != null) { this.networkStreamCameraInfo.Close(); }
+			if (this.networkStreamImage      != null) { this.networkStreamImage     .Close(); }
+
+			if (this.tcpClientCameraInfo != null) { this.tcpClientCameraInfo.Close(); }
+			if (this.tcpClientImage      != null) { this.tcpClientImage     .Close(); }
 		}
 
 

@@ -344,7 +344,7 @@ namespace SIGVerse.Competition
 
 			this.elapsedTimeText.text = time.ToString(ElapsedTimeFormat);
 
-			this.mainPanelController.SetTimeLeft(PanelMainController.TimeLimit - time);
+			this.mainPanelController.SetTimeLeft(this.mainPanelController.timeLimit - time);
 		}
 
 		private void SetStartTime(int startTime)

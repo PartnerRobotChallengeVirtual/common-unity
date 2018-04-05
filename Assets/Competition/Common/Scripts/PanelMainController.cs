@@ -18,7 +18,7 @@ namespace SIGVerse.Competition
 		private const string TimeFormat = "#####0";
 		private const string TagNameAudienceCamera = "AudienceCamera";
 
-		public const int TimeLimit = 600;
+		public int timeLimit = 600;
 
 		public GameObject mainPanel;
 		public GameObject giveUpPanel;
@@ -75,7 +75,7 @@ namespace SIGVerse.Competition
 		// Use this for initialization
 		void Start()
 		{
-			this.timeLeft = (float)TimeLimit;
+			this.timeLeft = (float)timeLimit;
 
 			this.SetTimeLeft(this.timeLeft);
 
@@ -112,7 +112,7 @@ namespace SIGVerse.Competition
 
 		public void ResetTimeLeftText()
 		{
-			this.timeLeft = (float)TimeLimit;
+			this.timeLeft = (float)timeLimit;
 			this.SetTimeLeft(this.timeLeft);
 		}
 

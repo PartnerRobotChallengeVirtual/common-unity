@@ -32,6 +32,12 @@ namespace SIGVerse.SIGVerseRosBridge
 		//}
 
 		public abstract bool IsConnected();
+
+		public virtual void Clear()
+		{
+		}
+
+		public abstract void Close();
 	}
 }
 

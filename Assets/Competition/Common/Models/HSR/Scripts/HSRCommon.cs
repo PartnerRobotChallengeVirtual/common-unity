@@ -78,17 +78,18 @@ namespace SIGVerse.ToyotaHSR
 		public const string HeadRgbdSensorDepthFrameName     = "head_rgbd_sensor_depth_frame";
 
 		// Joint names
-		public const string ArmLiftJointName       = "arm_lift_joint";
-		public const string ArmFlexJointName       = "arm_flex_joint";
-		public const string ArmRollJointName       = "arm_roll_joint";
-		public const string WristFlexJointName     = "wrist_flex_joint";
-		public const string WristRollJointName     = "wrist_roll_joint";
-		public const string HeadPanJointName       = "head_pan_joint";
-		public const string HeadTiltJointName      = "head_tilt_joint";
-		public const string TorsoLiftJointName     = "torso_lift_joint";
-		public const string HandLProximalJointName = "hand_l_proximal_joint";
-		public const string HandRProximalJointName = "hand_r_proximal_joint";
-
+		public const string ArmLiftJointName             = "arm_lift_joint";
+		public const string ArmFlexJointName             = "arm_flex_joint";
+		public const string ArmRollJointName             = "arm_roll_joint";
+		public const string WristFlexJointName           = "wrist_flex_joint";
+		public const string WristRollJointName           = "wrist_roll_joint";
+		public const string HeadPanJointName             = "head_pan_joint";
+		public const string HeadTiltJointName            = "head_tilt_joint";
+		public const string TorsoLiftJointName           = "torso_lift_joint";
+		public const string HandLProximalJointName       = "hand_l_proximal_joint";
+		public const string HandRProximalJointName       = "hand_r_proximal_joint";
+		public const string HandLSpringProximalJointName = "hand_l_spring_proximal_joint";
+		public const string HandRSpringProximalJointName = "hand_r_spring_proximal_joint";
 
 		public static List<Transform> GetLinksInChildren(Transform root)
 		{

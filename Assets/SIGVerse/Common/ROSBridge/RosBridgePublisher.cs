@@ -19,6 +19,8 @@ namespace SIGVerse.RosBridge
 		protected Queue<string> publishMsgQue;
 		protected uint queueSize;
 
+		protected bool isRunning;
+
 
 		public string Topic
 		{
@@ -37,6 +39,8 @@ namespace SIGVerse.RosBridge
 
 			this.publishMsgQue = new Queue<string>();
 			this.lockPublishQueue = new object();
+
+			this.isRunning = true;
 		}
 
 		public void SetConnection(RosBridgeWebSocketConnection webSocketConnection)
@@ -53,13 +57,20 @@ namespace SIGVerse.RosBridge
 			this.publishingThread.Start();
 		}
 
+		public void Unadvertise()
+		{
+			this.isRunning = false;
+		}
+
 
 		private void RunPublishing()
 		{
 			string message;
 
-			while (this.webSocketConnection.IsConnected)
+			while (this.isRunning)
 			{
+				if(!this.webSocketConnection.IsConnected){ continue; }
+
 				while(this.publishMsgQue.Count > 0)
 				{
 					lock (this.lockPublishQueue)

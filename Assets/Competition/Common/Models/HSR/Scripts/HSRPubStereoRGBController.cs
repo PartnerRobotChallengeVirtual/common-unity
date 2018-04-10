@@ -44,8 +44,8 @@ namespace SIGVerse.ToyotaHSR
 		{
 			base.Start();
 
-			this.leftPublisher .Initialize(this.rosBridgeIP, this.sigverseBridgePort, this.topicNameLeftCameraInfo,  this.topicNameLeftImage,  false);
-			this.rightPublisher.Initialize(this.rosBridgeIP, this.sigverseBridgePort, this.topicNameRightCameraInfo, this.topicNameRightImage, true);
+			this.leftPublisher .Initialize(this.rosBridgeIP, this.sigverseBridgePort, this.topicNameLeftCameraInfo,  this.topicNameLeftImage,  false, synchronizer.useThread);
+			this.rightPublisher.Initialize(this.rosBridgeIP, this.sigverseBridgePort, this.topicNameRightCameraInfo, this.topicNameRightImage, true,  synchronizer.useThread);
 		}
 
 		void Update()

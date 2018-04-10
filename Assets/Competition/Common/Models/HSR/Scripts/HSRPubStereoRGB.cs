@@ -41,13 +41,15 @@ namespace SIGVerse.ToyotaHSR
 
 		private bool shouldSendMessage = false;
 
+		private bool isUsingThread;
+
 
 		void Awake()
 		{
 			this.cameraFrameObj = this.transform.parent.gameObject;
 		}
 
-		public void Initialize(string rosBridgeIP, int sigverseBridgePort, string topicNameCameraInfo, string topicNameImage, bool isRight)
+		public void Initialize(string rosBridgeIP, int sigverseBridgePort, string topicNameCameraInfo, string topicNameImage, bool isRight, bool isUsingThread)
 		{
 			if(!RosConnectionManager.Instance.rosConnections.sigverseRosBridgeTcpClientMap.ContainsKey(topicNameCameraInfo))
 			{
@@ -125,6 +127,8 @@ namespace SIGVerse.ToyotaHSR
 
 			this.cameraInfoMsg = new SIGVerseRosBridgeMessage<CameraInfoForSIGVerseBridge>("publish", topicNameCameraInfo, CameraInfoForSIGVerseBridge.GetMessageType(), this.cameraInfoData);
 			this.imageMsg      = new SIGVerseRosBridgeMessage<ImageForSIGVerseBridge>     ("publish", topicNameImage,      ImageForSIGVerseBridge.GetMessageType(),      this.imageData);
+
+			this.isUsingThread = isUsingThread;
 		}
 
 		//void OnDestroy()
@@ -205,8 +209,15 @@ namespace SIGVerse.ToyotaHSR
 			this.cameraInfoData.header = this.header;
 			this.cameraInfoMsg.msg     = this.cameraInfoData;
 
-			Thread threadCameraInfo = new Thread(new ThreadStart(SendCameraInfo));
-			threadCameraInfo.Start();
+			if(this.isUsingThread)
+			{
+				Thread threadCameraInfo = new Thread(new ThreadStart(SendCameraInfo));
+				threadCameraInfo.Start();
+			}
+			else
+			{
+				this.SendCameraInfo();
+			}
 
 //			yield return null;
 
@@ -216,8 +227,15 @@ namespace SIGVerse.ToyotaHSR
 
 			this.imageMsg.msg = this.imageData;
 
-			Thread threadImage = new Thread(new ThreadStart(SendImage));
-			threadImage.Start();
+			if(this.isUsingThread)
+			{
+				Thread threadImage = new Thread(new ThreadStart(SendImage));
+				threadImage.Start();
+			}
+			else
+			{
+				this.SendImage();
+			}
 
 			//sw.Stop();
 			//UnityEngine.Debug.Log("time=" + sw.Elapsed);

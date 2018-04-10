@@ -6,6 +6,10 @@ namespace SIGVerse.ToyotaHSR
 {
 	public class HSRPubSynchronizer : MonoBehaviour
 	{
+		public bool useThread = false;
+
+		//-------------------------------------
+
 		private int sequenceNumberForAssignment = 0;
 
 		private bool executed = false;

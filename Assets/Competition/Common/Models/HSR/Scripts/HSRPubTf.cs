@@ -68,6 +68,8 @@ namespace SIGVerse.ToyotaHSR
 
 		private bool shouldSendMessage = false;
 
+		private bool isUsingThread;
+
 
 		void Awake()
 		{
@@ -88,6 +90,8 @@ namespace SIGVerse.ToyotaHSR
 			this.synchronizer = this.GetComponent<HSRPubSynchronizer>();
 
 			this.publishSequenceNumber = this.synchronizer.GetAssignedSequenceNumber();
+
+			this.isUsingThread = this.synchronizer.useThread;
 		}
 
 		protected override void Start()
@@ -168,8 +172,15 @@ namespace SIGVerse.ToyotaHSR
 
 			this.transformStampedMsg.msg = transformStampedArray;
 
-			Thread thread = new Thread(new ThreadStart(SendTF));
-			thread.Start();
+			if(this.isUsingThread)
+			{
+				Thread thread = new Thread(new ThreadStart(SendTF));
+				thread.Start();
+			}
+			else
+			{
+				this.SendTF();
+			}
 
 //			sw.Stop();
 //			Debug.Log("tf sending time="+sw.Elapsed);

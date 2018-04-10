@@ -57,12 +57,16 @@ namespace SIGVerse.ToyotaHSR
 
 		private bool shouldSendMessage = false;
 
+		private bool isUsingThread;
+
 
 		void Awake()
 		{
 			this.synchronizer = this.GetComponent<HSRPubSynchronizer>();
 
 			this.publishSequenceNumber = this.synchronizer.GetAssignedSequenceNumber();
+
+			this.isUsingThread = this.synchronizer.useThread;
 		}
 
 		protected override void Start()
@@ -177,8 +181,15 @@ namespace SIGVerse.ToyotaHSR
 
 			this.laserScanMsg.msg = this.laserScan;
 
-			Thread thread = new Thread(new ThreadStart(SendSensorData));
-			thread.Start();
+			if(this.isUsingThread)
+			{
+				Thread thread = new Thread(new ThreadStart(SendSensorData));
+				thread.Start();
+			}
+			else
+			{
+				this.SendSensorData();
+			}
 
 //			sw.Stop();
 //			Debug.Log("LRF sending time=" + sw.Elapsed);

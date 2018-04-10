@@ -145,9 +145,9 @@ namespace SIGVerse.ToyotaHSR
 		{
 			if(this.shouldSendMessage)
 			{
-				this.PubTF();
-
 				this.shouldSendMessage = false;
+
+				this.PubTF();
 			}
 		}
 
@@ -196,7 +196,7 @@ namespace SIGVerse.ToyotaHSR
 
 		public override bool IsConnected()
 		{
-			return this.networkStream != null && this.tcpClient != null;
+			return this.networkStream !=null && this.tcpClient.Connected;
 		}
 
 		public override void Close()

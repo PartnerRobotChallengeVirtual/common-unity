@@ -17475,11 +17475,6 @@ Prefab:
       propertyPath: m_Enabled
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 114776877642247912, guid: 52e4f49510f5e83429982d5221396009,
-        type: 2}
-      propertyPath: useThread
-      value: 0
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 52e4f49510f5e83429982d5221396009, type: 2}
   m_IsPrefabParent: 0

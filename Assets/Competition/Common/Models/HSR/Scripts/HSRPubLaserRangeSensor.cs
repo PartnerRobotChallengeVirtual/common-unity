@@ -140,9 +140,9 @@ namespace SIGVerse.ToyotaHSR
 		{
 			if(this.shouldSendMessage)
 			{
-				this.PubSensorData();
-
 				this.shouldSendMessage = false;
+
+				this.PubSensorData();
 			}
 		}
 
@@ -204,7 +204,7 @@ namespace SIGVerse.ToyotaHSR
 
 		public override bool IsConnected()
 		{
-			return this.networkStream != null && this.tcpClient != null;
+			return this.networkStream != null && this.tcpClient.Connected;
 		}
 
 		public override void Close()

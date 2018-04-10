@@ -142,7 +142,7 @@ namespace SIGVerse.ToyotaHSR
 
 		public bool IsConnected()
 		{
-			return this.tcpClientCameraInfo != null && this.tcpClientImage != null && this.networkStreamCameraInfo != null && this.networkStreamImage !=null;
+			return this.tcpClientCameraInfo.Connected && this.tcpClientImage.Connected && this.networkStreamCameraInfo != null && this.networkStreamImage !=null;
 		}
 
 		public bool IsPublishing()
@@ -169,9 +169,9 @@ namespace SIGVerse.ToyotaHSR
 		{
 			if(this.shouldSendMessage)
 			{
-				this.PubImage();
-
 				this.shouldSendMessage = false;
+
+				this.PubImage();
 			}
 		}
 

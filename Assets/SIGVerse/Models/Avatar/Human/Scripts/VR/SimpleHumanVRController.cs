@@ -13,7 +13,8 @@ namespace SIGVerse.Human.VR
 
 		public List<Transform> fixedParts;
 
-		public float animatorMoveSpeed = 2.0f;
+		public float moveSpeedByController = 1.0f;
+		public float moveSpeedByHmd        = 2.0f;
 		//////////////////////////////
 
 		private Animator animator;
@@ -21,10 +22,9 @@ namespace SIGVerse.Human.VR
 		private Transform[]  fixedTransforms;
 		private Quaternion[] fixedQuaternionsOrg;
 
-		private void Start()
+		private void Awake()
 		{
 			this.animator = GetComponent<Animator>();
-
 
 			List<Transform> fixedTransformList = new List<Transform>();
 
@@ -34,7 +34,10 @@ namespace SIGVerse.Human.VR
 			}
 
 			this.fixedTransforms = fixedTransformList.ToArray();
+		}
 
+		private void Start()
+		{
 			this.fixedQuaternionsOrg = new Quaternion[this.fixedTransforms.Length];
 
 			for (int i=0; i<this.fixedTransforms.Length; i++)
@@ -62,7 +65,7 @@ namespace SIGVerse.Human.VR
 			{
 				Vector3 destination = vertical * this.transform.forward + horizontal * this.transform.right;
 
-				this.Move(destination, 1.0f);
+				this.Move(destination  * this.moveSpeedByController, this.moveSpeedByController);
 
 				Vector3 newVrRoot = this.animator.rootPosition - (this.bodyAnchor.position - this.vrRoot.transform.position);
 
@@ -72,7 +75,7 @@ namespace SIGVerse.Human.VR
 			{
 				Vector3 destination = new Vector3(this.bodyAnchor.position.x - this.transform.position.x, 0, this.bodyAnchor.position.z - this.transform.position.z);
 
-				this.Move(destination, this.animatorMoveSpeed);
+				this.Move(destination, this.moveSpeedByHmd);
 				
 				this.transform.rotation = this.bodyAnchor.rotation;
 			}

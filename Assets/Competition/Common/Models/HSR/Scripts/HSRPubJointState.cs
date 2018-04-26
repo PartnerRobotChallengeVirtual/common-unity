@@ -67,8 +67,8 @@ namespace SIGVerse.ToyotaHSR
 			this.jointState.name.Add(HSRCommon.HandRSpringProximalJointName); // 9 Convert name from HandRProximalJointName to HandRSpringProximalJointName
 
 			this.jointState.position = null;
-			this.jointState.velocity = new List<double> { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 };
-			this.jointState.effort   = new List<double> { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 };
+			this.jointState.velocity = new List<double> { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 };
+			this.jointState.effort   = new List<double> { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 };
 		}
 
 

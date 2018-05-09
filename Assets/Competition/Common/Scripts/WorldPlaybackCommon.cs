@@ -69,7 +69,10 @@ namespace SIGVerse.Competition
 
 					foreach(Transform playbackTargetTransform in playbackTargetTransforms)
 					{
-						this.targetTransforms.Add(playbackTargetTransform);
+						if(playbackTargetTransform.tag!="DontRecord")
+						{
+							this.targetTransforms.Add(playbackTargetTransform);
+						}
 					}
 				}
 			}

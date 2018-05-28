@@ -36,7 +36,6 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4271093654698712}
-  - component: {fileID: 54273899160347996}
   m_Layer: 0
   m_Name: rubik3_solved
   m_TagString: Untagged
@@ -574,21 +573,6 @@ MeshFilter:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1059582306082302}
   m_Mesh: {fileID: 4300000, guid: c9d5de9690c548744a84b00e62157ef4, type: 3}
---- !u!54 &54273899160347996
-Rigidbody:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1043844552218918}
-  serializedVersion: 2
-  m_Mass: 0.01
-  m_Drag: 0.1
-  m_AngularDrag: 1
-  m_UseGravity: 1
-  m_IsKinematic: 0
-  m_Interpolate: 0
-  m_Constraints: 0
-  m_CollisionDetection: 0
 --- !u!65 &65227856775022322
 BoxCollider:
   m_ObjectHideFlags: 1

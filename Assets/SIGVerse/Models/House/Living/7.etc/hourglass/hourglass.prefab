@@ -103,7 +103,6 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4622035882080078}
-  - component: {fileID: 54571005100248596}
   m_Layer: 0
   m_Name: hourglass
   m_TagString: Untagged
@@ -502,21 +501,6 @@ MeshFilter:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1890328455174384}
   m_Mesh: {fileID: 4300010, guid: e2391649fda8a804e90dbc5f10a5e42b, type: 3}
---- !u!54 &54571005100248596
-Rigidbody:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1555999390830264}
-  serializedVersion: 2
-  m_Mass: 0.01
-  m_Drag: 0.1
-  m_AngularDrag: 1
-  m_UseGravity: 1
-  m_IsKinematic: 0
-  m_Interpolate: 0
-  m_Constraints: 0
-  m_CollisionDetection: 0
 --- !u!64 &64905292485596960
 MeshCollider:
   m_ObjectHideFlags: 1

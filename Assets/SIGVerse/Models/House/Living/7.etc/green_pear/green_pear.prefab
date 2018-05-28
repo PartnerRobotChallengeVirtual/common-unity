@@ -68,7 +68,6 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4357312321679944}
-  - component: {fileID: 54389634848112598}
   m_Layer: 0
   m_Name: green_pear
   m_TagString: Untagged
@@ -286,21 +285,6 @@ MeshFilter:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1456316080315584}
   m_Mesh: {fileID: 4300002, guid: b74e1211668abe44a8d264e9ad333666, type: 3}
---- !u!54 &54389634848112598
-Rigidbody:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1335437370814320}
-  serializedVersion: 2
-  m_Mass: 0.01
-  m_Drag: 0.1
-  m_AngularDrag: 1
-  m_UseGravity: 1
-  m_IsKinematic: 0
-  m_Interpolate: 0
-  m_Constraints: 0
-  m_CollisionDetection: 0
 --- !u!64 &64322292479503450
 MeshCollider:
   m_ObjectHideFlags: 1

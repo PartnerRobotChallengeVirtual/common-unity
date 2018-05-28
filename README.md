@@ -1,6 +1,3 @@
-### This branch has resources of an event held in May 2018 to verify the contents of WRS2018.
-
----
 # Common Unity Project
 
 This is a common Unity project for the Partner Robot Challenge (Virtual Space) competition in the World Robot Competition.

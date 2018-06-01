@@ -2,14 +2,17 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class HSRRigidbodyInitializer : MonoBehaviour
+namespace SIGVerse.ToyotaHSR
 {
-	void Awake()
+	public class HSRRigidbodyInitializer : MonoBehaviour
 	{
-		Rigidbody bodyRigidbody = GetComponent<Rigidbody>();
+		void Awake()
+		{
+			Rigidbody bodyRigidbody = GetComponent<Rigidbody>();
 
-		bodyRigidbody.centerOfMass = new Vector3(0.0f, 0.0f, 0.15f);
+			bodyRigidbody.centerOfMass = new Vector3(0.0f, 0.0f, 0.15f);
 
-		bodyRigidbody.maxDepenetrationVelocity = 3.0f;
+			bodyRigidbody.maxDepenetrationVelocity = 3.0f;
+		}
 	}
 }

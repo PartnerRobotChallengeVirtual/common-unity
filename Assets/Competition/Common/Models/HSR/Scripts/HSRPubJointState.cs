@@ -51,7 +51,6 @@ namespace SIGVerse.ToyotaHSR
 		{
 			base.Start();
 
-
 			this.jointState = new JointState();
 			this.jointState.header = new Header(0, new SIGVerse.RosBridge.msg_helpers.Time(0, 0), "hsrb_joint_states");
 
@@ -75,7 +74,6 @@ namespace SIGVerse.ToyotaHSR
 		protected override void Update()
 		{
 			base.Update();
-
 
 			this.elapsedTime += UnityEngine.Time.deltaTime;
 

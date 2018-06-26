@@ -2,6 +2,7 @@
     "rosbridgeIP": "192.168.1.101",
     "rosbridgePort": 9090,
     "sigverseBridgePort": 50001,
+    "logFileName": "SIGVerse{_yyyyMMdd_HHmmss}.log",
     "useSigverseMenu": true,
     "isAutoStartWithMenu": true,
     "setUpRosTimestamp": true

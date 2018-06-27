@@ -45,7 +45,7 @@ ehthumbs.db
 
 
 # SIGVerse
-SIGVerse.log
+SIGVerse*.log
 /SIGVerseConfig/*
 !/SIGVerseConfig/sample/
 

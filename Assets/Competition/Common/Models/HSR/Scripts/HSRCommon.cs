@@ -24,6 +24,9 @@ namespace SIGVerse.ToyotaHSR
 		public const string BaseFootPrintName = "base_footprint";
 		public const string BaseLinkName      = "base_link";
 
+		public const string BaseName   = "Base";
+		public const string BumperName = "Bumper";
+
 		public const string ArmLiftLinkName             = "arm_lift_link";
 		public const string ArmFlexLinkName             = "arm_flex_link";
 		public const string ArmRollLinkName             = "arm_roll_link";

@@ -45,6 +45,9 @@ namespace SIGVerse.ToyotaHSR
 		private HashSet<Rigidbody> leftCollidingObjects;
 		private HashSet<Rigidbody> rightCollidingObjects;
 
+		private float latestReleaseTime = 0.0f;
+
+
 		protected void Awake()
 		{
 			this.graspableRigidbodies = new List<Rigidbody>();
@@ -188,6 +191,8 @@ namespace SIGVerse.ToyotaHSR
 			this.SendGraspedObjectInfo(this.graspedRigidbody.gameObject);
 
 			SIGVerseLogger.Info("Grasped: "+this.graspedRigidbody.gameObject.name);
+
+			this.latestReleaseTime = 0.0f;
 		}
 
 		private void Release()
@@ -209,6 +214,8 @@ namespace SIGVerse.ToyotaHSR
 			this.SendGraspedObjectInfo(null);
 
 			SIGVerseLogger.Info("Released the object");
+
+			this.latestReleaseTime = Time.time;
 		}
 
 		private void SendGraspedObjectInfo(GameObject graspedObject)
@@ -230,6 +237,11 @@ namespace SIGVerse.ToyotaHSR
 			if(this.graspedRigidbody==null) { return null; }
 
 			return this.graspedRigidbody.gameObject;
+		}
+
+		public float GetLatestReleaseTime()
+		{
+			return this.latestReleaseTime;
 		}
 	}
 }

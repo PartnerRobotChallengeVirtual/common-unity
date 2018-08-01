@@ -1,4 +1,5 @@
 using SIGVerse.Common;
+using SIGVerse.ToyotaHSR;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,13 +7,22 @@ using UnityEngine.EventSystems;
 
 namespace SIGVerse.Competition
 {
+	public enum CollisionType
+	{
+		Normal,
+		WithHsrBase,
+	}
+
 	public interface ITransferredCollisionHandler : IEventSystemHandler
 	{
-		void OnTransferredCollisionEnter(Collision collision, float collisionVelocity, float effectScale);
+		void OnTransferredCollisionEnter(CollisionType collisionType, Collision collision, float collisionVelocity, float effectScale);
 	}
 
 	public class CollisionTransferer : MonoBehaviour
 	{
+		private const string TagRobot = "Robot";
+		private const float  InvincibleTime = 1.0f;
+
 		private List<GameObject> destinations;
 		private float velocityThreshold;
 		private float minimumSendingInterval;
@@ -21,10 +31,28 @@ namespace SIGVerse.Competition
 
 		private GameObject collisionEffect;
 
+		private List<Collider> hsrBaseColliders;
+		private List<Collider> hsrHandColliders;
+
+		private bool hasCollidedWithHsrBase = false;
+
+		private HSRGraspingDetector hsrGraspingDetector;
+
 
 		protected void Awake()
 		{
 			this.collisionEffect = (GameObject)Resources.Load(CompetitionUtils.CollisionEffectPath);
+
+			GameObject robot = GameObject.FindGameObjectWithTag(TagRobot);
+
+			this.hsrBaseColliders = new List<Collider>();
+			this.hsrBaseColliders.AddRange(SIGVerseUtils.FindTransformFromChild(robot.transform.root, HSRCommon.BaseName)  .GetComponentsInChildren<Collider>());
+			this.hsrBaseColliders.AddRange(SIGVerseUtils.FindTransformFromChild(robot.transform.root, HSRCommon.BumperName).GetComponentsInChildren<Collider>());
+
+			this.hsrHandColliders = new List<Collider>();
+			this.hsrHandColliders.AddRange(SIGVerseUtils.FindTransformFromChild(robot.transform.root, HSRCommon.WristRollLinkName).GetComponentsInChildren<Collider>());
+
+			this.hsrGraspingDetector = robot.GetComponent<HSRGraspingDetector>();
 		}
 
 
@@ -38,8 +66,27 @@ namespace SIGVerse.Competition
 
 		void OnCollisionEnter(Collision collision)
 		{
-			if(collision.relativeVelocity.magnitude < this.velocityThreshold){ return; }
+			// It is run over by HSR base
+			if(collision.relativeVelocity.magnitude < this.velocityThreshold)
+			{
+				if(this.IsRunOverByHsrBase(collision))
+				{
+					this.ExecCollisionProcess(CollisionType.WithHsrBase, collision);
+				}
 
+				return;
+			}
+
+			// Ignore when it is collided with hand immediately after release
+			if(Time.time - this.hsrGraspingDetector.GetLatestReleaseTime() < InvincibleTime && this.IsCollidedWithHsrHand(collision))
+			{
+				SIGVerseLogger.Info("Ignore the collision with the HSR hand. Elapsed time since release = " + (Time.time - this.hsrGraspingDetector.GetLatestReleaseTime()));
+//				SIGVerseLogger.Info("Ignore the collision with the HSR hand. Velocity="+collision.relativeVelocity.magnitude + ", Elapsed time since release = " + (Time.time - this.hsrGraspingDetector.GetLatestReleaseTime()));
+				return;
+			}
+
+
+			// Normal collision
 			if(Time.time - this.lastSendingTime < this.minimumSendingInterval){ return; }
 
 			foreach(ContactPoint contactPoint in collision.contacts)
@@ -47,15 +94,15 @@ namespace SIGVerse.Competition
 				if(contactPoint.otherCollider.CompareTag("NonDeductionCollider")){ return; }
 			}
 
-			this.ExecCollisionProcess(collision);
+			this.lastSendingTime = Time.time;
+
+			this.ExecCollisionProcess(CollisionType.Normal, collision);
 		}
 
 
-		private void ExecCollisionProcess(Collision collision)
+		private void ExecCollisionProcess(CollisionType collisionType, Collision collision)
 		{
 			SIGVerseLogger.Info("Object collision occurred. name=" + this.name + " Collided object=" + SIGVerseUtils.GetHierarchyPath(collision.collider.transform));
-
-			this.lastSendingTime = Time.time;
 
 			// Effect
 			GameObject effect = MonoBehaviour.Instantiate(this.collisionEffect);
@@ -74,9 +121,55 @@ namespace SIGVerse.Competition
 				(
 					target: destination,
 					eventData: null,
-					functor: (reciever, eventData) => reciever.OnTransferredCollisionEnter(collision, collision.relativeVelocity.magnitude, 0.1f)
+					functor: (reciever, eventData) => reciever.OnTransferredCollisionEnter(collisionType, collision, collision.relativeVelocity.magnitude, 0.1f)
 				);
 			}
+		}
+
+		private bool IsRunOverByHsrBase(Collision collision)
+		{
+			if(this.hasCollidedWithHsrBase){ return false; }
+
+			foreach(ContactPoint contactPoint in collision.contacts)
+			{
+				foreach(Collider hsrBaseCollider in this.hsrBaseColliders)
+				{
+					if(contactPoint.otherCollider==hsrBaseCollider)
+					{
+						this.hasCollidedWithHsrBase = true;
+
+						return true;
+					}
+				}
+			}
+
+			return false;
+		}
+
+		private bool IsCollidedWithHsrHand(Collision collision)
+		{
+			foreach(ContactPoint contactPoint in collision.contacts)
+			{
+				if(!this.IsCollidedWithHsrHand(contactPoint))
+				{
+					return false;
+				}
+			}
+
+			return true;
+		}
+
+		private bool IsCollidedWithHsrHand(ContactPoint contactPoint)
+		{
+			foreach(Collider hsrHandCollider in this.hsrHandColliders)
+			{
+				if(contactPoint.otherCollider==hsrHandCollider)
+				{
+					return true;
+				}
+			}
+
+			return false;
 		}
 	}
 }

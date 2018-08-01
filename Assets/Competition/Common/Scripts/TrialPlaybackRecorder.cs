@@ -78,7 +78,7 @@ namespace SIGVerse.Competition
 			this.dataLines.Add(PlaybackPanelNoticeEventController.GetDataLine(this.GetHeaderElapsedTime(), panelNoticeStatus));
 		}
 
-		public void OnTransferredCollisionEnter(Collision collision, float collisionVelocity, float effectScale)
+		public void OnTransferredCollisionEnter(SIGVerse.Competition.CollisionType collisionType, Collision collision, float collisionVelocity, float effectScale)
 		{
 			this.dataLines.Add(PlaybackCollisionEventController.GetDataLine(this.GetHeaderElapsedTime(), collision, collisionVelocity, effectScale));
 		}

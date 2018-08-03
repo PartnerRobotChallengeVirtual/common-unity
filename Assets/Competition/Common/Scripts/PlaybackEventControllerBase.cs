@@ -142,6 +142,18 @@ namespace SIGVerse.Competition
 			}
 		}
 
+		public void ExecuteFirstEvent()
+		{
+			if(this.eventLists.Count > 0)
+			{
+				foreach (TPlaybackEvent playbackEvent in this.eventLists[0].EventList)
+				{
+					playbackEvent.Execute();
+				}
+			}
+		}
+
+
 		protected bool IsEventDataFinished()
 		{
 			return this.index >= this.eventLists.Count-1;

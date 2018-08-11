@@ -153,6 +153,11 @@ namespace SIGVerse.Competition
 			}
 		}
 
+		public TPlaybackEventList GetFirstEvents()
+		{
+			return this.eventLists[0];
+		}
+
 
 		protected bool IsEventDataFinished()
 		{

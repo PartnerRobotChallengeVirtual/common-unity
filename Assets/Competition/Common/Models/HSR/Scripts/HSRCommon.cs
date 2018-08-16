@@ -80,6 +80,11 @@ namespace SIGVerse.ToyotaHSR
 		public const string HeadRgbdSensorRgbFrameName       = "head_rgbd_sensor_rgb_frame";
 		public const string HeadRgbdSensorDepthFrameName     = "head_rgbd_sensor_depth_frame";
 
+		// Link Names for Noise
+		public const string BaseFootPrintPosNoiseName  = "base_footprint_pos_noise";
+		public const string BaseFootPrintRotNoiseName  = "base_footprint_rot_noise";
+		public const string BaseFootPrintRigidbodyName = "base_footprint_rigidbody";
+
 		// Joint names
 		public const string ArmLiftJointName             = "arm_lift_joint";
 		public const string ArmFlexJointName             = "arm_flex_joint";

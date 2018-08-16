@@ -43,7 +43,7 @@ namespace SIGVerse.ToyotaHSR
 
 			public void UpdateTransformForGlobal()
 			{
-				UnityEngine.Vector3 pos = linkTransform.localPosition;
+				UnityEngine.Vector3    pos = linkTransform.localPosition;
 				UnityEngine.Quaternion qua = linkTransform.localRotation;
 
 				this.transformStamped.transform.translation = new UnityEngine.Vector3(pos.z, -pos.x, pos.y);
@@ -77,14 +77,28 @@ namespace SIGVerse.ToyotaHSR
 
 			foreach(UnityEngine.Transform localLink in localLinkList)
 			{
-				TransformStamped localTransformStamped = new TransformStamped();
+				if(localLink.name==HSRCommon.BaseFootPrintName)
+				{
+					TransformStamped localTransformStamped = new TransformStamped();
+					localTransformStamped.header.frame_id = HSRCommon.OdomName;
+					localTransformStamped.child_frame_id  = localLink.name;
 
-				localTransformStamped.header.frame_id = localLink.parent.name;
-				localTransformStamped.child_frame_id  = localLink.name;
+					UnityEngine.Transform baseFootprintRigidbody = SIGVerseUtils.FindTransformFromChild(this.transform.root, HSRCommon.BaseFootPrintRigidbodyName);
 
-				TfInfo localTfInfo = new TfInfo(localLink, localTransformStamped);
+					TfInfo localTfInfo = new TfInfo(baseFootprintRigidbody, localTransformStamped);
 
-				this.localTfInfoList.Add(localTfInfo);
+					this.localTfInfoList.Add(localTfInfo);
+				}
+				else
+				{
+					TransformStamped localTransformStamped = new TransformStamped();
+					localTransformStamped.header.frame_id = localLink.parent.name;
+					localTransformStamped.child_frame_id  = localLink.name;
+
+					TfInfo localTfInfo = new TfInfo(localLink, localTransformStamped);
+
+					this.localTfInfoList.Add(localTfInfo);
+				}
 			}
 
 			this.synchronizer = this.GetComponent<HSRPubSynchronizer>();

@@ -13,8 +13,10 @@ namespace SIGVerse.ToyotaHSR
 
 		//--------------------------------------------------
 
-		private Transform baseFootPrint;
-		private Rigidbody baseRigidbody;
+		private Transform baseFootprint;
+		private Transform baseFootprintPosNoise;
+		private Transform baseFootprintRotNoise;
+		private Transform baseFootprintRigidbody;
 
 		private float linearVelX  = 0.0f;
 		private float linearVelY  = 0.0f;
@@ -25,9 +27,10 @@ namespace SIGVerse.ToyotaHSR
 
 		void Awake()
 		{
-			this.baseFootPrint = SIGVerseUtils.FindTransformFromChild(this.transform.root, HSRCommon.BaseFootPrintName);
-
-			this.baseRigidbody = this.baseFootPrint.GetComponent<Rigidbody>();
+			this.baseFootprint          = SIGVerseUtils.FindTransformFromChild(this.transform.root, HSRCommon.BaseFootPrintName);
+			this.baseFootprintPosNoise  = SIGVerseUtils.FindTransformFromChild(this.transform.root, HSRCommon.BaseFootPrintPosNoiseName);
+			this.baseFootprintRotNoise  = SIGVerseUtils.FindTransformFromChild(this.transform.root, HSRCommon.BaseFootPrintRotNoiseName);
+			this.baseFootprintRigidbody = SIGVerseUtils.FindTransformFromChild(this.transform.root, HSRCommon.BaseFootPrintRigidbodyName);
 		}
 
 		protected override void SubscribeMessageCallback(SIGVerse.RosBridge.geometry_msgs.Twist twist)
@@ -56,15 +59,36 @@ namespace SIGVerse.ToyotaHSR
 
 		void FixedUpdate()
 		{
-			if (Mathf.Abs(this.baseFootPrint.forward.y) < wheelInclinationThreshold) { return; }
+			if (Mathf.Abs(this.baseFootprint.forward.y) < wheelInclinationThreshold) { return; }
 
 			if (!this.isMoving) { return; }
 
-			UnityEngine.Vector3 deltaPosition = (-this.baseFootPrint.right * linearVelX + this.baseFootPrint.up * linearVelY) * Time.fixedDeltaTime;
-			this.baseRigidbody.MovePosition(this.baseFootPrint.position + deltaPosition);
+			Vector3 deltaPosition = (-this.baseFootprint.right *                  linearVelX  + this.baseFootprint.up *                  linearVelY ) * Time.fixedDeltaTime;
+			Vector3 deltaNoisePos = (-this.baseFootprint.right * this.GetPosNoise(linearVelX) + this.baseFootprint.up * this.GetPosNoise(linearVelY)) * Time.fixedDeltaTime;
 
-			Quaternion deltaRotation = Quaternion.Euler(new Vector3(0.0f, 0.0f, -angularVelZ * Mathf.Rad2Deg * Time.fixedDeltaTime));
-			this.baseRigidbody.MoveRotation(this.baseRigidbody.rotation * deltaRotation);
+			this.baseFootprintRigidbody.position += deltaPosition;
+			this.baseFootprintPosNoise .position += deltaNoisePos;
+
+
+			Quaternion deltaRotation = Quaternion.Euler(new Vector3(0.0f, 0.0f, -                 angularVelZ  * Mathf.Rad2Deg * Time.fixedDeltaTime));
+			Quaternion deltaNoiseRot = Quaternion.Euler(new Vector3(0.0f, 0.0f, -this.GetRotNoise(angularVelZ) * Mathf.Rad2Deg * Time.fixedDeltaTime));
+
+			this.baseFootprintRigidbody.rotation *= deltaRotation;
+			this.baseFootprintRotNoise .rotation *= deltaNoiseRot;
+		}
+
+		private float GetPosNoise(float val)
+		{
+			float randomNumber = SIGVerseUtils.GetRandomNumberFollowingNormalDistribution(0.6f); // sigma=0.6
+
+			return val * Mathf.Clamp(randomNumber, -3.0f, +3.0f); // plus/minus 3.0 is sufficiently large.
+		}
+
+		private float GetRotNoise(float val)
+		{
+			float randomNumber = SIGVerseUtils.GetRandomNumberFollowingNormalDistribution(0.3f); // sigma=0.3
+
+			return val * Mathf.Clamp(randomNumber, -3.0f, +3.0f); // plus/minus 3.0 is sufficiently large.
 		}
 	}
 }

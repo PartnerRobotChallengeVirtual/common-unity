@@ -32,10 +32,10 @@ namespace SIGVerse.ToyotaHSR
 				this.transformStamped = transformStamped;
 			}
 
-			public void UpdateTransformForLocal()
+			public void UpdateTransformForLocal(UnityEngine.Vector3 posNoise = new UnityEngine.Vector3(), UnityEngine.Vector3 rotNoise = new UnityEngine.Vector3())
 			{
-				UnityEngine.Vector3    pos = linkTransform.localPosition;
-				UnityEngine.Quaternion qua = linkTransform.localRotation;
+				UnityEngine.Vector3    pos = linkTransform.localPosition + posNoise;
+				UnityEngine.Quaternion qua = linkTransform.localRotation * UnityEngine.Quaternion.Euler(rotNoise);
 
 				this.transformStamped.transform.translation = new UnityEngine.Vector3(-pos.x, pos.y, pos.z);
 				this.transformStamped.transform.rotation    = new UnityEngine.Quaternion(qua.x, -qua.y, -qua.z, qua.w);
@@ -177,7 +177,14 @@ namespace SIGVerse.ToyotaHSR
 			// Add local TF infos
 			for (int i=0; i<localTfInfoList.Count; i++)
 			{
-				localTfInfoList[i].UpdateTransformForLocal();
+				if(localTfInfoList[i].transformStamped.child_frame_id==HSRCommon.BaseFootPrintName)
+				{
+					localTfInfoList[i].UpdateTransformForLocal(this.GetPosObservationNoise(), this.GetRotObservationNoise());
+				}
+				else
+				{
+					localTfInfoList[i].UpdateTransformForLocal();
+				}
 
 				localTfInfoList[i].transformStamped.header.Update();
 
@@ -198,6 +205,21 @@ namespace SIGVerse.ToyotaHSR
 
 //			sw.Stop();
 //			Debug.Log("tf sending time="+sw.Elapsed);
+		}
+
+		private UnityEngine.Vector3 GetPosObservationNoise()
+		{
+			float vx = Mathf.Clamp(SIGVerseUtils.GetRandomNumberFollowingNormalDistribution(0.0005f), -0.003f, +0.003f);
+			float vy = Mathf.Clamp(SIGVerseUtils.GetRandomNumberFollowingNormalDistribution(0.0005f), -0.003f, +0.003f);
+
+			return new UnityEngine.Vector3(vx, vy, 0.0f);
+		}
+
+		private UnityEngine.Vector3 GetRotObservationNoise()
+		{
+			float vz = Mathf.Clamp(SIGVerseUtils.GetRandomNumberFollowingNormalDistribution(0.01f), -0.05f, +0.05f);
+
+			return new UnityEngine.Vector3(0.0f, 0.0f, vz);
 		}
 
 

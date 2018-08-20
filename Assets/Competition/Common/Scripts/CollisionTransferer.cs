@@ -117,7 +117,10 @@ namespace SIGVerse.Competition
 			Destroy(effect, 1.0f);
 
 			// Sound
-			this.objectCollisionAudioSource.Play();
+			if(this.objectCollisionAudioSource!=null)
+			{
+				this.objectCollisionAudioSource.Play();
+			}
 
 			foreach(GameObject destination in this.destinations)
 			{

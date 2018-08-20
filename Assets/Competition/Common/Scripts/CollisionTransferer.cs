@@ -26,6 +26,7 @@ namespace SIGVerse.Competition
 		private List<GameObject> destinations;
 		private float velocityThreshold;
 		private float minimumSendingInterval;
+		private AudioSource objectCollisionAudioSource;
 
 		private float lastSendingTime = 0.0f;
 
@@ -56,11 +57,12 @@ namespace SIGVerse.Competition
 		}
 
 
-		public void Initialize(List<GameObject> destinations, float velocityThreshold=1.0f, float minimumSendingInterval=0.1f)
+		public void Initialize(List<GameObject> destinations, float velocityThreshold=1.0f, float minimumSendingInterval=0.1f, AudioSource objectCollisionAudioSource=null)
 		{
-			this.destinations           = destinations;
-			this.velocityThreshold      = velocityThreshold;
-			this.minimumSendingInterval = minimumSendingInterval;
+			this.destinations               = destinations;
+			this.velocityThreshold          = velocityThreshold;
+			this.minimumSendingInterval     = minimumSendingInterval;
+			this.objectCollisionAudioSource = objectCollisionAudioSource;
 		}
 
 
@@ -114,6 +116,8 @@ namespace SIGVerse.Competition
 
 			Destroy(effect, 1.0f);
 
+			// Sound
+			this.objectCollisionAudioSource.Play();
 
 			foreach(GameObject destination in this.destinations)
 			{

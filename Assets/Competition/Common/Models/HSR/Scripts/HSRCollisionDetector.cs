@@ -34,6 +34,8 @@ namespace SIGVerse.ToyotaHSR
 		private float[]    colliderVelocities;
 		private Vector3[]  prePoss;
 
+		private AudioSource collisionAudioSource;
+
 
 		protected void Awake()
 		{
@@ -56,6 +58,8 @@ namespace SIGVerse.ToyotaHSR
 			this.colliders = this.GetComponentsInChildren<Collider>();
 			this.colliderVelocities  = new float[this.colliders.Length];
 			this.prePoss = new Vector3[this.colliders.Length];
+
+			this.collisionAudioSource = this.transform.root.gameObject.GetComponentInChildren<AudioSource>();
 
 			SIGVerseLogger.Info("HSR collider count=" + this.colliders.Length);
 		}
@@ -118,6 +122,11 @@ namespace SIGVerse.ToyotaHSR
 			effect.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
 
 			Destroy(effect, 1.0f);
+
+
+			// Sound
+			this.collisionAudioSource.Play();
+
 
 			// Send the collision notification
 			foreach(GameObject destination in this.collisionNotificationDestinations)

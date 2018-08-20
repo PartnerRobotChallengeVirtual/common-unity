@@ -14,10 +14,11 @@ namespace SIGVerse.Competition
 		public float velocityThreshold = 1.0f;
 		public float minimumSendingInterval = 0.1f;
 
-
 		//------------------------
 
 		private List<GameObject> targets;
+
+		private AudioSource objectCollisionAudioSource;
 
 		void Awake()
 		{
@@ -27,6 +28,8 @@ namespace SIGVerse.Competition
 			{
 				this.targets.AddRange(GameObject.FindGameObjectsWithTag(targetTag).ToList<GameObject>());
 			}
+
+			this.objectCollisionAudioSource = this.GetComponent<AudioSource>();
 		}
 
 		// Use this for initialization
@@ -36,7 +39,7 @@ namespace SIGVerse.Competition
 			{
 				CollisionTransferer collisionTransferer = target.AddComponent<CollisionTransferer>();
 
-				collisionTransferer.Initialize(this.collisionNotificationDestinations, this.velocityThreshold, this.minimumSendingInterval);
+				collisionTransferer.Initialize(this.collisionNotificationDestinations, this.velocityThreshold, this.minimumSendingInterval, this.objectCollisionAudioSource);
 			}
 		}
 	}

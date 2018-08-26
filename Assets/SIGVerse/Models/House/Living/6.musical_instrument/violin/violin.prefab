@@ -69,7 +69,7 @@ GameObject:
   - component: {fileID: 33033127883949588}
   - component: {fileID: 23412129405561404}
   m_Layer: 0
-  m_Name: Violin
+  m_Name: violin
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

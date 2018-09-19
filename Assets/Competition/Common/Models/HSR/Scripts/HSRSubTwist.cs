@@ -81,14 +81,14 @@ namespace SIGVerse.ToyotaHSR
 		{
 			float randomNumber = SIGVerseUtils.GetRandomNumberFollowingNormalDistribution(0.6f); // sigma=0.6
 
-			return val * Mathf.Clamp(randomNumber, -3.0f, +3.0f); // plus/minus 3.0 is sufficiently large.
+			return val * Mathf.Clamp(randomNumber, -1.8f, +1.8f); // 3 * sigma
 		}
 
 		private float GetRotNoise(float val)
 		{
 			float randomNumber = SIGVerseUtils.GetRandomNumberFollowingNormalDistribution(0.3f); // sigma=0.3
 
-			return val * Mathf.Clamp(randomNumber, -3.0f, +3.0f); // plus/minus 3.0 is sufficiently large.
+			return val * Mathf.Clamp(randomNumber, -0.9f, +0.9f); // 3 * sigma
 		}
 	}
 }

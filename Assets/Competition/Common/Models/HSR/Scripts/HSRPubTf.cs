@@ -209,15 +209,15 @@ namespace SIGVerse.ToyotaHSR
 
 		private UnityEngine.Vector3 GetPosObservationNoise()
 		{
-			float vx = Mathf.Clamp(SIGVerseUtils.GetRandomNumberFollowingNormalDistribution(0.0005f), -0.003f, +0.003f);
-			float vy = Mathf.Clamp(SIGVerseUtils.GetRandomNumberFollowingNormalDistribution(0.0005f), -0.003f, +0.003f);
+			float vx = Mathf.Clamp(SIGVerseUtils.GetRandomNumberFollowingNormalDistribution(0.0005f), -0.0015f, +0.0015f);
+			float vy = Mathf.Clamp(SIGVerseUtils.GetRandomNumberFollowingNormalDistribution(0.0005f), -0.0015f, +0.0015f);
 
 			return new UnityEngine.Vector3(vx, vy, 0.0f);
 		}
 
 		private UnityEngine.Vector3 GetRotObservationNoise()
 		{
-			float vz = Mathf.Clamp(SIGVerseUtils.GetRandomNumberFollowingNormalDistribution(0.01f), -0.05f, +0.05f);
+			float vz = Mathf.Clamp(SIGVerseUtils.GetRandomNumberFollowingNormalDistribution(0.01f), -0.03f, +0.03f);
 
 			return new UnityEngine.Vector3(0.0f, 0.0f, vz);
 		}

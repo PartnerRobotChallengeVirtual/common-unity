@@ -47,6 +47,7 @@ namespace SIGVerse.Competition
 
 		protected Button giveUpButton;
 
+		protected Text teamNameText;
 		protected Text trialNumberText;
 		protected Text timeLeftValText;
 		protected Text taskMessageText;
@@ -89,6 +90,7 @@ namespace SIGVerse.Competition
 				this.giveUpButton = this.mainPanel.transform.Find("TargetsOfHiding/Buttons/GiveUpButton").GetComponent<Button>();
 				this.giveUpButton.interactable = false;
 
+				this.teamNameText    = this.mainPanel.transform.Find("TargetsOfHiding/TeamNameText")                .GetComponent<Text>();
 				this.trialNumberText = this.mainPanel.transform.Find("TargetsOfHiding/TrialNumberText")             .GetComponent<Text>();
 				this.timeLeftValText = this.mainPanel.transform.Find("TargetsOfHiding/TimeLeftInfo/TimeLeftValText").GetComponent<Text>();
 				this.taskMessageText = this.mainPanel.transform.Find("TargetsOfHiding/TaskMessageText")             .GetComponent<Text>();
@@ -122,7 +124,7 @@ namespace SIGVerse.Competition
 		{
 			base.Start();
 
-			this.taskInfoController     = new PlaybackTaskInfoEventController(this.trialNumberText, this.timeLeftValText, this.taskMessageText);
+			this.taskInfoController     = new PlaybackTaskInfoEventController(this.teamNameText, this.trialNumberText, this.timeLeftValText, this.taskMessageText);
 			this.scoreController        = new PlaybackScoreEventController(this.scoreText, this.totalText); // Score
 			this.panelNoticeController  = new PlaybackPanelNoticeEventController(this, this.mainMenu);      // Notice of a Panel
 			this.collisionController    = new PlaybackCollisionEventController(this.collisionEffect);       // Collision

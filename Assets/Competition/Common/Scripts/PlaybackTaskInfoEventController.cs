@@ -8,10 +8,12 @@ namespace SIGVerse.Competition
 {
 	public class PlaybackTaskInfoEvent : PlaybackEventBase
 	{
+		public Text TeamNameText    { get; set; }
 		public Text TrialNumberText { get; set; }
 		public Text TimeLeftValText { get; set; }
 		public Text TaskMessageText { get; set; }
 
+		public string TeamName    { get; set; }
 		public string TrialNumber { get; set; }
 		public string TimeLeftVal { get; set; }
 		public string TaskMessage { get; set; }
@@ -19,6 +21,7 @@ namespace SIGVerse.Competition
 		public void Execute()
 		{
 			// Update the Main panel
+			this.TeamNameText.text    = this.TeamName;
 			this.TrialNumberText.text = this.TrialNumber;
 			this.TimeLeftValText.text = this.TimeLeftVal;
 			this.TaskMessageText.text = this.TaskMessage;
@@ -37,12 +40,14 @@ namespace SIGVerse.Competition
 
 	public class PlaybackTaskInfoEventController : PlaybackEventControllerBase<PlaybackTaskInfoEventList, PlaybackTaskInfoEvent>
 	{
+		private Text teamNameText;
 		private Text trialNumberText;
 		private Text timeLeftValText;
 		private Text taskMessageText;
 
-		public PlaybackTaskInfoEventController(Text trialNumberText, Text timeLeftValText, Text taskMessageText)
+		public PlaybackTaskInfoEventController(Text teamNameText, Text trialNumberText, Text timeLeftValText, Text taskMessageText)
 		{
+			this.teamNameText    = teamNameText;
 			this.trialNumberText = trialNumberText;
 			this.timeLeftValText = timeLeftValText;
 			this.taskMessageText = taskMessageText;
@@ -66,12 +71,14 @@ namespace SIGVerse.Competition
 				TaskInfoEventList.ElapsedTime = float.Parse(headerArray[0]);
 
 				PlaybackTaskInfoEvent TaskInfoEvent = new PlaybackTaskInfoEvent();
+				TaskInfoEvent.TeamNameText    = this.teamNameText;
 				TaskInfoEvent.TrialNumberText = this.trialNumberText;
 				TaskInfoEvent.TimeLeftValText = this.timeLeftValText;
 				TaskInfoEvent.TaskMessageText = this.taskMessageText;
-				TaskInfoEvent.TrialNumber = Regex.Unescape(dataArray[0]);
-				TaskInfoEvent.TimeLeftVal = Regex.Unescape(dataArray[1]);
-				TaskInfoEvent.TaskMessage = Regex.Unescape(dataArray[2]);
+				TaskInfoEvent.TeamName    = Regex.Unescape(dataArray[0]);
+				TaskInfoEvent.TrialNumber = Regex.Unescape(dataArray[1]);
+				TaskInfoEvent.TimeLeftVal = Regex.Unescape(dataArray[2]);
+				TaskInfoEvent.TaskMessage = Regex.Unescape(dataArray[3]);
 
 				TaskInfoEventList.EventList.Add(TaskInfoEvent);
 
@@ -85,11 +92,11 @@ namespace SIGVerse.Competition
 
 
 
-		public static string GetDefinitionLine(string trialNumberText, string timeLeftValText, string taskMessageText)
+		public static string GetDefinitionLine(string teamNameText, string trialNumberText, string timeLeftValText, string taskMessageText)
 		{
 			string definitionLine = "0.0," + TrialPlaybackCommon.DataType1TaskInfo; // Elapsed time is dummy.
 
-			definitionLine += "\t"+Regex.Escape(trialNumberText) + "\t" + Regex.Escape(timeLeftValText) + "\t" + Regex.Escape(taskMessageText);
+			definitionLine += "\t" + Regex.Escape(teamNameText) + "\t"+Regex.Escape(trialNumberText) + "\t" + Regex.Escape(timeLeftValText) + "\t" + Regex.Escape(taskMessageText);
 
 			return definitionLine;
 		}

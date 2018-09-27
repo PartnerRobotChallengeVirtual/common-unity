@@ -23,6 +23,7 @@ namespace SIGVerse.Competition
 
 		// ---------------------------------------
 
+		private Text teamNameText;
 		private Text trialNumberText;
 		private Text timeLeftValText;
 		private Text taskMessageText;
@@ -33,6 +34,7 @@ namespace SIGVerse.Competition
 
 		void Awake()
 		{
+			this.teamNameText    = this.mainPanel.transform.Find("TargetsOfHiding/TeamNameText")                .GetComponent<Text>();
 			this.trialNumberText = this.mainPanel.transform.Find("TargetsOfHiding/TrialNumberText")             .GetComponent<Text>();
 			this.timeLeftValText = this.mainPanel.transform.Find("TargetsOfHiding/TimeLeftInfo/TimeLeftValText").GetComponent<Text>();
 			this.taskMessageText = this.mainPanel.transform.Find("TargetsOfHiding/TaskMessageText")             .GetComponent<Text>();
@@ -59,6 +61,11 @@ namespace SIGVerse.Competition
 			this.UpdateAudienceCameraDepth();
 		}
 
+
+		public void SetTeamNameText(string teamName)
+		{
+			this.teamNameText.text = teamName;
+		}
 
 		public void SetTimeLeft(float timeLeft)
 		{
@@ -93,7 +100,7 @@ namespace SIGVerse.Competition
 				}
 			}
 
-			this.trialNumberText.text = numberOfTrials + ordinal + " challenge";
+			this.trialNumberText.text = numberOfTrials + ordinal + " session";
 		}
 
 		public string GetTrialNumberText()

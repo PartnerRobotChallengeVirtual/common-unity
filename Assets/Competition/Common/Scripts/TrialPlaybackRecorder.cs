@@ -16,6 +16,7 @@ namespace SIGVerse.Competition
 
 		protected ScoreStatus latestScoreStatus = new ScoreStatus();
 
+		protected Text teamNameText;
 		protected Text trialNumberText;
 		protected Text timeLeftValText;
 		protected Text taskMessageText;
@@ -29,6 +30,7 @@ namespace SIGVerse.Competition
 
 			if(this.isRecord)
 			{
+				this.teamNameText    = this.mainPanel.transform.Find("TargetsOfHiding/TeamNameText")                .GetComponent<Text>();
 				this.trialNumberText = this.mainPanel.transform.Find("TargetsOfHiding/TrialNumberText")             .GetComponent<Text>();
 				this.timeLeftValText = this.mainPanel.transform.Find("TargetsOfHiding/TimeLeftInfo/TimeLeftValText").GetComponent<Text>();
 				this.taskMessageText = this.mainPanel.transform.Find("TargetsOfHiding/TaskMessageText")             .GetComponent<Text>();
@@ -42,7 +44,7 @@ namespace SIGVerse.Competition
 			List<string> definitionLines = base.GetDefinitionLines();
 
 			// Task Info
-			definitionLines.Add(PlaybackTaskInfoEventController.GetDefinitionLine(this.trialNumberText.text, this.timeLeftValText.text, this.taskMessageText.text));
+			definitionLines.Add(PlaybackTaskInfoEventController.GetDefinitionLine(this.teamNameText.text, this.trialNumberText.text, this.timeLeftValText.text, this.taskMessageText.text));
 
 			// Score (Initial status of score)
 			definitionLines.Add(PlaybackScoreEventController.GetDefinitionLine(this.totalValText.text));

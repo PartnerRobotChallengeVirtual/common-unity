@@ -110,7 +110,7 @@ namespace SIGVerse.Competition
 				this.startTimeInputField = this.playbackPanel.transform.Find("StartTimeInputField")        .GetComponent<InputField>();
 				this.endTimeInputField   = this.playbackPanel.transform.Find("EndTimeInputField")          .GetComponent<InputField>();
 
-				this.collisionEffect = (GameObject)Resources.Load(CompetitionUtils.CollisionEffectPath);
+				this.collisionEffect = (GameObject)Resources.Load(SIGVerseUtils.CollisionEffectPath);
 			}
 			else
 			{

@@ -42,7 +42,7 @@ namespace SIGVerse.Competition
 
 		protected void Awake()
 		{
-			this.collisionEffect = (GameObject)Resources.Load(CompetitionUtils.CollisionEffectPath);
+			this.collisionEffect = (GameObject)Resources.Load(SIGVerseUtils.CollisionEffectPath);
 
 			GameObject robot = GameObject.FindGameObjectWithTag(TagRobot);
 

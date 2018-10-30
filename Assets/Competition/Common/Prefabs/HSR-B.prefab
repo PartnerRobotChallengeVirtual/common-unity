@@ -5382,7 +5382,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rosBridgeIP: 
   rosBridgePort: 0
-  topicName: /hsrb/opt_command_velocity
+  topicName: /hsrb/command_velocity
 --- !u!114 &114334256003495720
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -5622,8 +5622,8 @@ MonoBehaviour:
   rosBridgeIP: 
   sigverseBridgePort: 0
   publisher: {fileID: 114584209209690928}
-  topicNameCameraInfo: /hsrb/head_rgbd_sensor/depth/camera_info
-  topicNameImage: /hsrb/head_rgbd_sensor/depth/image_raw
+  topicNameCameraInfo: /hsrb/head_rgbd_sensor/depth_registered/camera_info
+  topicNameImage: /hsrb/head_rgbd_sensor/depth_registered/image_raw
   sendingInterval: 100
 --- !u!114 &114973878965465004
 MonoBehaviour:

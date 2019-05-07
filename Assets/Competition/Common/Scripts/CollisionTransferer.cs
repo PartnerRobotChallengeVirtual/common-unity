@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using static SIGVerse.ToyotaHSR.HSRCommon;
 
 namespace SIGVerse.Competition
 {
@@ -20,15 +21,19 @@ namespace SIGVerse.Competition
 
 	public class CollisionTransferer : MonoBehaviour
 	{
+		public List<string> exclusionColliderTags = new List<string> { "NonDeductionCollider" };
+
+		//-----------------------------
+
 		private const string TagRobot = "Robot";
-		private const float  InvincibleTime = 1.0f;
+		private const float InvincibleTime = 1.0f;
 
 		private List<GameObject> destinations;
 		private float velocityThreshold;
 		private float minimumSendingInterval;
 		private AudioSource objectCollisionAudioSource;
 
-		private float lastSendingTime = 0.0f;
+		private float lastSendingTime = 1.0f; // Ignore collisions for the first one second.
 
 		private GameObject collisionEffect;
 
@@ -37,7 +42,7 @@ namespace SIGVerse.Competition
 
 		private bool hasCollidedWithHsrBase = false;
 
-		private HSRGraspingDetector hsrGraspingDetector;
+		private GraspingDetector hsrGraspingDetector;
 
 
 		protected void Awake()
@@ -47,31 +52,36 @@ namespace SIGVerse.Competition
 			GameObject robot = GameObject.FindGameObjectWithTag(TagRobot);
 
 			this.hsrBaseColliders = new List<Collider>();
-			this.hsrBaseColliders.AddRange(SIGVerseUtils.FindTransformFromChild(robot.transform.root, HSRCommon.BaseName)  .GetComponentsInChildren<Collider>());
+			this.hsrBaseColliders.AddRange(SIGVerseUtils.FindTransformFromChild(robot.transform.root, HSRCommon.BaseName).GetComponentsInChildren<Collider>());
 			this.hsrBaseColliders.AddRange(SIGVerseUtils.FindTransformFromChild(robot.transform.root, HSRCommon.BumperName).GetComponentsInChildren<Collider>());
 
 			this.hsrHandColliders = new List<Collider>();
-			this.hsrHandColliders.AddRange(SIGVerseUtils.FindTransformFromChild(robot.transform.root, HSRCommon.WristRollLinkName).GetComponentsInChildren<Collider>());
+			this.hsrHandColliders.AddRange(SIGVerseUtils.FindTransformFromChild(robot.transform.root, Link.wrist_roll_link.ToString()).GetComponentsInChildren<Collider>());
 
-			this.hsrGraspingDetector = robot.GetComponent<HSRGraspingDetector>();
+			this.hsrGraspingDetector = robot.GetComponent<GraspingDetector>();
 		}
 
 
-		public void Initialize(List<GameObject> destinations, float velocityThreshold=1.0f, float minimumSendingInterval=0.1f, AudioSource objectCollisionAudioSource=null)
+		public void Initialize(List<GameObject> destinations, float velocityThreshold = 1.0f, float minimumSendingInterval = 0.1f, AudioSource objectCollisionAudioSource = null)
 		{
-			this.destinations               = destinations;
-			this.velocityThreshold          = velocityThreshold;
-			this.minimumSendingInterval     = minimumSendingInterval;
+			this.destinations = destinations;
+			this.velocityThreshold = velocityThreshold;
+			this.minimumSendingInterval = minimumSendingInterval;
 			this.objectCollisionAudioSource = objectCollisionAudioSource;
+		}
+
+		public void SetExclusionColliderTags(List<string> exclusionColliderTags)
+		{
+			this.exclusionColliderTags = exclusionColliderTags;
 		}
 
 
 		void OnCollisionEnter(Collision collision)
 		{
 			// It is run over by HSR base
-			if(collision.relativeVelocity.magnitude < this.velocityThreshold)
+			if (collision.relativeVelocity.magnitude < this.velocityThreshold)
 			{
-				if(this.IsRunOverByHsrBase(collision))
+				if (this.IsRunOverByHsrBase(collision))
 				{
 					this.ExecCollisionProcess(CollisionType.WithHsrBase, collision);
 				}
@@ -80,20 +90,23 @@ namespace SIGVerse.Competition
 			}
 
 			// Ignore when it is collided with hand immediately after release
-			if(Time.time - this.hsrGraspingDetector.GetLatestReleaseTime() < InvincibleTime && this.IsCollidedWithHsrHand(collision))
+			if (Time.time - this.hsrGraspingDetector.GetLatestReleaseTime() < InvincibleTime && this.IsCollidedWithHsrHand(collision))
 			{
 				SIGVerseLogger.Info("Ignore the collision with the HSR hand. Elapsed time since release = " + (Time.time - this.hsrGraspingDetector.GetLatestReleaseTime()));
-//				SIGVerseLogger.Info("Ignore the collision with the HSR hand. Velocity="+collision.relativeVelocity.magnitude + ", Elapsed time since release = " + (Time.time - this.hsrGraspingDetector.GetLatestReleaseTime()));
+				//				SIGVerseLogger.Info("Ignore the collision with the HSR hand. Velocity="+collision.relativeVelocity.magnitude + ", Elapsed time since release = " + (Time.time - this.hsrGraspingDetector.GetLatestReleaseTime()));
 				return;
 			}
 
 
 			// Normal collision
-			if(Time.time - this.lastSendingTime < this.minimumSendingInterval){ return; }
+			if (Time.time - this.lastSendingTime < this.minimumSendingInterval) { return; }
 
-			foreach(ContactPoint contactPoint in collision.contacts)
+			foreach (ContactPoint contactPoint in collision.contacts)
 			{
-				if(contactPoint.otherCollider.CompareTag("NonDeductionCollider")){ return; }
+				foreach (string exclusionColliderTag in exclusionColliderTags)
+				{
+					if (contactPoint.otherCollider.CompareTag(exclusionColliderTag)) { return; }
+				}
 			}
 
 			this.lastSendingTime = Time.time;
@@ -104,11 +117,11 @@ namespace SIGVerse.Competition
 
 		private void ExecCollisionProcess(CollisionType collisionType, Collision collision)
 		{
-			SIGVerseLogger.Info("Object collision occurred. name=" + this.name + " Collided object=" + SIGVerseUtils.GetHierarchyPath(collision.collider.transform));
+			SIGVerseLogger.Info("Object collision occurred. name=" + this.name + " Collided object=" + SIGVerseUtils.GetHierarchyPath(collision.collider.transform) + ", vel=" + collision.relativeVelocity);
 
 			// Effect
 			GameObject effect = MonoBehaviour.Instantiate(this.collisionEffect);
-			
+
 			Vector3 contactPoint = SIGVerseUtils.CalcContactAveragePoint(collision);
 
 			effect.transform.position = contactPoint;
@@ -117,12 +130,12 @@ namespace SIGVerse.Competition
 			Destroy(effect, 1.0f);
 
 			// Sound
-			if(this.objectCollisionAudioSource!=null)
+			if (this.objectCollisionAudioSource != null)
 			{
 				this.objectCollisionAudioSource.Play();
 			}
 
-			foreach(GameObject destination in this.destinations)
+			foreach (GameObject destination in this.destinations)
 			{
 				ExecuteEvents.Execute<ITransferredCollisionHandler>
 				(
@@ -135,13 +148,13 @@ namespace SIGVerse.Competition
 
 		private bool IsRunOverByHsrBase(Collision collision)
 		{
-			if(this.hasCollidedWithHsrBase){ return false; }
+			if (this.hasCollidedWithHsrBase) { return false; }
 
-			foreach(ContactPoint contactPoint in collision.contacts)
+			foreach (ContactPoint contactPoint in collision.contacts)
 			{
-				foreach(Collider hsrBaseCollider in this.hsrBaseColliders)
+				foreach (Collider hsrBaseCollider in this.hsrBaseColliders)
 				{
-					if(contactPoint.otherCollider==hsrBaseCollider)
+					if (contactPoint.otherCollider == hsrBaseCollider)
 					{
 						this.hasCollidedWithHsrBase = true;
 
@@ -155,9 +168,9 @@ namespace SIGVerse.Competition
 
 		private bool IsCollidedWithHsrHand(Collision collision)
 		{
-			foreach(ContactPoint contactPoint in collision.contacts)
+			foreach (ContactPoint contactPoint in collision.contacts)
 			{
-				if(!this.IsCollidedWithHsrHand(contactPoint))
+				if (!this.IsCollidedWithHsrHand(contactPoint))
 				{
 					return false;
 				}
@@ -168,9 +181,9 @@ namespace SIGVerse.Competition
 
 		private bool IsCollidedWithHsrHand(ContactPoint contactPoint)
 		{
-			foreach(Collider hsrHandCollider in this.hsrHandColliders)
+			foreach (Collider hsrHandCollider in this.hsrHandColliders)
 			{
-				if(contactPoint.otherCollider==hsrHandCollider)
+				if (contactPoint.otherCollider == hsrHandCollider)
 				{
 					return true;
 				}

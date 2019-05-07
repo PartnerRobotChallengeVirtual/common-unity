@@ -7,9 +7,9 @@ namespace SIGVerse.ToyotaHSR
 {
 	public class HSRSubTwist : RosSubMessage<SIGVerse.RosBridge.geometry_msgs.Twist>
 	{
-//		private const float wheelInclinationThreshold = 0.985f; // 80[deg]
-		private const float wheelInclinationThreshold = 0.965f; // 75[deg]
-//		private const float wheelInclinationThreshold = 0.940f; // 70[deg]
+//		private const float WheelInclinationThreshold = 0.985f; // 80[deg]
+		private const float WheelInclinationThreshold = 0.965f; // 75[deg]
+//		private const float WheelInclinationThreshold = 0.940f; // 70[deg]
 
 		//--------------------------------------------------
 
@@ -24,17 +24,26 @@ namespace SIGVerse.ToyotaHSR
 
 		private bool isMoving = false;
 
+		private HSRSubJointTrajectoryOmni jointTrajectoryOmni;
 
 		void Awake()
 		{
-			this.baseFootprint          = SIGVerseUtils.FindTransformFromChild(this.transform.root, HSRCommon.BaseFootPrintName);
+			this.baseFootprint          = SIGVerseUtils.FindTransformFromChild(this.transform.root, HSRCommon.Link.base_footprint.ToString());
 			this.baseFootprintPosNoise  = SIGVerseUtils.FindTransformFromChild(this.transform.root, HSRCommon.BaseFootPrintPosNoiseName);
 			this.baseFootprintRotNoise  = SIGVerseUtils.FindTransformFromChild(this.transform.root, HSRCommon.BaseFootPrintRotNoiseName);
 			this.baseFootprintRigidbody = SIGVerseUtils.FindTransformFromChild(this.transform.root, HSRCommon.BaseFootPrintRigidbodyName);
+
+			this.jointTrajectoryOmni = this.transform.GetComponentInChildren<HSRSubJointTrajectoryOmni>(true);
 		}
 
 		protected override void SubscribeMessageCallback(SIGVerse.RosBridge.geometry_msgs.Twist twist)
 		{
+			if(this.jointTrajectoryOmni!=null && this.jointTrajectoryOmni.IsRunning())
+			{
+				SIGVerseLogger.Warn("Rejected twist message because the robot is moving by JointTrajectory.");
+				return;
+			}
+
 			float linearVel = Mathf.Sqrt(Mathf.Pow(twist.linear.x, 2) + Mathf.Pow(twist.linear.y, 2));
 
 			float linearVelClamped = Mathf.Clamp(linearVel, 0.0f, HSRCommon.MaxSpeedBase);
@@ -59,7 +68,7 @@ namespace SIGVerse.ToyotaHSR
 
 		void FixedUpdate()
 		{
-			if (Mathf.Abs(this.baseFootprint.forward.y) < wheelInclinationThreshold) { return; }
+			if (Mathf.Abs(this.baseFootprint.forward.y) < WheelInclinationThreshold) { return; }
 
 			if (!this.isMoving) { return; }
 
@@ -89,6 +98,11 @@ namespace SIGVerse.ToyotaHSR
 			float randomNumber = SIGVerseUtils.GetRandomNumberFollowingNormalDistribution(0.3f); // sigma=0.3
 
 			return val * Mathf.Clamp(randomNumber, -0.9f, +0.9f); // 3 * sigma
+		}
+
+		public bool IsRunning()
+		{
+			return this.isMoving;
 		}
 	}
 }

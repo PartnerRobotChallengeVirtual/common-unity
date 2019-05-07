@@ -9,7 +9,7 @@ using UnityEngine.UI;
 namespace SIGVerse.Competition
 {
 	[RequireComponent(typeof (TrialPlaybackCommon))]
-	public class TrialPlaybackRecorder : WorldPlaybackRecorder, IScoreHandler, IPanelNoticeHandler, IHSRCollisionHandler, ITransferredCollisionHandler
+	public class TrialPlaybackRecorder : WorldPlaybackRecorder, IScoreHandler, IPanelNoticeHandler, IRobotCollisionHandler, ITransferredCollisionHandler
 	{
 		public GameObject mainPanel;
 		public GameObject scorePanel;
@@ -85,7 +85,7 @@ namespace SIGVerse.Competition
 			this.dataLines.Add(PlaybackCollisionEventController.GetDataLine(this.GetHeaderElapsedTime(), collision, collisionVelocity, effectScale));
 		}
 
-		public void OnHsrCollisionEnter(Collision collision, float collisionVelocity, float effectScale)
+		public void OnRobotCollisionEnter(Collision collision, float collisionVelocity, float effectScale)
 		{
 			this.dataLines.Add(PlaybackHsrCollisionEventController.GetDataLine(this.GetHeaderElapsedTime(), collision, collisionVelocity, effectScale));
 		}

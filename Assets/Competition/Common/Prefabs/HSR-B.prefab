@@ -1438,7 +1438,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   collisionNotificationDestinations: []
   exclusionColliderTags:
-  - Graspable
+  - GraspingCandidates
+  - DummyGraspingCandidates
   - Ground
   - NonDeductionCollider
 --- !u!114 &2550623648533836757

@@ -41343,31 +41343,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 90
       objectReference: {fileID: 0}
-    - target: {fileID: 2550913000898516665, guid: 83070304c81f07740b21ef84173602a9,
-        type: 3}
-      propertyPath: exclusionColliderTags.Array.size
-      value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 2550913000898516665, guid: 83070304c81f07740b21ef84173602a9,
-        type: 3}
-      propertyPath: exclusionColliderTags.Array.data[0]
-      value: GraspingCandidates
-      objectReference: {fileID: 0}
-    - target: {fileID: 2550913000898516665, guid: 83070304c81f07740b21ef84173602a9,
-        type: 3}
-      propertyPath: exclusionColliderTags.Array.data[3]
-      value: NonDeductionCollider
-      objectReference: {fileID: 0}
-    - target: {fileID: 2550913000898516665, guid: 83070304c81f07740b21ef84173602a9,
-        type: 3}
-      propertyPath: exclusionColliderTags.Array.data[2]
-      value: Ground
-      objectReference: {fileID: 0}
-    - target: {fileID: 2550913000898516665, guid: 83070304c81f07740b21ef84173602a9,
-        type: 3}
-      propertyPath: exclusionColliderTags.Array.data[1]
-      value: DummyGraspingCandidates
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 83070304c81f07740b21ef84173602a9, type: 3}
 --- !u!1 &2518388450309091344 stripped

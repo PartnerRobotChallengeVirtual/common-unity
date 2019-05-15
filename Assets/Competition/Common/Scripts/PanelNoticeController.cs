@@ -14,8 +14,9 @@ namespace SIGVerse.Competition
 	
 	public class PanelNoticeStatus
 	{
-		public static readonly Color Green = new Color(  0/255f, 143/255f, 36/255f, 255/255f);
-		public static readonly Color Red   = new Color(255/255f,   0/255f,  0/255f, 255/255f);
+		public static readonly Color Green = new Color(  0/255f, 143/255f,  36/255f, 255/255f);
+		public static readonly Color Red   = new Color(255/255f,   0/255f,   0/255f, 255/255f);
+		public static readonly Color Blue  = new Color(  0/255f,   0/255f, 255/255f, 255/255f);
 
 		public string Message  { get; set; }
 		public int    FontSize { get; set; }

@@ -63,31 +63,31 @@ namespace SIGVerse.Competition
 
 			this.latestScoreStatus.Subscore = 0;
 
-			this.dataLines.Add(PlaybackScoreEventController.GetDataLine(this.GetHeaderElapsedTime(), this.latestScoreStatus));
+			base.AddDataLine(PlaybackScoreEventController.GetDataLine(this.GetHeaderElapsedTime(), this.latestScoreStatus));
 
 			base.StopRecording();
 		}
 
 		public void OnScoreChange(ScoreStatus scoreStatus)
 		{
-			this.dataLines.Add(PlaybackScoreEventController.GetDataLine(this.GetHeaderElapsedTime(), scoreStatus));
+			base.AddDataLine(PlaybackScoreEventController.GetDataLine(this.GetHeaderElapsedTime(), scoreStatus));
 
 			this.latestScoreStatus = scoreStatus;
 		}
 
 		public void OnPanelNoticeChange(PanelNoticeStatus panelNoticeStatus)
 		{
-			this.dataLines.Add(PlaybackPanelNoticeEventController.GetDataLine(this.GetHeaderElapsedTime(), panelNoticeStatus));
+			base.AddDataLine(PlaybackPanelNoticeEventController.GetDataLine(this.GetHeaderElapsedTime(), panelNoticeStatus));
 		}
 
 		public void OnTransferredCollisionEnter(SIGVerse.Competition.CollisionType collisionType, Collision collision, float collisionVelocity, float effectScale)
 		{
-			this.dataLines.Add(PlaybackCollisionEventController.GetDataLine(this.GetHeaderElapsedTime(), collision, collisionVelocity, effectScale));
+			base.AddDataLine(PlaybackCollisionEventController.GetDataLine(this.GetHeaderElapsedTime(), collision, collisionVelocity, effectScale));
 		}
 
 		public void OnRobotCollisionEnter(Collision collision, float collisionVelocity, float effectScale)
 		{
-			this.dataLines.Add(PlaybackHsrCollisionEventController.GetDataLine(this.GetHeaderElapsedTime(), collision, collisionVelocity, effectScale));
+			base.AddDataLine(PlaybackHsrCollisionEventController.GetDataLine(this.GetHeaderElapsedTime(), collision, collisionVelocity, effectScale));
 		}
 	}
 }

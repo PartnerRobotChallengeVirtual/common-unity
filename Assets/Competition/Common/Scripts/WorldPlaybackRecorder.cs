@@ -35,7 +35,7 @@ namespace SIGVerse.Competition
 		protected List<Transform>   targetTransforms;
 		protected List<VideoPlayer> targetVideoPlayers;
 
-		protected List<string> dataLines;
+		private List<string> dataLines;
 
 		protected string filePath;
 
@@ -143,6 +143,17 @@ namespace SIGVerse.Competition
 			this.step = Step.Initialized;
 		}
 
+		public virtual void AddDataLine(string dataLine)
+		{
+			if (this.step != Step.Recording)
+			{
+				SIGVerseLogger.Warn("Illegal timing to add dataLine. data="+dataLine);
+				return;
+			}
+			
+			this.dataLines.Add(dataLine);
+		}
+
 		protected virtual List<string> GetDefinitionLines()
 		{
 			List<string> definitionLines = new List<string>();
@@ -219,14 +230,14 @@ namespace SIGVerse.Competition
 
 		protected virtual void SaveTransforms()
 		{
-			this.dataLines.Add(PlaybackTransformEventController.GetDataLine(this.GetHeaderElapsedTime(), this.targetTransforms));
+			this.AddDataLine(PlaybackTransformEventController.GetDataLine(this.GetHeaderElapsedTime(), this.targetTransforms));
 		}
 
 		protected virtual void SaveVideoPlayers()
 		{
 			if (!this.isReplayVideoPlayers) { return; }
 
-			this.dataLines.Add(PlaybackVideoPlayerEventController.GetDataLine(this.GetHeaderElapsedTime(), this.targetVideoPlayers));
+			this.AddDataLine(PlaybackVideoPlayerEventController.GetDataLine(this.GetHeaderElapsedTime(), this.targetVideoPlayers));
 		}
 
 

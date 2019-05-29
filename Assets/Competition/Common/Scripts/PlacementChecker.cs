@@ -8,36 +8,57 @@ namespace SIGVerse.Competition
 {
 	public class PlacementChecker : MonoBehaviour
 	{
-		private float maxWaitingTime = 2.0f;
-		
-		private Dictionary<GameObject, int> placedObjectMap;
-
-
-		void Start ()
+		public enum JudgeType
 		{
-			this.placedObjectMap = new Dictionary<GameObject, int>();
-
-			CheckExistanceOfColliders(this.transform);
+			On, In,
 		}
 
-		public void Initialize(float maxWaitingTime)
+		// The velocity to judge if it has entered a box(e.g. trash can).
+		private const float ThresholdVelocity = 0.5f;
+
+		private bool isInitialized = false;
+
+		private JudgeType judgeType;
+
+		private float maxWaitingTime = 2.0f;
+
+		private Dictionary<Rigidbody, int> placedRigidbodyMap;
+
+
+		void Start()
 		{
+			this.placedRigidbodyMap = new Dictionary<Rigidbody, int>();
+
+			if (this.transform.GetComponents<Collider>().Length == 0)
+			{
+				SIGVerseLogger.Error("No Colliders on " + SIGVerseUtils.GetHierarchyPath(this.transform));
+				throw new Exception("No Colliders on " + SIGVerseUtils.GetHierarchyPath(this.transform));
+			}
+		}
+
+		public void Initialize(JudgeType judgeType, float maxWaitingTime = 2.0f)
+		{
+			this.judgeType = judgeType;
 			this.maxWaitingTime = maxWaitingTime;
+
+			this.isInitialized = true;
 		}
 
 
 		public IEnumerator<bool?> IsPlaced(GameObject targetObj)
 		{
+			if (!this.isInitialized) { throw new Exception("Please use PlacementChecker.Initialize()."); }
+
 			Rigidbody targetRigidbody = targetObj.GetComponent<Rigidbody>();
 
 			float timeLimit = Time.time + this.maxWaitingTime;
 
-			while (!this.IsPlacedNow(targetObj, targetRigidbody) && Time.time < timeLimit)
+			while (!this.IsPlacedNow(targetRigidbody) && Time.time < timeLimit)
 			{
 				yield return null;
 			}
-		
-			if(Time.time < timeLimit)
+
+			if (Time.time < timeLimit)
 			{
 				yield return true;
 			}
@@ -50,46 +71,46 @@ namespace SIGVerse.Competition
 		}
 
 
-		private static void CheckExistanceOfColliders(Transform transform)
+		public bool IsPlacedNow(Rigidbody targetRigidbody)
 		{
-			Collider[] colliders = transform.GetComponents<Collider>();
-			
-			if(colliders.Length==0)
+			if (!this.isInitialized) { throw new Exception("Please use PlacementChecker.Initialize()."); }
+
+			switch (this.judgeType)
 			{
-				SIGVerseLogger.Error("No Colliders on " + SIGVerseUtils.GetHierarchyPath(transform));
-				throw new Exception ("No Colliders on " + SIGVerseUtils.GetHierarchyPath(transform));
+				case JudgeType.On:
+					{
+						return this.placedRigidbodyMap.ContainsKey(targetRigidbody) && this.placedRigidbodyMap[targetRigidbody] > 0 && targetRigidbody.IsSleeping();
+					}
+				case JudgeType.In:
+					{
+						return this.placedRigidbodyMap.ContainsKey(targetRigidbody) && this.placedRigidbodyMap[targetRigidbody] > 0 && targetRigidbody.velocity.magnitude < ThresholdVelocity;
+					}
+				default:
+					{
+						throw new Exception("Illegal JudgeType (IsPlacedNow) class=" + this.GetType().Name);
+					}
 			}
-		}
-
-
-		private bool IsPlacedNow(GameObject targetObj, Rigidbody targetRigidbody)
-		{
-			return targetRigidbody.IsSleeping() && this.placedObjectMap.ContainsKey(targetObj) && this.placedObjectMap[targetObj] > 0;
 		}
 
 
 		private void OnTriggerEnter(Collider other)
 		{
-			if(other.attachedRigidbody==null){ return; }
+			if (other.attachedRigidbody == null) { return; }
 
-			GameObject contactedObj = other.attachedRigidbody.gameObject;
-
-			if(!this.placedObjectMap.ContainsKey(contactedObj))
+			if (!this.placedRigidbodyMap.ContainsKey(other.attachedRigidbody))
 			{
-				this.placedObjectMap.Add(contactedObj, 0);
+				this.placedRigidbodyMap.Add(other.attachedRigidbody, 0);
 			}
 
-			this.placedObjectMap[contactedObj]++;
+			this.placedRigidbodyMap[other.attachedRigidbody]++;
 		}
 
 
 		private void OnTriggerExit(Collider other)
 		{
-			if(other.attachedRigidbody==null){ return; }
+			if (other.attachedRigidbody == null) { return; }
 
-			GameObject placedObj = other.attachedRigidbody.gameObject;
-
-			this.placedObjectMap[placedObj]--;
+			this.placedRigidbodyMap[other.attachedRigidbody]--;
 		}
 	}
 }

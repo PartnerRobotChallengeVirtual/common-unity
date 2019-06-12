@@ -34,6 +34,8 @@ System.Interactive.Async.3.2.0
 https://www.nuget.org/packages/System.Interactive.Async/3.2.0
 https://github.com/dotnet/reactive/blob/master/LICENSE
 
-websocket-sharp
+WebSocketSharp 1.0.3-rc11
 https://github.com/sta/websocket-sharp
 https://github.com/sta/websocket-sharp/blob/master/LICENSE.txt
+https://www.nuget.org/packages/WebSocketSharp/1.0.3-rc11
+https://raw.githubusercontent.com/sta/websocket-sharp/master/LICENSE.txt

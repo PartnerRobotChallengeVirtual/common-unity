@@ -1,0 +1,4 @@
+Copyright (c) .NET Foundation and Contributors
+
+Provided under the MIT license.
+https://github.com/dotnet/corefx/blob/master/LICENSE.TXT

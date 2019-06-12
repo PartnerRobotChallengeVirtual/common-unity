@@ -1,0 +1,39 @@
+Google.Api.Gax 2.7.0
+https://www.nuget.org/packages/Google.Api.Gax/2.7.0
+https://www.nuget.org/packages/Google.Api.Gax/2.7.0/License
+Google.Api.Gax.Rest 2.7.0
+https://www.nuget.org/packages/Google.Api.Gax.Rest/2.7.0
+https://www.nuget.org/packages/Google.Api.Gax.Rest/2.7.0/License
+Google.Apis 1.40.1
+https://www.nuget.org/packages/Google.Apis/1.40.1
+https://www.nuget.org/packages/Google.Apis/1.40.1/License
+Google.Apis.Auth 1.40.1
+https://www.nuget.org/packages/Google.Apis.Auth/1.40.1
+https://www.nuget.org/packages/Google.Apis.Auth/1.40.1/License
+Google.Apis.Core 1.40.1
+https://www.nuget.org/packages/Google.Apis.Core/1.40.1
+https://www.nuget.org/packages/Google.Apis.Core/1.40.1/License
+Google.Apis.Translate.v2.1.40.1.875
+https://www.nuget.org/packages/Google.Apis.Translate.v2/1.40.1.875
+https://www.nuget.org/packages/Google.Apis.Translate.v2/1.40.1.875/License
+Google.Cloud.Translation.V2 1.1.0
+https://www.nuget.org/packages/Google.Cloud.Translation.V2/1.1.0
+https://www.apache.org/licenses/LICENSE-2.0
+
+Newtonsoft.Json.12.0.2
+https://www.nuget.org/packages/Newtonsoft.Json/12.0.2
+https://licenses.nuget.org/MIT
+Newtonsoft.Json.Bson.1.0.2
+https://www.nuget.org/packages/Newtonsoft.Json.Bson/1.0.2
+https://licenses.nuget.org/MIT
+
+System.Diagnostics.DiagnosticSource.4.5.1
+https://www.nuget.org/packages/System.Diagnostics.DiagnosticSource/4.5.1
+https://github.com/dotnet/corefx/blob/master/LICENSE.TXT
+System.Interactive.Async.3.2.0
+https://www.nuget.org/packages/System.Interactive.Async/3.2.0
+https://github.com/dotnet/reactive/blob/master/LICENSE
+
+websocket-sharp
+https://github.com/sta/websocket-sharp
+https://github.com/sta/websocket-sharp/blob/master/LICENSE.txt

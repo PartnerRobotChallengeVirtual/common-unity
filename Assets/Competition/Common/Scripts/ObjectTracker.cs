@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEditor;
 #endif
 
-namespace SIGVerse.SampleScenes.Hsr
+namespace SIGVerse.Competition
 {
 	public class ObjectTracker : MonoBehaviour
 	{

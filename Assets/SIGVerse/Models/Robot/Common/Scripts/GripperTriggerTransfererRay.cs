@@ -22,7 +22,7 @@ namespace SIGVerse.Common
 
 		public GameObject eventDestination;
 
-		public LayerMask layerMask = -1;
+		public LayerMask layerMask;
 
 		public bool enableDebugRay = false;
 

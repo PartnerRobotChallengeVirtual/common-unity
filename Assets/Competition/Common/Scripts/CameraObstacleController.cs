@@ -40,9 +40,9 @@ namespace SIGVerse.Competition
 
 			if (hit.distance != 0 && hit.distance < rayDirection.magnitude - this.targetCamera.nearClipPlane)
 			{
-				this.targetMeshRenderer = hit.collider.gameObject.GetComponentInChildren<MeshRenderer>(); // 
+				this.targetMeshRenderer = hit.collider.gameObject.GetComponentInChildren<MeshRenderer>(); // Target only one MeshRenderer.
 
-				if(this.targetMeshRenderer != null)
+				if (this.targetMeshRenderer != null)
 				{
 					this.savedMaterials = this.targetMeshRenderer.materials;
 

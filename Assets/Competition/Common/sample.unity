@@ -41496,63 +41496,6 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 2518388450309091343}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &2584144580672065112
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 2584144580672065119}
-  - component: {fileID: 2584144580672065118}
-  m_Layer: 0
-  m_Name: TargetPoint
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!1773428102 &2584144580672065118
-ParentConstraint:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2584144580672065112}
-  m_Enabled: 1
-  m_Weight: 1
-  m_TranslationAtRest: {x: -0.1023, y: 0.0103, z: 1.2861}
-  m_RotationAtRest: {x: 10.877221, y: 117.73038, z: -109.74658}
-  m_TranslationOffsets:
-  - {x: -0.0014119148, y: -0.004868746, z: 0.016865253}
-  m_RotationOffsets:
-  - {x: 0.051701218, y: 1.8356136, z: -3.2286932}
-  m_AffectTranslationX: 1
-  m_AffectTranslationY: 1
-  m_AffectTranslationZ: 1
-  m_AffectRotationX: 1
-  m_AffectRotationY: 1
-  m_AffectRotationZ: 1
-  m_IsContraintActive: 1
-  m_IsLocked: 0
-  m_Sources:
-  - sourceTransform: {fileID: 2518388450309091345}
-    weight: 1
---- !u!4 &2584144580672065119
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2584144580672065112}
-  m_LocalRotation: {x: -0.6687194, y: 0.53036785, z: -0.467664, w: 0.22981462}
-  m_LocalPosition: {x: -0.1023, y: 0.0103, z: 1.2861}
-  m_LocalScale: {x: 0.1, y: 0.1, z: 0.1}
-  m_Children: []
-  m_Father: {fileID: 2584144581977863613}
-  m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &2584144580817814122
 Transform:
   m_ObjectHideFlags: 0
@@ -41944,8 +41887,7 @@ Transform:
   m_LocalRotation: {x: 0.08179146, y: -0.8528885, z: 0.14061366, w: 0.496104}
   m_LocalPosition: {x: -1.0718, y: 1.081, z: -2.5038}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children:
-  - {fileID: 2584144580672065119}
+  m_Children: []
   m_Father: {fileID: 2584144581765677443}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 18.724, y: -119.629005, z: 0}
@@ -41981,7 +41923,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 44ee52ef8c4b595418b24bb1d8584f88, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rayTarget: {fileID: 2584144580672065119}
+  rayTarget: {fileID: 2518388450309091345}
   layerMask:
     serializedVersion: 2
     m_Bits: 279

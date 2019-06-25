@@ -41525,7 +41525,7 @@ ParentConstraint:
   m_TranslationAtRest: {x: -0.05846131, y: 0.09285195, z: 0.8601783}
   m_RotationAtRest: {x: 10.877221, y: 117.73038, z: -109.74658}
   m_TranslationOffsets:
-  - {x: 0, y: 0.050000668, z: 0.099999905}
+  - {x: -0.0000010728836, y: 0.050000668, z: 0.099999905}
   m_RotationOffsets:
   - {x: 0, y: 0, z: 0}
   m_AffectTranslationX: 1
@@ -41644,7 +41644,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 2584144580817814135}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b37ae55773bda8e40b6cfcfc2d8dd282, type: 3}
+  m_Script: {fileID: 11500000, guid: 5255c80ce98935341859e97c3cafd812, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   robot: {fileID: 2518388450309091344}
@@ -41868,11 +41868,11 @@ ParentConstraint:
   m_Enabled: 1
   m_Weight: 1
   m_TranslationAtRest: {x: -1.335, y: 0.919, z: -2.652}
-  m_RotationAtRest: {x: 22.438936, y: -119.62904, z: 0}
+  m_RotationAtRest: {x: 22.438911, y: -119.62906, z: -0.00006558342}
   m_TranslationOffsets:
   - {x: -0.84800005, y: -0.66499996, z: 0.16700006}
   m_RotationOffsets:
-  - {x: -53.459053, y: 129.87256, z: 56.133614}
+  - {x: -53.45904, y: 129.87256, z: 56.133617}
   m_AffectTranslationX: 1
   m_AffectTranslationY: 1
   m_AffectTranslationZ: 1
@@ -41906,7 +41906,7 @@ Camera:
     y: 0
     width: 1
     height: 1
-  near clip plane: 0.5
+  near clip plane: 0.01
   far clip plane: 1000
   field of view: 60
   orthographic: 0
@@ -41941,7 +41941,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2584144581977863614}
-  m_LocalRotation: {x: 0.09782916, y: -0.8478827, z: 0.16818456, w: 0.49319214}
+  m_LocalRotation: {x: 0.097829215, y: -0.8478827, z: 0.16818431, w: 0.4931921}
   m_LocalPosition: {x: -1.335, y: 0.919, z: -2.652}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -41961,6 +41961,7 @@ GameObject:
   - component: {fileID: 2584144581977863603}
   - component: {fileID: 2584144581977863612}
   - component: {fileID: 2584144581977863602}
+  - component: {fileID: 2584144581977863615}
   m_Layer: 0
   m_Name: TorsoTrackingCamera
   m_TagString: Untagged
@@ -41968,6 +41969,22 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!114 &2584144581977863615
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2584144581977863614}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 44ee52ef8c4b595418b24bb1d8584f88, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rayTarget: {fileID: 2584144580672065119}
+  layerMask:
+    serializedVersion: 2
+    m_Bits: 279
 --- !u!4 &3228361970046090985
 Transform:
   m_ObjectHideFlags: 0

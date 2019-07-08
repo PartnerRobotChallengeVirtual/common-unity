@@ -2088,13 +2088,13 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2514092831828895173}
-  - component: {fileID: 2550478811385945695}
   - component: {fileID: 2552161379052621837}
   - component: {fileID: 8781876399533147466}
   - component: {fileID: 2550261592891418219}
   - component: {fileID: 2550347774638388951}
   - component: {fileID: 2552175736906186697}
   - component: {fileID: 2550724194050375571}
+  - component: {fileID: 2550478811385945695}
   - component: {fileID: 2550400809103766333}
   - component: {fileID: 2550991152943345105}
   - component: {fileID: 2552179865815979833}
@@ -2124,22 +2124,6 @@ Transform:
   m_Father: {fileID: 2513893675869674713}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2550478811385945695
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2519126087154888955}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 41a92fc61ffcbe7449e00679dc800976, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  rosBridgeIP: 
-  sigverseBridgePort: 0
-  topicName: /sigverse/TimeSync
-  shouldSynchronize: 1
 --- !u!114 &2552161379052621837
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2231,6 +2215,22 @@ MonoBehaviour:
   rosBridgePort: 0
   topicName: /hsrb/joint_states
   sendingInterval: 100
+--- !u!114 &2550478811385945695
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2519126087154888955}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 41a92fc61ffcbe7449e00679dc800976, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rosBridgeIP: 
+  sigverseBridgePort: 0
+  topicName: /sigverse/TimeSync
+  shouldSynchronize: 1
 --- !u!114 &2550400809103766333
 MonoBehaviour:
   m_ObjectHideFlags: 0

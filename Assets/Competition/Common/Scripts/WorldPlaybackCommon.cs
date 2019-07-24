@@ -86,6 +86,8 @@ namespace SIGVerse.Competition
 			{
 				if(videoPlayerAll.GetInstanceID() <= 0){ continue; }
 
+				if (videoPlayerAll.hideFlags != HideFlags.None) { continue; }
+
 				this.targetVideoPlayers.Add(videoPlayerAll);
 			}
 		}
